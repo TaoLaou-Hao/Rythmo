@@ -319,7 +319,7 @@ en: {
   sc_import:'Import a calendar file (.ics)', sc_import_hint:'Export it from your school calendar or Google Calendar. It replaces the classes below.',
   sc_import_ok:'{n} classes imported.', sc_import_none:'No timed events found in that file.', sc_import_err:'Could not read that file.',
   qs_title:'Your usual school day (30 seconds)', qs_start:'First class starts', qs_end:'Last class ends', qs_btn:'Build my plan', qs_or:'or', qs_detail:'Enter my exact timetable instead', qs_am:'Morning classes', qs_pm:'Afternoon classes', sc_imp_sum:'Import from Google Calendar or your school (optional)',
-  lk_title:'Paste your calendar link', lk_btn:'Get my plan', lk_busy:'Reading your calendar…', lk_fail:'Could not read that link. Check it is the iCal link of your calendar, or use the 30-second form below.', lk_empty:'No classes found in that calendar.', lk_note:'Google Calendar: Settings > your calendar > "Secret address in iCal format". The link is read through a free public relay (corsproxy.io) and is not stored.',
+  lk_title:'Paste your calendar link', lk_btn:'Get my plan', lk_busy:'Reading your calendar…', lk_fail:'Could not read that link. Check it is the iCal link of your calendar, or use the 30-second form below.', lk_empty:'No classes found in that calendar.', lk_note:'Google Calendar: Settings > your calendar > "Secret address in iCal format". The link is read through Rythmo's own relay and is never stored.',
   sc_url:'Or paste your calendar link (iCal / webcal)', sc_url_ph:'https://… or webcal://…', sc_url_btn:'Get my calendar from this link', sc_url_hint:'Your browser will download the calendar file from the link. Then tap "Import a calendar file" above and pick it.', sc_url_bad:'That does not look like a calendar link. It should start with https:// or webcal://.', sc_url_ok:'Link ready. Tap the purple button below to download your calendar, then tap "Import a calendar file" and pick it.', sc_url_dl:'Download my calendar file',
   sc_add:'Add a class', sc_name:'Class name', sc_name_ph:'e.g. Statistics', sc_start:'Starts', sc_end:'Ends', sc_days:'Days', sc_add_btn:'Add class',
   sc_added:'Class added.', sc_list:'Your classes', sc_none:'No classes yet.', sc_remove:'Remove', sc_clear:'Remove all classes', sc_default:'Class',
@@ -365,7 +365,7 @@ fr: {
   sc_import:'Importer un fichier calendrier (.ics)', sc_import_hint:"Exporte-le depuis le calendrier de ton école ou Google Agenda. Il remplace les cours ci-dessous.",
   sc_import_ok:'{n} cours importés.', sc_import_none:'Aucun événement horaire trouvé dans ce fichier.', sc_import_err:'Impossible de lire ce fichier.',
   qs_title:'Ta journée de cours type (30 secondes)', qs_start:'Début du premier cours', qs_end:'Fin du dernier cours', qs_btn:'Créer mon plan', qs_or:'ou', qs_detail:'Entrer mon emploi du temps exact', qs_am:'Cours du matin', qs_pm:'Cours de l\'après-midi', sc_imp_sum:'Importer depuis Google Agenda ou ton école (facultatif)',
-  lk_title:'Colle le lien de ton agenda', lk_btn:'Créer mon plan', lk_busy:'Lecture de ton agenda…', lk_fail:'Impossible de lire ce lien. Vérifie que c\'est le lien iCal de ton agenda, ou utilise le formulaire de 30 secondes ci-dessous.', lk_empty:'Aucun cours trouvé dans cet agenda.', lk_note:'Google Agenda : Paramètres > ton agenda > « Adresse secrète au format iCal ». Le lien est lu via un relais public gratuit (corsproxy.io) et n\'est pas enregistré.',
+  lk_title:'Colle le lien de ton agenda', lk_btn:'Créer mon plan', lk_busy:'Lecture de ton agenda…', lk_fail:'Impossible de lire ce lien. Vérifie que c\'est le lien iCal de ton agenda, ou utilise le formulaire de 30 secondes ci-dessous.', lk_empty:'Aucun cours trouvé dans cet agenda.', lk_note:'Google Agenda : Paramètres > ton agenda > « Adresse secrète au format iCal ». Le lien est lu via le relais de Rythmo et n\'est jamais enregistré.',
   sc_url:'Ou colle le lien de ton agenda (iCal / webcal)', sc_url_ph:'https://… ou webcal://…', sc_url_btn:'Récupérer mon agenda depuis ce lien', sc_url_hint:'Ton navigateur télécharge le fichier de l\'agenda depuis le lien. Ensuite, touche « Importer un fichier calendrier » ci-dessus et choisis-le.', sc_url_bad:'Ce lien ne ressemble pas à un lien d\'agenda. Il doit commencer par https:// ou webcal://.', sc_url_ok:'Lien prêt. Touche le bouton violet ci-dessous pour télécharger ton agenda, puis « Importer un fichier calendrier » pour le choisir.', sc_url_dl:'Télécharger le fichier de mon agenda',
   sc_add:'Ajouter un cours', sc_name:'Nom du cours', sc_name_ph:'ex. Statistiques', sc_start:'Début', sc_end:'Fin', sc_days:'Jours', sc_add_btn:'Ajouter le cours',
   sc_added:'Cours ajouté.', sc_list:'Tes cours', sc_none:'Aucun cours pour le moment.', sc_remove:'Retirer', sc_clear:'Retirer tous les cours', sc_default:'Cours',
@@ -566,10 +566,11 @@ function fbCard() {
 function footer() { return '<p class="note">' + esc(t('footer')) + (storageOk ? '' : '<br>' + esc(t('nostore'))) + '</p>'; }
 
 function linkForm(withMsg) {
+  if (!RELAY) return '';
   return '<form id="urlf" class="card stack" style="text-align:left;margin:0"><h2 style="margin:0">' + esc(t('lk_title')) + '</h2><label class="f" for="icsurl"><span class="why">' + esc(t('lk_note')) + '</span><input id="icsurl" type="text" inputmode="url" autocomplete="off" placeholder="' + esc(t('sc_url_ph')) + '"></label><button class="btn pri full" type="submit"' + (busy ? ' disabled' : '') + '>' + esc(busy ? t('lk_busy') : t('lk_btn')) + '</button>' + (withMsg ? '<p class="msg' + (msgErr ? ' err' : '') + '" role="status" style="margin:0">' + esc(msg) + '</p>' : '') + '</form>';
 }
 function emptyPlan() {
-  return '<div class="empty"><h1>' + esc(t('empty_title')) + '</h1><p>' + esc(t('empty_text')) + '</p>' + linkForm(true) + '<p>' + esc(t('qs_or')) + '</p>' +
+  return '<div class="empty"><h1>' + esc(t('empty_title')) + '</h1><p>' + esc(t('empty_text')) + '</p>' + linkForm(true) + '<p style="display:' + (RELAY ? 'block' : 'none') + '">' + esc(t('qs_or')) + '</p>' +
     '<form id="quickf" class="card stack" style="text-align:left;margin:0"><h2 style="margin:0">' + esc(t('qs_title')) + '</h2>' +
     '<div class="grid2"><label class="f" for="qs-s">' + esc(t('qs_start')) + '<input id="qs-s" type="time" value="09:00" required></label><label class="f" for="qs-e">' + esc(t('qs_end')) + '<input id="qs-e" type="time" value="17:00" required></label></div>' +
     '<div><div class="why" style="margin-bottom:6px">' + esc(t('sc_days')) + '</div><div class="chips">' + WEEK.map((d, i) => '<label><input type="checkbox" name="qd" value="' + i + '"' + (i < 5 ? ' checked' : '') + '><span>' + esc(dayName(d, 'short')) + '</span></label>').join('') + '</div></div>' +
@@ -777,18 +778,16 @@ const EXAMPLE = [
   ['Statistics', '09:00', '11:00', [3]], ['Workshop', '14:00', '18:00', [3]], ['Business', '08:30', '10:30', [4]]
 ];
 
+const RELAY = ''; // URL of your Cloudflare Worker, e.g. 'https://rythmo.xxx.workers.dev'
 async function fetchICS(u) {
-  const tries = [u, 'https://corsproxy.io/?url=' + encodeURIComponent(u), 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u)];
-  for (const x of tries) {
-    try {
-      const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 8000);
-      const r = await fetch(x, { signal: ctl.signal }); clearTimeout(tm);
-      if (!r.ok) continue;
-      const txt = await r.text();
-      if (/BEGIN:VCALENDAR/.test(txt)) return txt;
-    } catch (er) { /* try next */ }
-  }
-  throw new Error('no calendar');
+  const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 12000);
+  try {
+    const r = await fetch(RELAY + '/?url=' + encodeURIComponent(u), { signal: ctl.signal });
+    if (!r.ok) throw new Error('bad status');
+    const txt = await r.text();
+    if (!/BEGIN:VCALENDAR/.test(txt)) throw new Error('not ics');
+    return txt;
+  } finally { clearTimeout(tm); }
 }
 /* ---------- Events ---------- */
 function say(m, err) { msg = m; msgErr = !!err; }
