@@ -325,6 +325,12 @@ en: {
   sc_added:'Class added.', sc_list:'Your classes', sc_none:'No classes yet.', sc_remove:'Remove', sc_clear:'Remove all classes', sc_default:'Class',
   sc_bad_time:'The end time must be after the start time.', sc_need_day:'Pick at least one day.',
   travel_to:'Travel to school', travel_home:'Travel home', trv_label:'Travel time to school (one way)', trv_hint:'Door to door. It is added to your calendar before your first class and after your last one.',
+  wake_calm:'First class at {c}. Your morning is free: no need to rush.',
+  mo_gentle:'Gentle start (15 min)', mo_gentle_why:'Yesterday was a heavy day. Easy stretching or a short walk in daylight, no hard workout.',
+  mo_calm:'Quiet time (20 min)', mo_calm_why:'Read, listen to music or just sit with a drink instead of scrolling. Your body is still recovering.',
+  mo_focus:'Focus block (45 min)', mo_focus_why:'Your head is freshest in the morning. Start with your hardest revision or project task.',
+  mo_move:'Quick movement (15 min)', mo_move_why:'Wake the body up: a short run, skipping rope or a bodyweight set.',
+  mo_prep:'Pack your bag', mo_prep_why:'Bag, charger, water bottle, lunch: ten minutes now saves stress later.',
   sc_rhythm:'Your rhythm', set_sleep:'Sleep you need', set_commute:'Travel time to school (one way)', set_sport:'Workout length', set_free:'Wake-up on free days',
   min:'{n} min', hrs:'{n} h',
   footer:'Your data stays on this device. Rythmo gives general wellbeing tips, not medical advice. Student project at Aivancity.',
@@ -372,6 +378,12 @@ fr: {
   sc_added:'Cours ajouté.', sc_list:'Tes cours', sc_none:'Aucun cours pour le moment.', sc_remove:'Retirer', sc_clear:'Retirer tous les cours', sc_default:'Cours',
   sc_bad_time:"L'heure de fin doit être après l'heure de début.", sc_need_day:'Choisis au moins un jour.',
   travel_to:'Trajet vers l\'école', travel_home:'Trajet retour', trv_label:'Temps de trajet vers l\'école (aller)', trv_hint:'De porte à porte. Il est ajouté à ton calendrier avant ton premier cours et après le dernier.',
+  wake_calm:'Premier cours à {c}. Ta matinée est libre : pas besoin de te presser.',
+  mo_gentle:'Démarrage en douceur (15 min)', mo_gentle_why:"Hier a été une grosse journée. Étirements tranquilles ou petite marche à la lumière du jour, pas de séance intense.",
+  mo_calm:'Moment calme (20 min)', mo_calm_why:"Lis, écoute de la musique ou prends un thé au lieu de scroller. Ton corps récupère encore.",
+  mo_focus:'Bloc de concentration (45 min)', mo_focus_why:"Ta tête est la plus fraîche le matin. Commence par la révision ou la tâche de projet la plus dure.",
+  mo_move:'Un peu de mouvement (15 min)', mo_move_why:"Réveille le corps : petite course, corde à sauter ou une série au poids du corps.",
+  mo_prep:'Prépare ton sac', mo_prep_why:"Sac, chargeur, gourde, repas : dix minutes maintenant évitent du stress plus tard.",
   sc_rhythm:'Ton rythme', set_sleep:'Sommeil nécessaire', set_commute:'Temps de trajet vers l\'école (aller)', set_sport:'Durée du sport', set_free:'Réveil les jours libres',
   min:'{n} min', hrs:'{n} h',
   footer:"Tes données restent sur cet appareil. Rythmo donne des conseils de bien-être généraux, pas des conseils médicaux. Projet étudiant à Aivancity.",
@@ -465,17 +477,25 @@ const WEEK = [0, 1, 2, 3, 4, 5, 6].map(i => new Date(2024, 0, 1 + i)); // a real
 function classesFor(wd) {
   return state.classes.filter(c => c.days.includes(wd)).map(c => ({ title: c.title, s: toMin(c.start), e: toMin(c.end) })).sort((a, b) => a.s - b.s);
 }
-function wakeInfo(wd) {
+function dayHard(wd) {
+  const cl = classesFor(wd);
+  if (!cl.length) return false;
+  return cl.reduce((n, c) => n + c.e - c.s, 0) >= 360 || cl[cl.length - 1].e >= 1080 || cl.length >= 4;
+}
+function wakeInfo(wd, prevHard) {
   const cl = classesFor(wd), S = state.settings;
   if (!cl.length) return { wake: toMin(S.freeWake), first: null };
-  return { wake: Math.max(300, cl[0].s - S.commute - 60), first: cl[0] };
+  const byClass = Math.max(300, cl[0].s - S.commute - 60);
+  // regular rhythm: a late first class is not a reason to wake up late (a little extra rest after a heavy day)
+  const cap = BED_CAP + S.sleep * 60 + 15 - 1440 + (prevHard ? 60 : 0);
+  return { wake: Math.min(byClass, cap), first: cl[0], calm: cap < byClass };
 }
 const overlaps = (a1, a2, b1, b2) => a1 < b2 && b1 < a2;
 
 const BED_CAP = 1410; // 23:30, latest recommended lights-out
 function computeDay(date) {
   const S = state.settings, wd = wdOf(date), cl = classesFor(wd);
-  const w = wakeInfo(wd), wn = wakeInfo((wd + 1) % 7);
+  const ph = dayHard((wd + 6) % 7), w = wakeInfo(wd, ph), wn = wakeInfo((wd + 1) % 7, dayHard(wd));
   const sleepMin = S.sleep * 60;
   const lastEnd = cl.length ? cl[cl.length - 1].e : 0;
   let bed = 1440 + wn.wake - sleepMin - 15;
@@ -487,15 +507,28 @@ function computeDay(date) {
   const short = bed > bedIdeal + 1;
   const items = []; const meals = [];
 
-  items.push({ t: w.wake, type: 'wake', c: '--c-sleep', title: t('wake'), why: w.first ? t('wake_class', { c: fmt(w.first.s), m: S.commute + 60 }) : t('wake_free') });
+  items.push({ t: w.wake, type: 'wake', c: '--c-sleep', title: t('wake'), why: w.first ? (w.calm ? t('wake_calm', { c: fmt(w.first.s) }) : t('wake_class', { c: fmt(w.first.s), m: S.commute + 60 })) : t('wake_free') });
   const bf = w.wake + 20; meals.push([bf, bf + 20]);
-  items.push({ t: bf, type: 'meal', c: '--c-meal', title: t('breakfast'), why: t('breakfast_why') });
+  items.push({ t: bf, dur: 20, type: 'meal', c: '--c-meal', title: t('breakfast'), why: t('breakfast_why') });
   cl.forEach(c => items.push({ t: c.s, end: c.e, type: 'class', c: '--c-class', title: c.title }));
   const trips = [];
   if (cl.length && S.commute > 0) {
     trips.push([cl[0].s - S.commute, cl[0].s], [lastEnd, lastEnd + S.commute]);
     items.push({ t: trips[0][0], end: trips[0][1], type: 'class', c: '--c-class', title: t('travel_to') },
                { t: trips[1][0], end: trips[1][1], type: 'class', c: '--c-class', title: t('travel_home') });
+  }
+
+  // Calm morning (late first class): suggestions that depend on how heavy yesterday was
+  if (w.calm && cl.length) {
+    const ci = state.checkins[key(addDays(date, -1))];
+    const tired = ph || !!(ci && (ci.energy <= 2 || ci.sleepH < S.sleep - 1));
+    const m0 = bf + 25, mEnd = cl[0].s - S.commute - 30, win = mEnd - m0;
+    const add = (at, dur, title, why) => { items.push({ t: at, dur, type: 'morning', c: '--c-move', title: t(title), why: t(why) }); trips.push([at, at + dur]); };
+    if (win >= (tired ? 30 : 60)) {
+      if (tired) { add(m0, 15, 'mo_gentle', 'mo_gentle_why'); if (win >= 75) add(m0 + 30, 20, 'mo_calm', 'mo_calm_why'); }
+      else { add(m0, 45, 'mo_focus', 'mo_focus_why'); if (win >= 90) add(m0 + 60, 15, 'mo_move', 'mo_move_why'); }
+      add(mEnd - 10, 10, 'mo_prep', 'mo_prep_why');
+    }
   }
 
   // Lunch
@@ -653,7 +686,7 @@ function itemsHtml(P, k) {
     for (let hh = start; hh <= end; hh += 60) h += '<div class="hr" style="top:' + y(hh) + 'px"><span>' + fmt(hh) + '</span></div>';
     P.items.forEach(it => {
       if (it.type === 'bed') { h += '<div class="bed" style="top:' + y(it.t) + 'px"><span>' + esc(it.title) + ' ' + fmt(it.t) + '</span></div>'; return; }
-      const dur = it.type === 'class' ? it.end - it.t : it.type === 'sport' ? S.sport : (/Quick|rapide/.test(it.title) ? 20 : (DUR[it.type] || 30));
+      const dur = it.dur ? it.dur : it.type === 'class' ? it.end - it.t : it.type === 'sport' ? S.sport : (/Quick|rapide/.test(it.title) ? 20 : (DUR[it.type] || 30));
       h += '<div class="blk ' + (it.type === 'class' ? 'cls' : 'sug') + '" style="top:' + y(it.t) + 'px;height:' + Math.max(dur * PPM - 2, 22).toFixed(1) + 'px;--c:var(' + it.c + ')"><b>' + fmt(it.t) + '</b><span>' + esc(it.title) + '</span></div>';
     });
     if (dayOffset === 0) { const n = new Date(), mm = n.getHours() * 60 + n.getMinutes(); if (mm > start && mm < end) h += '<div class="now" style="top:' + y(mm) + 'px"></div>'; }
