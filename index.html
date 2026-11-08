@@ -331,6 +331,7 @@ en: {
   mo_focus:'Focus block (45 min)', mo_focus_why:'Your head is freshest in the morning. Start with your hardest revision or project task.',
   mo_move:'Quick movement (15 min)', mo_move_why:'Wake the body up: a short run, skipping rope or a bodyweight set.',
   mo_prep:'Pack your bag', mo_prep_why:'Bag, charger, water bottle, lunch: ten minutes now saves stress later.',
+  tk_card:'Flexible tasks', tk_empty:'No flexible task on this day.', tk_open:'+ Add a task',
   tk_add:'Add a flexible task', tk_hint:'Something without a fixed hour (study, project, errands). Rythmo finds a free slot on the days you pick.', tk_name:'Task name', tk_name_ph:'e.g. Group project', tk_dur:'How long', tk_btn:'Add task', tk_added:'Task added.', tk_list:'Your flexible tasks', tk_why:'Placed in a free slot ({m} min).', tk_none:'No room today for: {n}. Try another day or a shorter task.', tk_default:'Task',
   sc_rhythm:'Your rhythm', set_sleep:'Sleep you need', set_commute:'Travel time to school (one way)', set_sport:'Workout length', set_free:'Wake-up on free days',
   min:'{n} min', hrs:'{n} h',
@@ -385,6 +386,7 @@ fr: {
   mo_focus:'Bloc de concentration (45 min)', mo_focus_why:"Ta tête est la plus fraîche le matin. Commence par la révision ou la tâche de projet la plus dure.",
   mo_move:'Un peu de mouvement (15 min)', mo_move_why:"Réveille le corps : petite course, corde à sauter ou une série au poids du corps.",
   mo_prep:'Prépare ton sac', mo_prep_why:"Sac, chargeur, gourde, repas : dix minutes maintenant évitent du stress plus tard.",
+  tk_card:'Tâches flexibles', tk_empty:'Aucune tâche flexible ce jour-là.', tk_open:'+ Ajouter une tâche',
   tk_add:'Ajouter une tâche flexible', tk_hint:"Quelque chose sans heure fixe (révisions, projet, courses). Rythmo trouve un créneau libre les jours choisis.", tk_name:'Nom de la tâche', tk_name_ph:'ex. Projet de groupe', tk_dur:'Durée', tk_btn:'Ajouter la tâche', tk_added:'Tâche ajoutée.', tk_list:'Tes tâches flexibles', tk_why:'Placée dans un créneau libre ({m} min).', tk_none:"Pas de place aujourd'hui pour : {n}. Essaie un autre jour ou une tâche plus courte.", tk_default:'Tâche',
   sc_rhythm:'Ton rythme', set_sleep:'Sommeil nécessaire', set_commute:'Temps de trajet vers l\'école (aller)', set_sport:'Durée du sport', set_free:'Réveil les jours libres',
   min:'{n} min', hrs:'{n} h',
@@ -453,7 +455,7 @@ function hashVar() { try { const h = (location.hash || '').replace('#', '').toUp
 if (!VIDS.includes(state.variant)) state.variant = 'A';
 if (hashVar()) state.variant = hashVar();
 const V = () => VARS[state.variant];
-let resetArm = false, busy = false;
+let resetArm = false, busy = false, scrollTask = false;
 state.done = state.done || {};
 const firstClassDay = () => { for (let i = 0; i < 7; i++) if (classesFor(wdOf(addDays(today(), i))).length) return i; return 0; };
 let tab = 'plan', dayOffset = 0, draft = null, msg = '', msgErr = false;
@@ -732,6 +734,10 @@ function screenPlan() {
   h += '<div class="row2"><div class="card"><div class="lab">' + esc(t('water')) + '</div>' +
     (dayOffset === 0 ? '<div class="why" style="margin:-2px 0 8px">' + esc(t('water_goal', { n: WATER_GOAL })) + '</div><div class="cnt"><button class="rb" data-act="water" data-v="-1" aria-label="-1">−</button><span class="n">' + w + '<small style="font:500 14px var(--f-body);color:var(--muted)">/' + WATER_GOAL + '</small></span><button class="rb add" data-act="water" data-v="1" aria-label="+1">+</button></div>' : '<div class="val">' + esc(t('water_goal_day', { n: WATER_GOAL })) + '</div>') + '</div></div>';
   h += itemsHtml(P, k);
+  const dayTasks = (state.tasks || []).filter(x => x.days.includes(wdOf(date)));
+  h += '<section class="card stack" style="margin-top:14px"><h2 style="margin:0">' + esc(t('tk_card')) + '</h2>' +
+    (dayTasks.length ? '<ul class="cl" style="margin:0">' + dayTasks.map(x => '<li><div class="m"><b>' + esc(x.title) + '</b><small>' + esc(t('min', { n: x.dur })) + '</small></div><button class="x" data-act="deltask" data-v="' + x.id + '">' + esc(t('sc_remove')) + '</button></li>').join('') + '</ul>' : '<p class="why" style="margin:0">' + esc(t('tk_empty')) + '</p>') +
+    '<button class="btn full" data-act="addtask">' + esc(t('tk_open')) + '</button></section>';
   if (P.noSport) h += '<div class="tip">' + esc(t('sport_none')) + '</div>';
   h += '<section class="chal"><h2 style="margin:0">' + esc(t('chal_title')) + '</h2><div class="t">' + esc(ch.text) + '</div>' +
     '<button class="btn ' + (done ? 'done' : 'pri') + ' full" data-act="chal" data-v="' + k + '">' + esc(done ? t('chal_done') : t('chal_mark')) + '</button>' +
@@ -812,6 +818,7 @@ function render() {
   $app.innerHTML = vbar() + '<div class="shell">' + header() + (V().nav === 'top' ? nav() : '') + scr + '</div>' + (V().nav === 'top' ? '' : nav());
   document.documentElement.setAttribute('data-v', state.variant);
   document.documentElement.lang = state.lang;
+  if (scrollTask) { scrollTask = false; const f = document.getElementById('taskf'); if (f) f.scrollIntoView({ block: 'center' }); }
 }
 
 /* ---------- Calendar import ---------- */
@@ -874,6 +881,7 @@ $app.addEventListener('click', e => {
   if (a === 'var') { state.variant = v; resetArm = false; dayOffset = 0; draft = null; try { history.replaceState(null, '', '#' + v.toLowerCase()); } catch (er) {} save(); }
   else if (a === 'reset') { if (!resetArm) resetArm = true; else { const lg = state.lang, vr = state.variant; state = Object.assign({}, JSON.parse(JSON.stringify(base)), { lang: lg, variant: vr }); resetArm = false; tab = 'plan'; dayOffset = 0; draft = null; msg = ''; save(); } }
   else if (a === 'tick') { state.done[v] = !state.done[v]; save(); }
+  else if (a === 'addtask') { tab = 'schedule'; msg = ''; scrollTask = true; }
   else if (a === 'tab') { tab = v; msg = ''; if (v === 'checkin') draft = null; }
   else if (a === 'lang') { state.lang = v; save(); }
   else if (a === 'day') dayOffset = +v;
