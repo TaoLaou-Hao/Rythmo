@@ -133,7 +133,9 @@ details.imp summary{cursor:pointer;font-weight:600}
 .empty .card .chips{justify-content:flex-start}
 .vinfo>span:first-child{flex:1 1 auto;min-width:0}
 .vinfo .x.arm{color:var(--warn);border-color:var(--warn)}
-.vform{display:block;text-align:center;font-weight:700;font-size:14px;padding:9px 12px;border-radius:10px;background:var(--accent);color:var(--on-accent);text-decoration:none}
+.vform{flex:0 0 auto;font-weight:700;font-size:13px;padding:6px 12px;border-radius:99px;background:var(--accent);color:var(--on-accent);text-decoration:none;white-space:nowrap}
+.vinfo b{flex:1 1 auto;min-width:0;font-size:13px}
+.vbar>div{gap:6px;padding-block:8px 6px}
 .prog{height:8px;border-radius:99px;background:var(--accent-soft);overflow:hidden;margin:6px 0 14px}
 .prog i{display:block;height:100%;background:var(--c-move)}
 .todo{list-style:none;margin:0 0 18px;padding:0;display:grid;gap:8px}
@@ -324,6 +326,7 @@ en: {
   sc_rhythm:'Your rhythm', set_sleep:'Sleep you need', set_commute:'Getting ready + travel', set_sport:'Workout length', set_free:'Wake-up on free days',
   min:'{n} min', hrs:'{n} h',
   footer:'Your data stays on this device. Rythmo gives general wellbeing tips, not medical advice. Student project at Aivancity.',
+  v_fb:'Feedback ↗',
   v_form:'Done testing? Give feedback on version {v} (3 min)',
   v_label:'Version {v}', v_pick:'Version to test', v_reset:'New tester', v_confirm:'Tap again to erase', v_in_form:'In the feedback form, choose: Version {v} ({n}).',
   vn_A:'Horizon', vn_B:'Ticket', vn_C:'Doux', vn_D:'Agenda', vn_E:'Batterie',
@@ -368,6 +371,7 @@ fr: {
   sc_rhythm:'Ton rythme', set_sleep:'Sommeil nécessaire', set_commute:'Préparation + trajet', set_sport:'Durée du sport', set_free:'Réveil les jours libres',
   min:'{n} min', hrs:'{n} h',
   footer:"Tes données restent sur cet appareil. Rythmo donne des conseils de bien-être généraux, pas des conseils médicaux. Projet étudiant à Aivancity.",
+  v_fb:'Avis ↗',
   v_form:'Test fini ? Donne ton avis sur la version {v} (3 min)',
   v_label:'Version {v}', v_pick:'Version à tester', v_reset:'Nouveau testeur', v_confirm:'Touche encore pour effacer', v_in_form:'Dans le formulaire, choisis : Version {v} ({n}).',
   vn_A:'Horizon', vn_B:'Ticket', vn_C:'Doux', vn_D:'Agenda', vn_E:'Batterie',
@@ -433,6 +437,7 @@ if (hashVar()) state.variant = hashVar();
 const V = () => VARS[state.variant];
 let resetArm = false, dlUrl = '';
 state.done = state.done || {};
+const firstClassDay = () => { for (let i = 0; i < 7; i++) if (classesFor(wdOf(addDays(today(), i))).length) return i; return 0; };
 let tab = 'plan', dayOffset = 0, draft = null, msg = '', msgErr = false;
 
 /* ---------- Helpers ---------- */
@@ -547,11 +552,11 @@ function nav() {
 function vbar() {
   const v = state.variant;
   return '<div class="vbar"><div><div class="vtabs" role="group" aria-label="' + esc(t('v_pick')) + '">' + VIDS.map(i => '<button data-act="var" data-v="' + i + '" aria-pressed="' + (i === v) + '" aria-label="' + esc(t('v_label', { v: i }) + ': ' + t('vn_' + i)) + '">' + i + '</button>').join('') + '</div>' +
-    '<div class="vinfo"><span><b>' + esc(t('v_label', { v: v }) + ' · ' + t('vn_' + v)) + '</b><br>' + esc(t('vd_' + v)) + '</span>' + langBtns() + '<button class="x' + (resetArm ? ' arm' : '') + '" data-act="reset">' + esc(resetArm ? t('v_confirm') : t('v_reset')) + '</button></div>' + '<a class="vform" href="' + FORM_URL + '" target="_blank" rel="noopener">' + esc(t('v_form', { v: v })) + '</a>' + daHtml(v) + '</div></div>';
+    '<div class="vinfo"><b>' + esc(t('v_label', { v: v }) + ' · ' + t('vn_' + v)) + '</b>' + langBtns() + '<a class="vform" href="' + FORM_URL + '" target="_blank" rel="noopener">' + esc(t('v_fb')) + '</a></div>' + daHtml(v) + '</div></div>';
 }
 function daHtml(v) {
   const d = DA[v];
-  return '<details class="da"><summary>' + esc(t('why_da')) + '</summary><div class="dab"><div><b>' + esc(t('da_concept')) + '.</b> ' + esc(d[state.lang] || d.en) + '</div><div><b>' + esc(t('da_insight')) + '.</b><span class="qq">' + esc(state.lang === 'en' ? DA_EN[v].q : d.q) + '</span></div><div><b>' + esc(t('da_refs')) + '.</b> ' + esc(state.lang === 'en' ? DA_EN[v].refs : d.refs) + '</div><div><b>' + esc(t('da_type')) + '.</b> ' + esc(d.type) + '</div><div class="sw">' + d.sw.map(c => '<i style="background:' + c + '"></i>').join('') + '</div></div></details>';
+  return '<details class="da"><summary>' + esc(t('why_da')) + '</summary><div class="dab"><div>' + esc(t('vd_' + v)) + '</div><div><b>' + esc(t('da_concept')) + '.</b> ' + esc(d[state.lang] || d.en) + '</div><div><b>' + esc(t('da_insight')) + '.</b><span class="qq">' + esc(state.lang === 'en' ? DA_EN[v].q : d.q) + '</span></div><div><b>' + esc(t('da_refs')) + '.</b> ' + esc(state.lang === 'en' ? DA_EN[v].refs : d.refs) + '</div><div><b>' + esc(t('da_type')) + '.</b> ' + esc(d.type) + '</div><div class="sw">' + d.sw.map(c => '<i style="background:' + c + '"></i>').join('') + '</div><button class="x' + (resetArm ? ' arm' : '') + '" data-act="reset" style="justify-self:start;border:1px solid var(--line);border-radius:8px;padding:6px 10px">' + esc(resetArm ? t('v_confirm') : t('v_reset')) + '</button></div></details>';
 }
 function fbCard() {
   return '<section class="card" style="margin-top:18px"><h2>' + esc(t('fb_title')) + '</h2><p class="sub" style="margin-bottom:12px">' + esc(t('fb_text')) + '</p><div class="fbv">' + esc(t('v_in_form', { v: state.variant, n: t('vn_' + state.variant) })) + '</div><a class="btn pri" href="' + FORM_URL + '" target="_blank" rel="noopener">' + esc(t('fb_cta')) + '</a></section>';
@@ -627,7 +632,7 @@ function itemsHtml(P, k) {
     P.items.forEach(it => {
       if (it.type === 'bed') { h += '<div class="bed" style="top:' + y(it.t) + 'px"><span>' + esc(it.title) + ' ' + fmt(it.t) + '</span></div>'; return; }
       const dur = it.type === 'class' ? it.end - it.t : it.type === 'sport' ? S.sport : (/Quick|rapide/.test(it.title) ? 20 : (DUR[it.type] || 30));
-      h += '<div class="blk ' + (it.type === 'class' ? 'cls' : 'sug') + '" style="top:' + y(it.t) + 'px;height:' + Math.max(dur * PPM - 2, 18).toFixed(1) + 'px;--c:var(' + it.c + ')"><b>' + fmt(it.t) + '</b><span>' + esc(it.title) + '</span></div>';
+      h += '<div class="blk ' + (it.type === 'class' ? 'cls' : 'sug') + '" style="top:' + y(it.t) + 'px;height:' + Math.max(dur * PPM - 2, 22).toFixed(1) + 'px;--c:var(' + it.c + ')"><b>' + fmt(it.t) + '</b><span>' + esc(it.title) + '</span></div>';
     });
     if (dayOffset === 0) { const n = new Date(), mm = n.getHours() * 60 + n.getMinutes(); if (mm > start && mm < end) h += '<div class="now" style="top:' + y(mm) + 'px"></div>'; }
     return h + '</div><div class="dleg"><span><i style="background:#2b2b2b"></i>' + esc(t('leg_cls')) + '</span><span><i style="border:1.5px dashed var(--c-move)"></i>' + esc(t('leg_sug')) + '</span></div>';
@@ -782,7 +787,7 @@ $app.addEventListener('click', e => {
   else if (a === 'sleep') draft.sleepH = Math.max(3, Math.min(12, draft.sleepH + (+v)));
   else if (a === 'seg') draft[b.dataset.n] = +v;
   else if (a === 'saveci') { state.checkins[key(today())] = { sleepH: draft.sleepH, quality: draft.quality, energy: draft.energy }; save(); say(t('ci_saved')); }
-  else if (a === 'example') { state.classes = EXAMPLE.map(x => ({ id: uid(), title: x[0], start: x[1], end: x[2], days: x[3] })); state.sample = true; save(); tab = 'plan'; dayOffset = 0; }
+  else if (a === 'example') { state.classes = EXAMPLE.map(x => ({ id: uid(), title: x[0], start: x[1], end: x[2], days: x[3] })); state.sample = true; save(); tab = 'plan'; dayOffset = firstClassDay(); }
   else if (a === 'del') { state.classes = state.classes.filter(c => c.id !== v); save(); }
   else if (a === 'clear') { state.classes = []; state.sample = false; save(); }
   if (a !== 'reset') resetArm = false;
@@ -799,7 +804,7 @@ $app.addEventListener('submit', e => {
     state.classes = (S0 < 720 && E0 > 810)
       ? [{ id: uid(), title: t('qs_am'), start: s, end: '12:00', days }, { id: uid(), title: t('qs_pm'), start: '13:30', end: en, days }]
       : [{ id: uid(), title: t('sc_default'), start: s, end: en, days }];
-    state.sample = false; msg = ''; tab = 'plan'; dayOffset = 0; save(); render(); return;
+    state.sample = false; msg = ''; tab = 'plan'; dayOffset = firstClassDay(); save(); render(); return;
   }
   if (e.target.id === 'urlf') {
     e.preventDefault();
@@ -832,6 +837,7 @@ $app.addEventListener('change', e => {
   state.settings[k] = k === 'freeWake' ? (el.value || '08:00') : +el.value; save(); render();
 });
 window.addEventListener('hashchange', () => { const h = hashVar(); if (h) { state.variant = h; save(); render(); } });
+if (state.classes.length) dayOffset = firstClassDay();
 render();
 })();
 </script>
