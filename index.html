@@ -331,6 +331,7 @@ en: {
   mo_focus:'Focus block (45 min)', mo_focus_why:'Your head is freshest in the morning. Start with your hardest revision or project task.',
   mo_move:'Quick movement (15 min)', mo_move_why:'Wake the body up: a short run, skipping rope or a bodyweight set.',
   mo_prep:'Pack your bag', mo_prep_why:'Bag, charger, water bottle, lunch: ten minutes now saves stress later.',
+  sug_card:'Morning suggestions (remove any you do not want):', sug_restore:'Restore removed suggestions',
   tk_card:'Flexible tasks', tk_empty:'No flexible task on this day.', tk_open:'+ Add a task',
   tk_add:'Add a flexible task', tk_hint:'Something without a fixed hour (study, project, errands). Rythmo finds a free slot on the days you pick.', tk_name:'Task name', tk_name_ph:'e.g. Group project', tk_dur:'How long', tk_btn:'Add task', tk_added:'Task added.', tk_list:'Your flexible tasks', tk_why:'Placed in a free slot ({m} min).', tk_none:'No room today for: {n}. Try another day or a shorter task.', tk_default:'Task',
   sc_rhythm:'Your rhythm', set_sleep:'Sleep you need', set_commute:'Travel time to school (one way)', set_sport:'Workout length', set_free:'Wake-up on free days',
@@ -386,6 +387,7 @@ fr: {
   mo_focus:'Bloc de concentration (45 min)', mo_focus_why:"Ta tête est la plus fraîche le matin. Commence par la révision ou la tâche de projet la plus dure.",
   mo_move:'Un peu de mouvement (15 min)', mo_move_why:"Réveille le corps : petite course, corde à sauter ou une série au poids du corps.",
   mo_prep:'Prépare ton sac', mo_prep_why:"Sac, chargeur, gourde, repas : dix minutes maintenant évitent du stress plus tard.",
+  sug_card:'Suggestions du matin (retire celles dont tu ne veux pas) :', sug_restore:'Remettre les suggestions retirées',
   tk_card:'Tâches flexibles', tk_empty:'Aucune tâche flexible ce jour-là.', tk_open:'+ Ajouter une tâche',
   tk_add:'Ajouter une tâche flexible', tk_hint:"Quelque chose sans heure fixe (révisions, projet, courses). Rythmo trouve un créneau libre les jours choisis.", tk_name:'Nom de la tâche', tk_name_ph:'ex. Projet de groupe', tk_dur:'Durée', tk_btn:'Ajouter la tâche', tk_added:'Tâche ajoutée.', tk_list:'Tes tâches flexibles', tk_why:'Placée dans un créneau libre ({m} min).', tk_none:"Pas de place aujourd'hui pour : {n}. Essaie un autre jour ou une tâche plus courte.", tk_default:'Tâche',
   sc_rhythm:'Ton rythme', set_sleep:'Sommeil nécessaire', set_commute:'Temps de trajet vers l\'école (aller)', set_sport:'Durée du sport', set_free:'Réveil les jours libres',
@@ -527,7 +529,8 @@ function computeDay(date) {
     const ci = state.checkins[key(addDays(date, -1))];
     const tired = ph || !!(ci && (ci.energy <= 2 || ci.sleepH < S.sleep - 1));
     const m0 = bf + 25, mEnd = cl[0].s - S.commute - 30, win = mEnd - m0;
-    const add = (at, dur, title, why) => { items.push({ t: at, dur, type: 'morning', c: '--c-move', title: t(title), why: t(why) }); trips.push([at, at + dur]); };
+    const hid = state.hiddenSug || {};
+    const add = (at, dur, title, why) => { if (hid[title]) return; items.push({ t: at, dur, type: 'morning', sug: title, c: '--c-move', title: t(title), why: t(why) }); trips.push([at, at + dur]); };
     if (win >= (tired ? 30 : 60)) {
       if (tired) { add(m0, 15, 'mo_gentle', 'mo_gentle_why'); if (win >= 75) add(m0 + 30, 20, 'mo_calm', 'mo_calm_why'); }
       else { add(m0, 45, 'mo_focus', 'mo_focus_why'); if (win >= 90) add(m0 + 60, 15, 'mo_move', 'mo_move_why'); }
@@ -631,9 +634,9 @@ function fbCard() {
 }
 function footer() { return '<p class="note">' + esc(t('footer')) + (storageOk ? '' : '<br>' + esc(t('nostore'))) + '</p>'; }
 
-function linkForm(withMsg) {
+function linkForm(withMsg, plain) {
   if (!RELAY) return '';
-  return '<form id="urlf" class="card stack" style="text-align:left;margin:0"><h2 style="margin:0">' + esc(t('lk_title')) + '</h2><label class="f" for="icsurl"><span class="why">' + esc(t('lk_note')) + '</span><textarea id="icsurl" rows="2" autocomplete="off" spellcheck="false" placeholder="' + esc(t('sc_url_ph')) + '"></textarea></label>' + travelSel('lk-com') + '<button class="btn pri full" type="submit"' + (busy ? ' disabled' : '') + '>' + esc(busy ? t('lk_busy') : t('lk_btn')) + '</button>' + (withMsg ? '<p class="msg' + (msgErr ? ' err' : '') + '" role="status" style="margin:0">' + esc(msg) + '</p>' : '') + '</form>';
+  return '<form id="urlf" class="' + (plain ? '' : 'card ') + 'stack" style="text-align:left;margin:0">' + (plain ? '' : '<h2 style="margin:0">' + esc(t('lk_title')) + '</h2>') + '<label class="f" for="icsurl"><span class="why">' + esc(t('lk_note')) + '</span><textarea id="icsurl" rows="2" autocomplete="off" spellcheck="false" placeholder="' + esc(t('sc_url_ph')) + '"></textarea></label>' + travelSel('lk-com') + '<button class="btn pri full" type="submit"' + (busy ? ' disabled' : '') + '>' + esc(busy ? t('lk_busy') : t('lk_btn')) + '</button>' + (withMsg ? '<p class="msg' + (msgErr ? ' err' : '') + '" role="status" style="margin:0">' + esc(msg) + '</p>' : '') + '</form>';
 }
 function travelSel(id) {
   return '<label class="f" for="' + id + '">' + esc(t('trv_label')) + '<select id="' + id + '">' + opts([0, 10, 15, 20, 30, 45, 60, 75, 90, 120], state.settings.commute, v => t('min', { n: v })) + '</select><span class="why">' + esc(t('trv_hint')) + '</span></label>';
@@ -737,6 +740,8 @@ function screenPlan() {
   const dayTasks = (state.tasks || []).filter(x => x.days.includes(wdOf(date)));
   h += '<section class="card stack" style="margin-top:14px"><h2 style="margin:0">' + esc(t('tk_card')) + '</h2>' +
     (dayTasks.length ? '<ul class="cl" style="margin:0">' + dayTasks.map(x => '<li><div class="m"><b>' + esc(x.title) + '</b><small>' + esc(t('min', { n: x.dur })) + '</small></div><button class="x" data-act="deltask" data-v="' + x.id + '">' + esc(t('sc_remove')) + '</button></li>').join('') + '</ul>' : '<p class="why" style="margin:0">' + esc(t('tk_empty')) + '</p>') +
+    (P.items.some(x => x.type === 'morning') ? '<div class="why" style="margin:0">' + esc(t('sug_card')) + '</div><ul class="cl" style="margin:0">' + P.items.filter(x => x.type === 'morning').map(x => '<li><div class="m"><b>' + esc(x.title) + '</b></div><button class="x" data-act="hidesug" data-v="' + x.sug + '">' + esc(t('sc_remove')) + '</button></li>').join('') + '</ul>' : '') +
+    (Object.keys(state.hiddenSug || {}).length ? '<button class="x" data-act="showsug">' + esc(t('sug_restore')) + '</button>' : '') +
     '<button class="btn full" data-act="addtask">' + esc(t('tk_open')) + '</button></section>';
   if (P.noSport) h += '<div class="tip">' + esc(t('sport_none')) + '</div>';
   h += '<section class="chal"><h2 style="margin:0">' + esc(t('chal_title')) + '</h2><div class="t">' + esc(ch.text) + '</div>' +
@@ -782,33 +787,33 @@ function screenCheckin() {
 
 function opts(arr, cur, label) { return arr.map(v => '<option value="' + v + '"' + (String(v) === String(cur) ? ' selected' : '') + '>' + esc(label(v)) + '</option>').join(''); }
 function screenSchedule() {
-  const S = state.settings;
+  const S = state.settings, noCl = !state.classes.length;
+  const dayChips = nm => '<div><div class="why" style="margin-bottom:6px">' + esc(t('sc_days')) + '</div><div class="chips">' + WEEK.map((d, i) => '<label><input type="checkbox" name="' + nm + '" value="' + i + '"><span>' + esc(dayName(d, 'short')) + '</span></label>').join('') + '</div></div>';
+  const sec = (id, title, body, open) => '<details class="imp" id="' + id + '"' + (open ? ' open' : '') + '><summary>' + esc(title) + '</summary><div class="stack" style="margin:12px 0 0">' + body + '</div></details>';
   let h = '<h1>' + esc(t('sc_title')) + '</h1><p class="sub">' + esc(t('sc_sub')) + '</p>';
   h += '<p class="msg' + (msgErr ? ' err' : '') + '" role="status">' + esc(msg) + '</p>';
-  h += linkForm(false);
-  h += '<details class="imp"><summary>' + esc(t('sc_imp_sum')) + '</summary><div class="stack" style="margin:12px 0 0"><div><label class="btn full" style="display:block;text-align:center" for="ics">' + esc(t('sc_import')) + '</label><input id="ics" type="file" accept=".ics,text/calendar" style="position:absolute;opacity:0;width:1px;height:1px"><div class="why" style="margin-top:6px">' + esc(t('sc_import_hint')) + '</div></div>' +
-    '</div></details>';
-  h += '<h2>' + esc(t('sc_add')) + '</h2><form id="addf" class="stack"><label class="f" for="cn">' + esc(t('sc_name')) + '<input id="cn" type="text" maxlength="40" placeholder="' + esc(t('sc_name_ph')) + '"></label>' +
-    '<div class="grid2"><label class="f" for="cs">' + esc(t('sc_start')) + '<input id="cs" type="time" value="08:30" required></label><label class="f" for="ce">' + esc(t('sc_end')) + '<input id="ce" type="time" value="10:30" required></label></div>' +
-    '<div><div class="why" style="margin-bottom:6px">' + esc(t('sc_days')) + '</div><div class="chips">' + WEEK.map((d, i) => '<label><input type="checkbox" name="cd" value="' + i + '"' + (i < 5 ? '' : '') + '><span>' + esc(dayName(d, 'short')) + '</span></label>').join('') + '</div></div>' +
-    '<button class="btn pri full" type="submit">' + esc(t('sc_add_btn')) + '</button></form>';
-  h += '<h2>' + esc(t('tk_add')) + '</h2><form id="taskf" class="stack"><div class="why">' + esc(t('tk_hint')) + '</div><label class="f" for="tn">' + esc(t('tk_name')) + '<input id="tn" type="text" maxlength="40" placeholder="' + esc(t('tk_name_ph')) + '"></label>' +
-    '<label class="f" for="td">' + esc(t('tk_dur')) + '<select id="td">' + opts([15, 30, 45, 60, 90, 120, 180], 60, v => t('min', { n: v })) + '</select></label>' +
-    '<div><div class="why" style="margin-bottom:6px">' + esc(t('sc_days')) + '</div><div class="chips">' + WEEK.map((d, i) => '<label><input type="checkbox" name="td-d" value="' + i + '"><span>' + esc(dayName(d, 'short')) + '</span></label>').join('') + '</div></div>' +
-    '<button class="btn pri full" type="submit">' + esc(t('tk_btn')) + '</button></form>';
-  if ((state.tasks || []).length) h += '<h2>' + esc(t('tk_list')) + '</h2><ul class="cl">' + state.tasks.map(k => '<li><div class="m"><b>' + esc(k.title) + '</b><small>' + esc(t('min', { n: k.dur })) + ' · ' + k.days.slice().sort().map(d => esc(dayName(WEEK[d], 'short'))).join(', ') + '</small></div><button class="x" data-act="deltask" data-v="' + k.id + '">' + esc(t('sc_remove')) + '</button></li>').join('') + '</ul>';
+  // 1. classes first
   h += '<h2>' + esc(t('sc_list')) + '</h2>';
-  if (!state.classes.length) h += '<p class="sub">' + esc(t('sc_none')) + '</p><button class="btn full" data-act="example" style="margin-bottom:18px">' + esc(t('example_cta')) + '</button>';
+  if (noCl) h += '<p class="sub">' + esc(t('sc_none')) + '</p><button class="btn full" data-act="example" style="margin-bottom:14px">' + esc(t('example_cta')) + '</button>';
   else {
     const list = state.classes.slice().sort((a, b) => toMin(a.start) - toMin(b.start));
     h += '<ul class="cl">' + list.map(c => '<li><div class="m"><b>' + esc(c.title) + '</b><small>' + esc(c.start) + '–' + esc(c.end) + ' · ' + c.days.slice().sort().map(d => esc(dayName(WEEK[d], 'short'))).join(', ') + '</small></div><button class="x" data-act="del" data-v="' + c.id + '">' + esc(t('sc_remove')) + '</button></li>').join('') + '</ul>' +
-      '<div style="margin:12px 0 18px"><button class="btn danger" data-act="clear">' + esc(t('sc_clear')) + '</button></div>';
+      '<div style="margin:10px 0 14px"><button class="x" data-act="clear" style="color:var(--bad,#c0392b)">' + esc(t('sc_clear')) + '</button></div>';
   }
-  h += '<h2>' + esc(t('sc_rhythm')) + '</h2><div class="stack">' +
-    '<label class="f" for="s-sleep">' + esc(t('set_sleep')) + '<select id="s-sleep" data-set="sleep">' + opts([7, 7.5, 8, 8.5, 9], S.sleep, v => t('hrs', { n: v })) + '</select></label>' +
+  // 2. flexible tasks list (only if any)
+  if ((state.tasks || []).length) h += '<h2>' + esc(t('tk_list')) + '</h2><ul class="cl" style="margin-bottom:14px">' + state.tasks.map(k => '<li><div class="m"><b>' + esc(k.title) + '</b><small>' + esc(t('min', { n: k.dur })) + ' · ' + k.days.slice().sort().map(d => esc(dayName(WEEK[d], 'short'))).join(', ') + '</small></div><button class="x" data-act="deltask" data-v="' + k.id + '">' + esc(t('sc_remove')) + '</button></li>').join('') + '</ul>';
+  // 3. collapsible actions
+  h += sec('s-link', t('lk_title'), linkForm(false, true) + '<div><label class="btn full" style="display:block;text-align:center" for="ics">' + esc(t('sc_import')) + '</label><input id="ics" type="file" accept=".ics,text/calendar" style="position:absolute;opacity:0;width:1px;height:1px"><div class="why" style="margin-top:6px">' + esc(t('sc_import_hint')) + '</div></div>', noCl && !!RELAY);
+  h += sec('s-class', '+ ' + t('sc_add'), '<form id="addf" class="stack" style="margin:0"><label class="f" for="cn">' + esc(t('sc_name')) + '<input id="cn" type="text" maxlength="40" placeholder="' + esc(t('sc_name_ph')) + '"></label>' +
+    '<div class="grid2"><label class="f" for="cs">' + esc(t('sc_start')) + '<input id="cs" type="time" value="08:30" required></label><label class="f" for="ce">' + esc(t('sc_end')) + '<input id="ce" type="time" value="10:30" required></label></div>' +
+    dayChips('cd') + '<button class="btn pri full" type="submit">' + esc(t('sc_add_btn')) + '</button></form>');
+  h += sec('s-task', '+ ' + t('tk_add'), '<form id="taskf" class="stack" style="margin:0"><div class="why">' + esc(t('tk_hint')) + '</div><label class="f" for="tn">' + esc(t('tk_name')) + '<input id="tn" type="text" maxlength="40" placeholder="' + esc(t('tk_name_ph')) + '"></label>' +
+    '<label class="f" for="td">' + esc(t('tk_dur')) + '<select id="td">' + opts([15, 30, 45, 60, 90, 120, 180], 60, v => t('min', { n: v })) + '</select></label>' +
+    dayChips('td-d') + '<button class="btn pri full" type="submit">' + esc(t('tk_btn')) + '</button></form>', scrollTask);
+  h += sec('s-rhythm', t('sc_rhythm'), '<label class="f" for="s-sleep">' + esc(t('set_sleep')) + '<select id="s-sleep" data-set="sleep">' + opts([7, 7.5, 8, 8.5, 9], S.sleep, v => t('hrs', { n: v })) + '</select></label>' +
     '<label class="f" for="s-com">' + esc(t('set_commute')) + '<select id="s-com" data-set="commute">' + opts([0, 10, 15, 20, 30, 45, 60, 75, 90, 120], S.commute, v => t('min', { n: v })) + '</select></label>' +
     '<label class="f" for="s-sp">' + esc(t('set_sport')) + '<select id="s-sp" data-set="sport">' + opts([20, 30, 45, 60], S.sport, v => t('min', { n: v })) + '</select></label>' +
-    '<label class="f" for="s-fw">' + esc(t('set_free')) + '<input id="s-fw" type="time" data-set="freeWake" value="' + esc(S.freeWake) + '"></label></div>';
+    '<label class="f" for="s-fw">' + esc(t('set_free')) + '<input id="s-fw" type="time" data-set="freeWake" value="' + esc(S.freeWake) + '"></label>');
   return h + footer();
 }
 
@@ -818,7 +823,7 @@ function render() {
   $app.innerHTML = vbar() + '<div class="shell">' + header() + (V().nav === 'top' ? nav() : '') + scr + '</div>' + (V().nav === 'top' ? '' : nav());
   document.documentElement.setAttribute('data-v', state.variant);
   document.documentElement.lang = state.lang;
-  if (scrollTask) { scrollTask = false; const f = document.getElementById('taskf'); if (f) f.scrollIntoView({ block: 'center' }); }
+  if (scrollTask) { scrollTask = false; const f = document.getElementById('taskf'); if (f) { const d = document.getElementById('s-task'); if (d) d.open = true; f.scrollIntoView({ block: 'center' }); } }
 }
 
 /* ---------- Calendar import ---------- */
@@ -881,6 +886,8 @@ $app.addEventListener('click', e => {
   if (a === 'var') { state.variant = v; resetArm = false; dayOffset = 0; draft = null; try { history.replaceState(null, '', '#' + v.toLowerCase()); } catch (er) {} save(); }
   else if (a === 'reset') { if (!resetArm) resetArm = true; else { const lg = state.lang, vr = state.variant; state = Object.assign({}, JSON.parse(JSON.stringify(base)), { lang: lg, variant: vr }); resetArm = false; tab = 'plan'; dayOffset = 0; draft = null; msg = ''; save(); } }
   else if (a === 'tick') { state.done[v] = !state.done[v]; save(); }
+  else if (a === 'hidesug') { state.hiddenSug = Object.assign({}, state.hiddenSug, { [v]: true }); save(); }
+  else if (a === 'showsug') { state.hiddenSug = {}; save(); }
   else if (a === 'addtask') { tab = 'schedule'; msg = ''; scrollTask = true; }
   else if (a === 'tab') { tab = v; msg = ''; if (v === 'checkin') draft = null; }
   else if (a === 'lang') { state.lang = v; save(); }
