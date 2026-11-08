@@ -303,7 +303,7 @@ en: {
   dinner:'Dinner', dinner_why:'At least 3 h before lights out, so you fall asleep easier.', dinner_late:'Late dinner', dinner_late_why:'Late finish. Keep it light.',
   sport:'Workout, {m} min', sport_why:'Free slot, away from meals and bedtime.', sport_none:'No room for a full workout today. A 10-minute walk between classes still counts.',
   winddown:'Screens off', winddown_why:'45 minutes to calm down before sleep.',
-  lightsout:'Lights out', lightsout_why:'Based on your first class tomorrow.',
+  lightsout:'Lights out', lightsout_why:'Based on your first class tomorrow.', lightsout_reg:'Same bedtime every night keeps your body clock steady, even when tomorrow starts late.',
   water:'Water', water_goal:'Goal: {n} glasses', water_goal_day:'Goal: {n} glasses a day',
   chal_title:'Challenge of the day', chal_done:'Done. Nice.', chal_mark:'Mark as done', chal_week:'{n} of the last 7 days completed',
   ch_bed:'Lights out by {t}', ch_water:'Drink {n} glasses of water', ch_walk:'Take a 10-minute walk between two classes or after dinner',
@@ -350,7 +350,7 @@ fr: {
   dinner:'Dîner', dinner_why:"Au moins 3 h avant l'extinction des feux, pour mieux t'endormir.", dinner_late:'Dîner tardif', dinner_late_why:'Fin tardive. Reste sur du léger.',
   sport:'Sport, {m} min', sport_why:'Créneau libre, loin des repas et du coucher.', sport_none:"Pas la place pour une vraie séance aujourd'hui. Une marche de 10 minutes entre deux cours compte aussi.",
   winddown:'Écrans éteints', winddown_why:'45 minutes pour se calmer avant de dormir.',
-  lightsout:'Extinction des feux', lightsout_why:'Calculé sur ton premier cours de demain.',
+  lightsout:'Extinction des feux', lightsout_why:'Calculé sur ton premier cours de demain.', lightsout_reg:'Se coucher à la même heure chaque soir règle ton horloge interne, même quand demain commence tard.',
   water:'Eau', water_goal:'Objectif : {n} verres', water_goal_day:'Objectif : {n} verres par jour',
   chal_title:'Défi du jour', chal_done:'Fait. Bravo.', chal_mark:'Marquer comme fait', chal_week:'{n} jours sur les 7 derniers',
   ch_bed:'Éteindre les lumières avant {t}', ch_water:"Boire {n} verres d'eau", ch_walk:'Faire 10 minutes de marche entre deux cours ou après le dîner',
@@ -472,12 +472,15 @@ function wakeInfo(wd) {
 }
 const overlaps = (a1, a2, b1, b2) => a1 < b2 && b1 < a2;
 
+const BED_CAP = 1410; // 23:30, latest recommended lights-out
 function computeDay(date) {
   const S = state.settings, wd = wdOf(date), cl = classesFor(wd);
   const w = wakeInfo(wd), wn = wakeInfo((wd + 1) % 7);
   const sleepMin = S.sleep * 60;
   const lastEnd = cl.length ? cl[cl.length - 1].e : 0;
   let bed = 1440 + wn.wake - sleepMin - 15;
+  const capped = bed > BED_CAP;
+  if (capped) bed = BED_CAP; // regular bedtime: a late start tomorrow is not a reason to sleep late
   const bedIdeal = bed;
   if (lastEnd) bed = Math.max(bed, lastEnd + S.commute + 90);
   const hours = (1440 + wn.wake - bed - 15) / 60;
@@ -530,7 +533,7 @@ function computeDay(date) {
   if (sportT !== null) items.push({ t: sportT, type: 'sport', c: '--c-move', title: t('sport', { m: S.sport }), why: t('sport_why') });
 
   items.push({ t: bed - 45, type: 'wind', c: '--c-sleep', title: t('winddown'), why: t('winddown_why') });
-  items.push({ t: bed, type: 'bed', c: '--c-sleep', title: t('lightsout'), why: t('lightsout_why') });
+  items.push({ t: bed, type: 'bed', c: '--c-sleep', title: t('lightsout'), why: capped && bed === BED_CAP ? t('lightsout_reg') : t('lightsout_why') });
   items.sort((a, b) => a.t - b.t);
   return { items, bed, wakeNext: wn.wake, hours, short, noSport: sportT === null };
 }
