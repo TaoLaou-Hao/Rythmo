@@ -324,7 +324,8 @@ en: {
   sc_add:'Add a class', sc_name:'Class name', sc_name_ph:'e.g. Statistics', sc_start:'Starts', sc_end:'Ends', sc_days:'Days', sc_add_btn:'Add class',
   sc_added:'Class added.', sc_list:'Your classes', sc_none:'No classes yet.', sc_remove:'Remove', sc_clear:'Remove all classes', sc_default:'Class',
   sc_bad_time:'The end time must be after the start time.', sc_need_day:'Pick at least one day.',
-  sc_rhythm:'Your rhythm', set_sleep:'Sleep you need', set_commute:'Getting ready + travel', set_sport:'Workout length', set_free:'Wake-up on free days',
+  travel_to:'Travel to school', travel_home:'Travel home', trv_label:'Travel time to school (one way)', trv_hint:'Door to door. It is added to your calendar before your first class and after your last one.',
+  sc_rhythm:'Your rhythm', set_sleep:'Sleep you need', set_commute:'Travel time to school (one way)', set_sport:'Workout length', set_free:'Wake-up on free days',
   min:'{n} min', hrs:'{n} h',
   footer:'Your data stays on this device. Rythmo gives general wellbeing tips, not medical advice. Student project at Aivancity.',
   v_fb:'Feedback ↗',
@@ -370,7 +371,8 @@ fr: {
   sc_add:'Ajouter un cours', sc_name:'Nom du cours', sc_name_ph:'ex. Statistiques', sc_start:'Début', sc_end:'Fin', sc_days:'Jours', sc_add_btn:'Ajouter le cours',
   sc_added:'Cours ajouté.', sc_list:'Tes cours', sc_none:'Aucun cours pour le moment.', sc_remove:'Retirer', sc_clear:'Retirer tous les cours', sc_default:'Cours',
   sc_bad_time:"L'heure de fin doit être après l'heure de début.", sc_need_day:'Choisis au moins un jour.',
-  sc_rhythm:'Ton rythme', set_sleep:'Sommeil nécessaire', set_commute:'Préparation + trajet', set_sport:'Durée du sport', set_free:'Réveil les jours libres',
+  travel_to:'Trajet vers l\'école', travel_home:'Trajet retour', trv_label:'Temps de trajet vers l\'école (aller)', trv_hint:'De porte à porte. Il est ajouté à ton calendrier avant ton premier cours et après le dernier.',
+  sc_rhythm:'Ton rythme', set_sleep:'Sommeil nécessaire', set_commute:'Temps de trajet vers l\'école (aller)', set_sport:'Durée du sport', set_free:'Réveil les jours libres',
   min:'{n} min', hrs:'{n} h',
   footer:"Tes données restent sur cet appareil. Rythmo donne des conseils de bien-être généraux, pas des conseils médicaux. Projet étudiant à Aivancity.",
   v_fb:'Avis ↗',
@@ -486,6 +488,12 @@ function computeDay(date) {
   const bf = w.wake + 15; meals.push([bf, bf + 20]);
   items.push({ t: bf, type: 'meal', c: '--c-meal', title: t('breakfast'), why: t('breakfast_why') });
   cl.forEach(c => items.push({ t: c.s, end: c.e, type: 'class', c: '--c-class', title: c.title }));
+  const trips = [];
+  if (cl.length && S.commute > 0) {
+    trips.push([cl[0].s - S.commute, cl[0].s], [lastEnd, lastEnd + S.commute]);
+    items.push({ t: trips[0][0], end: trips[0][1], type: 'class', c: '--c-class', title: t('travel_to') },
+               { t: trips[1][0], end: trips[1][1], type: 'class', c: '--c-class', title: t('travel_home') });
+  }
 
   // Lunch
   let lt = null, tight = false, tightAfter = null;
@@ -515,6 +523,7 @@ function computeDay(date) {
   const from = Math.max(w.wake + 45, 420), to = Math.min(1260, bed - 120);
   for (let x = from; x + S.sport <= to; x += 15) {
     if (cl.some(c => overlaps(x, x + S.sport, c.s - 15, c.e + 15))) continue;
+    if (trips.some(r => overlaps(x, x + S.sport, r[0] - 10, r[1] + 10))) continue;
     if (meals.some(m => overlaps(x, x + S.sport, m[0] - 30, m[1] + 30))) continue;
     if (sportT === null || Math.abs(x - 1050) < Math.abs(sportT - 1050)) sportT = x;
   }
@@ -567,14 +576,17 @@ function footer() { return '<p class="note">' + esc(t('footer')) + (storageOk ? 
 
 function linkForm(withMsg) {
   if (!RELAY) return '';
-  return '<form id="urlf" class="card stack" style="text-align:left;margin:0"><h2 style="margin:0">' + esc(t('lk_title')) + '</h2><label class="f" for="icsurl"><span class="why">' + esc(t('lk_note')) + '</span><input id="icsurl" type="text" inputmode="url" autocomplete="off" placeholder="' + esc(t('sc_url_ph')) + '"></label><button class="btn pri full" type="submit"' + (busy ? ' disabled' : '') + '>' + esc(busy ? t('lk_busy') : t('lk_btn')) + '</button>' + (withMsg ? '<p class="msg' + (msgErr ? ' err' : '') + '" role="status" style="margin:0">' + esc(msg) + '</p>' : '') + '</form>';
+  return '<form id="urlf" class="card stack" style="text-align:left;margin:0"><h2 style="margin:0">' + esc(t('lk_title')) + '</h2><label class="f" for="icsurl"><span class="why">' + esc(t('lk_note')) + '</span><input id="icsurl" type="text" inputmode="url" autocomplete="off" placeholder="' + esc(t('sc_url_ph')) + '"></label>' + travelSel('lk-com') + '<button class="btn pri full" type="submit"' + (busy ? ' disabled' : '') + '>' + esc(busy ? t('lk_busy') : t('lk_btn')) + '</button>' + (withMsg ? '<p class="msg' + (msgErr ? ' err' : '') + '" role="status" style="margin:0">' + esc(msg) + '</p>' : '') + '</form>';
+}
+function travelSel(id) {
+  return '<label class="f" for="' + id + '">' + esc(t('trv_label')) + '<select id="' + id + '">' + opts([0, 10, 15, 20, 30, 45, 60, 75, 90, 120], state.settings.commute, v => t('min', { n: v })) + '</select><span class="why">' + esc(t('trv_hint')) + '</span></label>';
 }
 function emptyPlan() {
   return '<div class="empty"><h1>' + esc(t('empty_title')) + '</h1><p>' + esc(t('empty_text')) + '</p>' + linkForm(true) + '<p style="display:' + (RELAY ? 'block' : 'none') + '">' + esc(t('qs_or')) + '</p>' +
     '<form id="quickf" class="card stack" style="text-align:left;margin:0"><h2 style="margin:0">' + esc(t('qs_title')) + '</h2>' +
     '<div class="grid2"><label class="f" for="qs-s">' + esc(t('qs_start')) + '<input id="qs-s" type="time" value="09:00" required></label><label class="f" for="qs-e">' + esc(t('qs_end')) + '<input id="qs-e" type="time" value="17:00" required></label></div>' +
     '<div><div class="why" style="margin-bottom:6px">' + esc(t('sc_days')) + '</div><div class="chips">' + WEEK.map((d, i) => '<label><input type="checkbox" name="qd" value="' + i + '"' + (i < 5 ? ' checked' : '') + '><span>' + esc(dayName(d, 'short')) + '</span></label>').join('') + '</div></div>' +
-    '<button class="btn pri full" type="submit">' + esc(t('qs_btn')) + '</button></form>' +
+    travelSel('qs-com') + '<button class="btn pri full" type="submit">' + esc(t('qs_btn')) + '</button></form>' +
     '<p>' + esc(t('qs_or')) + '</p><button class="btn full" data-act="example">' + esc(t('example_cta')) + '</button>' +
     '<button class="x" data-act="tab" data-v="schedule" style="text-decoration:underline">' + esc(t('qs_detail')) + '</button></div>';
 }
@@ -727,7 +739,7 @@ function screenSchedule() {
   }
   h += '<h2>' + esc(t('sc_rhythm')) + '</h2><div class="stack">' +
     '<label class="f" for="s-sleep">' + esc(t('set_sleep')) + '<select id="s-sleep" data-set="sleep">' + opts([7, 7.5, 8, 8.5, 9], S.sleep, v => t('hrs', { n: v })) + '</select></label>' +
-    '<label class="f" for="s-com">' + esc(t('set_commute')) + '<select id="s-com" data-set="commute">' + opts([0, 15, 30, 45, 60, 90], S.commute, v => t('min', { n: v })) + '</select></label>' +
+    '<label class="f" for="s-com">' + esc(t('set_commute')) + '<select id="s-com" data-set="commute">' + opts([0, 10, 15, 20, 30, 45, 60, 75, 90, 120], S.commute, v => t('min', { n: v })) + '</select></label>' +
     '<label class="f" for="s-sp">' + esc(t('set_sport')) + '<select id="s-sp" data-set="sport">' + opts([20, 30, 45, 60], S.sport, v => t('min', { n: v })) + '</select></label>' +
     '<label class="f" for="s-fw">' + esc(t('set_free')) + '<input id="s-fw" type="time" data-set="freeWake" value="' + esc(S.freeWake) + '"></label></div>';
   return h + footer();
@@ -818,6 +830,7 @@ $app.addEventListener('submit', e => {
     const days = Array.from(document.querySelectorAll('input[name=qd]:checked')).map(x => +x.value);
     if (!s || !en || toMin(en) <= toMin(s)) { say(t('sc_bad_time'), true); render(); return; }
     if (!days.length) { say(t('sc_need_day'), true); render(); return; }
+    state.settings.commute = +document.getElementById('qs-com').value;
     const S0 = toMin(s), E0 = toMin(en);
     state.classes = (S0 < 720 && E0 > 810)
       ? [{ id: uid(), title: t('qs_am'), start: s, end: '12:00', days }, { id: uid(), title: t('qs_pm'), start: '13:30', end: en, days }]
@@ -828,6 +841,7 @@ $app.addEventListener('submit', e => {
     e.preventDefault();
     const u = (document.getElementById('icsurl').value || '').trim().replace(/^webcals?:\/\//i, 'https://');
     if (!/^https?:\/\/\S+$/i.test(u)) { say(t('sc_url_bad'), true); render(); return; }
+    const lc = document.getElementById('lk-com'); if (lc) state.settings.commute = +lc.value;
     busy = true; say(''); render();
     fetchICS(u).then(txt => {
       const res = importICS(txt);
