@@ -118,7 +118,7 @@ a{color:var(--accent)}
 .time{font-variant-numeric:tabular-nums}
 .top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:4px 0 12px}
 .brand{display:flex;gap:8px;align-items:center;font:var(--h-weight) 1.75rem/1 var(--f-display);color:var(--ink)}
-.lang{display:inline-flex;border:1px solid var(--line-strong);border-radius:var(--r-pill);overflow:hidden;background:var(--surface)}
+.lang{justify-self:start;width:max-content;display:inline-flex;border:1px solid var(--line-strong);border-radius:var(--r-pill);overflow:hidden;background:var(--surface)}
 .lang button{background:none;border:0;min-width:48px;min-height:44px;padding:0 12px;font:600 .875rem var(--f-body);color:var(--muted)}
 .lang button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
 
@@ -299,6 +299,17 @@ button.block:hover{border-color:var(--c)}
   .wk .hl span{display:none}
   .wk-h{font-size:.9375rem;padding:0 6px;flex-wrap:wrap}
 }
+
+.ob{display:grid;gap:var(--s-4);min-height:70vh;align-content:start}
+.ob-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.dots{display:flex;gap:6px;list-style:none;margin:0;padding:0}
+.dots li{width:8px;height:8px;border-radius:var(--r-pill);background:var(--line-strong)}
+.dots li.done{background:var(--accent);opacity:.5}
+.dots li.on{width:24px;background:var(--accent)}
+.ob-card{background:var(--surface);border:var(--card-border);border-radius:var(--r-lg);box-shadow:var(--shadow-1);padding:var(--s-5) var(--s-4);display:grid;gap:var(--s-3)}
+.ob-card .card{box-shadow:none;margin:0}
+.ob-list{margin:0;padding-left:1.2em;display:grid;gap:6px}
+.ob-nav{display:grid;grid-template-columns:1fr 1.4fr;gap:var(--s-3);position:sticky;bottom:0;background:var(--bg);padding:var(--s-3) 0 calc(var(--s-3) + env(safe-area-inset-bottom,0px))}
 @media (prefers-reduced-motion: no-preference) {
   .btn,.chip,.tg .tr,.tg .tr::after,.glass{transition:background-color .18s ease,border-color .18s ease,left .18s ease,transform .12s ease}
   .btn:active{transform:translateY(1px)}
@@ -322,6 +333,7 @@ const RELAY = 'https://rythmo.tao-laou-hao.workers.dev';
 const THEMES = ['horizon', 'nuit', 'doux', 'clair'];
 const LEGACY = { a: 'horizon', b: 'horizon', c: 'doux', d: 'clair', e: 'nuit' }; // old variants A-E
 const SCHEMA = 2;
+const BEDCAPS = ['21:30', '22:00', '22:30', '23:00', '23:30', '00:00'];
 
 /* ===================== TEXT (EN / FR) ===================== */
 const T = {
@@ -366,6 +378,14 @@ en: {
   sug_card:'Morning suggestions (remove any you do not want):', sug_restore:'Restore removed suggestions',
   tk_card:'Flexible tasks', tk_empty:'No tasks. That\'s perfectly fine.', tk_open:'+ Add a task',
   tk_add:'Add a flexible task', tk_hint:'Something without a fixed hour (study, project, errands). Rythmo finds a free slot on the days you pick.', tk_name:'Task name', tk_name_ph:'e.g. Group project', tk_dur:'How long', tk_btn:'Add task', tk_added:'Task added.', tk_list:'Your flexible tasks', tk_why:'Placed in a free slot ({m} min).', tk_none:'No room today for: {n}. Try another day or a shorter task.', tk_default:'Task',
+  ob_step:'Step {a} of {b}', ob_skip:'Skip for now', ob_back:'Back', ob_next:'Continue', ob_done:'Finish', ob_replay:'Replay the tutorial', set_help:'Help',
+  ob1_t:'A calm plan that follows your real day.', ob1_p:'Rythmo reads your classes and suggests when to sleep, eat and take a break. Suggestions, never orders.',
+  ob1_a:'Your evening bedtime, based on tomorrow.', ob1_b:'Meals and breaks around your classes.', ob1_c:'Edit any day: internship, day off, late night.',
+  ob2_t:'When do you wake up, and when would you like to sleep?', ob2_p:'On class days, Rythmo adapts the wake-up to your first class.',
+  ob3_t:'Your commute', ob3_p:'Rythmo adds it before your first class and after your last one.',
+  ob4_t:'Sport is optional. We\'ll only suggest a small one if you want.',
+  ob5_t:'Classes first, everything else fits around them.', ob5_p:'Import your calendar, or describe a usual day in 30 seconds.', ob5_later:'You can also add your classes later in the Classes tab.',
+  set_bedcap:'Latest bedtime', set_bedcap_hint:'Rythmo never suggests going to bed later than this, to keep a steady rhythm.',
   nav_week:'Week', now:'Now', prev_day:'Previous day', next_day:'Next day', pick_day:'Pick a day', close:'Close',
   edit_block:'Edit: {b}, {t}', tap_hint:'Tap a block to move it or remove it for this day.', today_empty:'Nothing planned. Enjoy it, or add one small thing.',
   edited_day:'Your day, your way.', badge_work:'Internship / work', badge_off:'Day off', badge_edited:'Edited', work_default:'Internship',
@@ -428,6 +448,14 @@ fr: {
   sug_card:'Suggestions du matin (retire celles dont tu ne veux pas) :', sug_restore:'Remettre les suggestions retirées',
   tk_card:'Tâches flexibles', tk_empty:'Pas de tâche. C\'est très bien comme ça.', tk_open:'+ Ajouter une tâche',
   tk_add:'Ajouter une tâche flexible', tk_hint:"Quelque chose sans heure fixe (révisions, projet, courses). Rythmo trouve un créneau libre les jours choisis.", tk_name:'Nom de la tâche', tk_name_ph:'ex. Projet de groupe', tk_dur:'Durée', tk_btn:'Ajouter la tâche', tk_added:'Tâche ajoutée.', tk_list:'Tes tâches flexibles', tk_why:'Placée dans un créneau libre ({m} min).', tk_none:"Pas de place aujourd'hui pour : {n}. Essaie un autre jour ou une tâche plus courte.", tk_default:'Tâche',
+  ob_step:'Étape {a} sur {b}', ob_skip:'Passer pour l\'instant', ob_back:'Retour', ob_next:'Continuer', ob_done:'Terminer', ob_replay:'Revoir le tutoriel', set_help:'Aide',
+  ob1_t:'Un planning calme, qui suit ta vraie journée.', ob1_p:'Rythmo lit tes cours et te suggère quand dormir, manger et souffler. Des suggestions, jamais des ordres.',
+  ob1_a:'Ton heure de coucher, calculée sur demain.', ob1_b:'Repas et pauses autour de tes cours.', ob1_c:'Chaque jour se modifie : stage, jour off, soirée tardive.',
+  ob2_t:'À quelle heure te lèves-tu, et quand aimerais-tu dormir ?', ob2_p:'Les jours de cours, Rythmo adapte le réveil à ton premier cours.',
+  ob3_t:'Tes trajets', ob3_p:'Rythmo les ajoute avant ton premier cours et après le dernier.',
+  ob4_t:'Le sport, c\'est facultatif. On t\'en propose juste un petit si tu veux.',
+  ob5_t:'Tes cours d\'abord, le reste s\'organise autour.', ob5_p:'Importe ton agenda, ou décris une journée type en 30 secondes.', ob5_later:'Tu peux aussi ajouter tes cours plus tard dans l\'onglet Cours.',
+  set_bedcap:'Coucher au plus tard', set_bedcap_hint:'Rythmo ne te propose jamais de te coucher plus tard, pour garder un rythme régulier.',
   nav_week:'Semaine', now:'Maintenant', prev_day:'Jour précédent', next_day:'Jour suivant', pick_day:'Choisir un jour', close:'Fermer',
   edit_block:'Modifier : {b}, {t}', tap_hint:'Touche un bloc pour le déplacer ou le retirer ce jour-là.', today_empty:'Rien de prévu. Profites-en, ou ajoute une petite chose.',
   edited_day:'Ta journée est à ton image.', badge_work:'Stage / travail', badge_off:'Jour off', badge_edited:'Modifié', work_default:'Stage',
@@ -459,8 +487,8 @@ const snapSport = m => { m = +m || 30; return m <= 30 ? 30 : m <= 45 ? 45 : 60; 
 const isObj = o => !!o && typeof o === 'object' && !Array.isArray(o);
 const HHMM = /^([01]\d|2[0-3]):[0-5]\d$/;
 function freshState() {
-  return { v: SCHEMA, lang: (navigator.language || 'en').toLowerCase().startsWith('fr') ? 'fr' : 'en', sample: false,
-    settings: { sleep: 8, commute: 30, sport: 30, freeWake: '08:00', theme: 'horizon', themePicked: false, autoNight: false,
+  return { v: SCHEMA, onboarded: false, lang: (navigator.language || 'en').toLowerCase().startsWith('fr') ? 'fr' : 'en', sample: false,
+    settings: { sleep: 8, commute: 30, sport: 30, freeWake: '08:00', bedCap: '23:30', theme: 'horizon', themePicked: false, autoNight: false,
       sportOn: false, sportMin: 30, sportWhen: 'any' }, // new users: no sport until they opt in
     classes: [], tasks: [], checkins: {}, challenges: {}, water: {}, done: {}, hiddenSug: {}, overrides: {}, ui: { weekMode: 'grid' } };
 }
@@ -472,6 +500,8 @@ function migrate(s) {
     if (!THEMES.includes(s.settings.theme)) s.settings.theme = LEGACY[String(s.variant || 'a').toLowerCase()] || 'horizon';
     // Existing testers always had sport: keep it on (no silent change), snap old 20 min to 30.
     if (s.settings.sportOn === undefined) { s.settings.sportOn = true; s.settings.sportMin = snapSport(s.settings.sport); }
+    // Testers who already have classes skip the tutorial (they can replay it from Settings).
+    if (s.onboarded === undefined) s.onboarded = Array.isArray(s.classes) && s.classes.length > 0;
   }
   s.v = SCHEMA;
   return s;
@@ -490,6 +520,8 @@ function sanitize(s) {
     .map(k => ({ id: String(k.id || uid()), title: String(k.title || '').slice(0, 40), dur: Math.min(600, +k.dur), days: okDays(k.days) }));
   if (!THEMES.includes(out.settings.theme)) out.settings.theme = 'horizon';
   if (!HHMM.test(out.settings.freeWake)) out.settings.freeWake = '08:00';
+  if (!BEDCAPS.includes(out.settings.bedCap)) out.settings.bedCap = '23:30';
+  out.onboarded = !!out.onboarded;
   out.settings.sportOn = !!out.settings.sportOn; out.settings.sportMin = snapSport(out.settings.sportMin);
   if (!['morning', 'evening', 'any'].includes(out.settings.sportWhen)) out.settings.sportWhen = 'any';
   ['sleep', 'commute', 'sport'].forEach(k => { out.settings[k] = +out.settings[k]; if (!isFinite(out.settings[k])) out.settings[k] = b.settings[k]; });
@@ -1011,12 +1043,39 @@ function sportControls() {
     (S.sportOn ? chipRow(t('sp_dur'), 'sportmin', [30, 45, 60], S.sportMin, v => v === 60 ? t('hrs', { n: 1 }) : t('min', { n: v })) +
       chipRow(t('sp_when'), 'sportwhen', ['morning', 'evening', 'any'], S.sportWhen, v => t('sp_' + v)) : '');
 }
+function bedCapSel(id) {
+  return '<label class="f" for="' + esc(id) + '">' + esc(t('set_bedcap')) + '<select id="' + esc(id) + '" data-set="bedCap">' + opts(BEDCAPS, state.settings.bedCap, v => v) + '</select><span class="hint">' + esc(t('set_bedcap_hint')) + '</span></label>';
+}
+/* ---------- Onboarding / tutorial (first run, skippable, replayable) ---------- */
+let ob = 0, obOn = false, obFocus = false;
+const OB_N = 5;
+function screenOnboarding() {
+  const S = state.settings;
+  const steps = [
+    () => '<h1>' + esc(t('ob1_t')) + '</h1><p class="sub">' + esc(t('ob1_p')) + '</p><ul class="ob-list"><li>' + esc(t('ob1_a')) + '</li><li>' + esc(t('ob1_b')) + '</li><li>' + esc(t('ob1_c')) + '</li></ul><div class="stack"><p class="hint" style="margin:0">' + esc(t('set_lang')) + '</p>' + langToggle() + '</div>',
+    () => '<h1>' + esc(t('ob2_t')) + '</h1><p class="sub">' + esc(t('ob2_p')) + '</p><div class="stack">' +
+      '<label class="f" for="ob-fw">' + esc(t('set_free')) + '<input id="ob-fw" type="time" data-set="freeWake" value="' + esc(S.freeWake) + '"></label>' + bedCapSel('ob-bc') +
+      '<label class="f" for="ob-sl">' + esc(t('set_sleep')) + '<select id="ob-sl" data-set="sleep">' + opts([7, 7.5, 8, 8.5, 9], S.sleep, v => t('hrs', { n: v })) + '</select></label></div>',
+    () => '<h1>' + esc(t('ob3_t')) + '</h1><p class="sub">' + esc(t('ob3_p')) + '</p><label class="f" for="ob-com">' + esc(t('trv_label')) + '<select id="ob-com" data-set="commute">' + opts([0, 10, 15, 20, 30, 45, 60, 75, 90, 120], S.commute, v => t('min', { n: v })) + '</select><span class="hint">' + esc(t('trv_hint')) + '</span></label>',
+    () => '<h1>' + esc(t('ob4_t')) + '</h1><div class="stack">' + sportControls() + '</div>',
+    () => '<h1>' + esc(t('ob5_t')) + '</h1><p class="sub">' + esc(t('ob5_p')) + '</p>' + msgP() + '<section class="card stack">' + linkForm() + fileImport() + '</section>' + quickForm() +
+      '<div class="stack"><button class="btn full" data-act="example">' + esc(t('example_cta')) + '</button><p class="hint" style="margin:0">' + esc(t('ob5_later')) + '</p></div>'
+  ];
+  const last = ob === OB_N - 1;
+  return '<div class="ob"><div class="ob-top"><ol class="dots" aria-label="' + esc(t('ob_step', { a: ob + 1, b: OB_N })) + '">' + steps.map((_, i) => '<li class="' + (i === ob ? 'on' : i < ob ? 'done' : '') + '"></li>').join('') + '</ol>' +
+    '<button class="tbtn" data-act="obskip">' + esc(t('ob_skip')) + '</button></div>' +
+    '<section class="ob-card" aria-live="polite">' + steps[ob]() + '</section>' +
+    '<div class="ob-nav">' + (ob > 0 ? '<button class="btn" data-act="obback">' + esc(t('ob_back')) + '</button>' : '<span></span>') +
+    '<button class="btn pri" data-act="' + (last ? 'obdone' : 'obnext') + '" id="ob-next">' + esc(last ? t('ob_done') : t('ob_next')) + '</button></div></div>';
+}
+function finishOb() { obOn = false; ob = 0; state.onboarded = true; save(); tab = 'plan'; }
 function screenSettings() {
   const S = state.settings;
   let h = '<h1>' + esc(t('set_title')) + '</h1>' + msgP();
   h += '<section class="card stack"><h2>' + esc(t('set_planning')) + '</h2>' +
     '<label class="f" for="s-sleep">' + esc(t('set_sleep')) + '<select id="s-sleep" data-set="sleep">' + opts([7, 7.5, 8, 8.5, 9], S.sleep, v => t('hrs', { n: v })) + '</select></label>' +
     '<label class="f" for="s-fw">' + esc(t('set_free')) + '<input id="s-fw" type="time" data-set="freeWake" value="' + esc(S.freeWake) + '"></label>' +
+    bedCapSel('s-bc') +
     '<label class="f" for="s-com">' + esc(t('set_commute')) + '<select id="s-com" data-set="commute">' + opts([0, 10, 15, 20, 30, 45, 60, 75, 90, 120], S.commute, v => t('min', { n: v })) + '</select></label></section>';
   h += '<section class="card stack"><h2>' + esc(t('sp_title')) + '</h2>' + sportControls() + '</section>';
   h += '<section class="card stack"><h2>' + esc(t('set_theme')) + '</h2><p class="hint" style="margin:0">' + esc(t('set_theme_hint')) + '</p>' + themeTiles() +
@@ -1024,12 +1083,19 @@ function screenSettings() {
   h += '<section class="card stack"><h2>' + esc(t('set_lang')) + '</h2><div>' + langToggle() + '</div></section>';
   h += '<section class="card stack"><h2>' + esc(t('set_data')) + '</h2><button class="btn full" data-act="export">' + esc(t('set_export')) + '</button>' +
     '<button class="btn warnb full" data-act="reset">' + esc(resetArm ? t('set_reset_confirm') : t('set_reset')) + '</button></section>';
+  h += '<section class="card stack"><h2>' + esc(t('set_help')) + '</h2><button class="btn full" data-act="obreplay">' + esc(t('ob_replay')) + '</button></section>';
   return h + fbCard() + footer();
 }
 
 function render() {
   if (!TABS.includes(tab)) tab = 'plan';
   if (tab !== 'plan' && tab !== 'week') sheet = null;
+  if (obOn) {
+    $app.innerHTML = '<div class="shell"><div class="top"><div class="brand"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" fill="var(--accent)"/></svg>Rythmo</div></div><main id="main">' + screenOnboarding() + '</main></div>';
+    document.documentElement.setAttribute('data-theme', effTheme()); document.documentElement.lang = state.lang;
+    if (obFocus) { obFocus = false; const n = document.getElementById('ob-next'); if (n) n.focus(); }
+    return;
+  }
   const scr = tab === 'plan' ? screenPlan() : tab === 'week' ? screenWeek() : tab === 'checkin' ? screenCheckin() : tab === 'schedule' ? screenSchedule() : screenSettings();
   const fid = document.activeElement && document.activeElement.id, y = window.scrollY;
   const wk = tab === 'week' && state.ui.weekMode !== 'list';
@@ -1137,7 +1203,7 @@ const ACT = {
   sleep: v => { draft.sleepH = Math.max(3, Math.min(12, draft.sleepH + (+v))); },
   seg: (v, b) => { draft[b.dataset.n] = +v; },
   saveci: () => { state.checkins[key(today())] = { sleepH: draft.sleepH, quality: draft.quality, energy: draft.energy }; save(); say(t('ci_saved')); },
-  example: () => { state.classes = EXAMPLE.map(x => ({ id: uid(), title: x[0], start: x[1], end: x[2], days: x[3] })); state.sample = true; save(); tab = 'plan'; curDate = firstClassDate(); },
+  example: () => { if (obOn) finishOb(); state.classes = EXAMPLE.map(x => ({ id: uid(), title: x[0], start: x[1], end: x[2], days: x[3] })); state.sample = true; save(); tab = 'plan'; curDate = firstClassDate(); },
   del: v => { state.classes = state.classes.filter(c => c.id !== v); save(); },
   deltask: v => { state.tasks = state.tasks.filter(k => k.id !== v); save(); },
   clear: () => { state.classes = []; state.sample = false; save(); },
@@ -1147,6 +1213,11 @@ const ACT = {
   sporton: () => { state.settings.sportOn = !state.settings.sportOn; save(); },
   sportmin: v => { state.settings.sportMin = snapSport(v); save(); },
   sportwhen: v => { if (['morning', 'evening', 'any'].includes(v)) state.settings.sportWhen = v; save(); },
+  obnext: () => { ob = Math.min(OB_N - 1, ob + 1); msg = ''; obFocus = true; window.scrollTo(0, 0); },
+  obback: () => { ob = Math.max(0, ob - 1); msg = ''; obFocus = true; window.scrollTo(0, 0); },
+  obskip: () => { finishOb(); },
+  obdone: () => { finishOb(); if (state.classes.length) curDate = firstClassDate(); },
+  obreplay: () => { obOn = true; ob = 0; msg = ''; window.scrollTo(0, 0); },
   autonight: () => { state.settings.autoNight = !state.settings.autoNight; save(); },
   export: () => download('rythmo-donnees.json', JSON.stringify(state, null, 2), 'application/json'),
   reset: () => {
@@ -1175,6 +1246,7 @@ $app.addEventListener('submit', e => {
     state.classes = (S0 < 720 && E0 > 810)
       ? [{ id: uid(), title: t('qs_am'), start: s, end: '12:00', days }, { id: uid(), title: t('qs_pm'), start: '13:30', end: en, days }]
       : [{ id: uid(), title: t('sc_default'), start: s, end: en, days }];
+    if (obOn) finishOb();
     state.sample = false; msg = ''; tab = 'plan'; curDate = firstClassDate(); save(); render(); return;
   }
   if (id === 'urlf') {
@@ -1184,6 +1256,7 @@ $app.addEventListener('submit', e => {
     Promise.allSettled(urls.slice(0, 6).map(fetchICS)).then(rs => {
       const res = rs.filter(r => r.status === 'fulfilled').flatMap(r => importICS(r.value));
       if (!res.length) { say(t(rs.some(r => r.status === 'fulfilled') ? 'lk_empty' : 'lk_fail'), true); return; }
+      if (obOn) finishOb();
       state.classes = res; state.sample = false; msg = ''; tab = 'plan'; curDate = firstClassDate(); save();
     }).finally(() => { busy = false; render(); });
     return;
@@ -1238,14 +1311,16 @@ $app.addEventListener('change', e => {
     el.files[0].text().then(txt => {
       const res = importICS(txt);
       if (!res.length) say(t('sc_import_none'), true);
-      else { state.classes = res; state.sample = false; save(); say(t('sc_import_ok', { n: res.length })); }
+      else { if (obOn) { finishOb(); curDate = firstClassDate(); } state.classes = res; state.sample = false; save(); say(t('sc_import_ok', { n: res.length })); if (tab === 'plan') curDate = firstClassDate(); }
       render();
     }).catch(() => { say(t('sc_import_err'), true); render(); });
     return;
   }
   if (el.name === 'theme' && THEMES.includes(el.value)) { state.settings.theme = el.value; state.settings.themePicked = true; save(); render(); return; }
   const k = el.dataset && el.dataset.set; if (!k) return;
-  state.settings[k] = k === 'freeWake' ? (HHMM.test(el.value) ? el.value : '08:00') : +el.value; save(); render();
+  if (k === 'bedCap') { if (BEDCAPS.includes(el.value)) state.settings.bedCap = el.value; }
+  else state.settings[k] = k === 'freeWake' ? (HHMM.test(el.value) ? el.value : '08:00') : +el.value;
+  save(); render();
 });
 
 /* ===================== BOOT ===================== */
@@ -1257,6 +1332,7 @@ $app.addEventListener('change', e => {
   }
 })();
 save();
+obOn = !state.onboarded;
 if (!readHash() && state.classes.length) curDate = firstClassDate();
 try { history.replaceState(null, '', '#' + routeHash()); } catch (e) {}
 /* Test/debug handle (read-only helpers, no data leaves the page). */
