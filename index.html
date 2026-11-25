@@ -243,6 +243,62 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.4}
 .tg[aria-checked="true"] .tr::after{left:23px;content:"✓";color:var(--accent);border-color:var(--surface)}
 .tg .st{font-size:var(--fs-small);color:var(--muted);font-weight:500}
 
+
+.block .pen{flex:0 0 44px;width:44px;height:44px;margin:-6px -8px -6px 0;display:grid;place-items:center;color:var(--muted)}
+.block .pen svg{width:20px;height:20px}
+button.block{cursor:pointer}
+button.block:hover{border-color:var(--c)}
+.block.moved .ttl::after{content:" •";color:var(--c)}
+.tl>li.nowrow{align-items:center;grid-template-columns:52px 1fr}
+.nowpill{display:inline-block;background:var(--accent-soft);color:var(--ink);font-weight:700;font-size:.8125rem;border-radius:var(--r-pill);padding:2px 6px;margin-right:-6px}
+.now-line{display:block;height:2px;background:var(--now);border-radius:2px;position:relative}
+.now-line::before{content:"";position:absolute;left:-5px;top:-4px;width:10px;height:10px;border-radius:50%;background:var(--now)}
+.badge{display:inline-block;background:var(--accent-soft);color:var(--accent);font-weight:700;font-size:.8125rem;border-radius:var(--r-pill);padding:1px 8px;vertical-align:1px}
+.dh-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.dh-nav{display:flex;gap:8px}
+.dh-nav .rb{width:44px;height:44px}
+/* Bottom sheet */
+.sheet-bg{position:fixed;inset:0;background:rgba(10,10,20,.45);z-index:20}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:21;max-height:88vh;overflow:auto;background:var(--surface);color:var(--ink);border-radius:var(--r-lg) var(--r-lg) 0 0;box-shadow:var(--shadow-2);padding:var(--s-4) var(--s-4) calc(var(--s-5) + env(safe-area-inset-bottom,0px));max-width:560px;margin:0 auto}
+.sh-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+@media (prefers-reduced-motion: no-preference){.sheet{animation:up .18s ease both}@keyframes up{from{transform:translateY(24px);opacity:.6}to{transform:none;opacity:1}}}
+/* Week */
+.shell.wide{max-width:1200px}
+.wk-bar{display:flex;flex-wrap:wrap;justify-content:space-between;gap:var(--s-2);margin-bottom:var(--s-3)}
+.wk-strip{position:sticky;top:0;z-index:3;display:grid;grid-template-columns:repeat(7,1fr);gap:4px;background:var(--bg);padding:6px 0 8px}
+.wk-strip button{min-height:56px;border:1px solid var(--line-strong);border-radius:var(--r-md);background:var(--surface);display:grid;justify-items:center;gap:0;padding:4px 0;color:var(--ink)}
+.wk-strip button span{font-size:.75rem;color:var(--muted)}
+.wk-strip button[aria-current="date"]{background:var(--accent-soft);border-color:var(--accent)}
+.wk-strip .dots{display:flex;gap:2px;min-height:6px}
+.wk-strip .dots i{width:6px;height:6px;border-radius:50%}
+.wk{--ppm:.85px;display:grid;grid-auto-flow:column;grid-auto-columns:88%;gap:var(--s-3);overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:var(--s-3);margin-bottom:var(--s-4);overscroll-behavior-x:contain}
+.wk-g{display:none}
+.wk-col{scroll-snap-align:start;min-width:0;background:var(--surface);border:var(--card-border);border-radius:var(--r-lg);padding:var(--s-2)}
+.wk-h{display:flex;justify-content:space-between;align-items:center;gap:6px;width:100%;min-height:44px;border:0;border-radius:var(--r-md);background:var(--sunk);color:var(--ink);padding:0 10px;font:600 1rem var(--f-body);margin-bottom:var(--s-2);text-align:left}
+.wk-h.is-today,.is-today>.wk-h{background:var(--accent-soft);color:var(--accent)}
+.wk-body{position:relative;height:calc(var(--ppm) * var(--span))}
+.wk-col .wk-body{margin-left:44px}
+.wk .hl{position:absolute;left:0;right:0;border-top:1px solid var(--line);font-style:normal}
+.wk .hl span{position:absolute;left:-44px;top:-.6em;width:38px;text-align:right;font-size:.75rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.wk-b{position:absolute;left:2px;right:2px;min-height:22px;padding:2px 6px;border-radius:var(--r-sm);font-size:.8125rem;line-height:1.25;overflow:hidden;display:block;text-align:left;z-index:1}
+.wk-b span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.wk-b:focus-visible,.wk-b:hover{z-index:2;min-height:fit-content}
+.wk-bed{position:absolute;left:0;right:0;border-top:2px solid var(--b-sleep);z-index:1}
+.wk-bed.wake{border-top-style:dashed}
+.wk-bed.wake span{top:auto;bottom:2px}
+.wk-bed span{position:absolute;right:2px;top:2px;font-size:.75rem;font-weight:700;color:var(--ink);background:var(--surface);padding:0 4px;border-radius:4px}
+.wk-list .card{padding:var(--s-3)}
+@media (min-width:900px){
+  .wk-strip{display:none}
+  .wk{--ppm:.75px;grid-auto-flow:row;grid-template-columns:48px repeat(7,minmax(0,1fr));gap:6px;overflow:visible}
+  .wk-g{display:block}
+  .wk-g .wk-h{background:none}
+  .wk-g .wk-body span{position:absolute;right:4px;top:-.6em;font-size:.75rem;color:var(--muted);font-variant-numeric:tabular-nums}
+  .wk-col{padding:4px}
+  .wk-col .wk-body{margin-left:0}
+  .wk .hl span{display:none}
+  .wk-h{font-size:.9375rem;padding:0 6px;flex-wrap:wrap}
+}
 @media (prefers-reduced-motion: no-preference) {
   .btn,.chip,.tg .tr,.tg .tr::after,.glass{transition:background-color .18s ease,border-color .18s ease,left .18s ease,transform .12s ease}
   .btn:active{transform:translateY(1px)}
@@ -310,7 +366,17 @@ en: {
   sug_card:'Morning suggestions (remove any you do not want):', sug_restore:'Restore removed suggestions',
   tk_card:'Flexible tasks', tk_empty:'No tasks. That\'s perfectly fine.', tk_open:'+ Add a task',
   tk_add:'Add a flexible task', tk_hint:'Something without a fixed hour (study, project, errands). Rythmo finds a free slot on the days you pick.', tk_name:'Task name', tk_name_ph:'e.g. Group project', tk_dur:'How long', tk_btn:'Add task', tk_added:'Task added.', tk_list:'Your flexible tasks', tk_why:'Placed in a free slot ({m} min).', tk_none:'No room today for: {n}. Try another day or a shorter task.', tk_default:'Task',
-  meal_soft:'around {t} – suggestion', lunch_free_why:'No class today: eat when it suits you.', lunch_after_why:'After your classes, calmly.',
+  nav_week:'Week', now:'Now', prev_day:'Previous day', next_day:'Next day', pick_day:'Pick a day', close:'Close',
+  edit_block:'Edit: {b}, {t}', tap_hint:'Tap a block to move it or remove it for this day.', today_empty:'Nothing planned. Enjoy it, or add one small thing.',
+  edited_day:'Your day, your way.', badge_work:'Internship / work', badge_off:'Day off', badge_edited:'Edited', work_default:'Internship',
+  de_title:'Edit this day', de_hint:'Changes only this date. Your usual timetable stays the same.', de_kind:'This day is', de_normal:'A usual day', de_work:'Internship / work', de_off:'Day off',
+  de_work_label:'Name (optional)', de_save:'Save this day', de_sport:'Sport this day', de_add:'Add a class on this day only', de_only_day:'this day only', de_removed:'Removed this day', de_restore:'Put back',
+  de_reset:'Reset this day', de_reset_done:'This day follows your usual timetable again.',
+  sh_only_day:'Changes apply to this day only.', sh_save_day:'Save for this day', sh_rm_class:'Remove this class on this day', sh_not_work:'Not an internship day any more', sh_class_hint:'To change it every week, go to the Classes tab.',
+  sh_wake:'Wake-up this day', sh_bed:'Bedtime this night', sh_bed_hint:'Before noon counts as after midnight.', sh_time:'Time this day', sh_auto:'Back to the automatic time', sh_skip:'Remove it on this day', sh_sport_settings:'Sport settings',
+  wk_title:'Your week', wk_prev:'Previous', wk_this:'This week', wk_next:'Next', wk_view:'View', wk_grid:'Grid', wk_list:'List', wk_open:'Open {d}', wk_free_day:'No class. A calm day.',
+  wk_empty:'This week is still empty. Import your classes or add them by hand.',
+  meal_soft:'around {t} – suggestion', lunch_free_why:'No class today: eat when it suits you.', lunch_after_why:'After your classes, calmly.', lunch_work_why:'Your lunch break during the work day.', travel_go:'Travel there',
   sp_title:'Sport (optional)', sp_intro:'Sport is optional. We\'ll only suggest a small one if you want.', sp_toggle:'Suggest some sport', sp_dur:'How long', sp_when:'When', sp_morning:'Morning', sp_evening:'Evening', sp_any:'Any time',
   set_title:'Settings', set_planning:'Planning', set_sleep:'Sleep you need', set_commute:'Travel time to school (one way)', set_free:'Wake-up on free days',
   set_theme:'Theme', set_theme_hint:'Pick the look you find easiest to read.', set_auto:'Automatic: Night in the evening', set_auto_hint:'Switches to Night between 21:00 and 6:00, without changing your choice.',
@@ -362,7 +428,17 @@ fr: {
   sug_card:'Suggestions du matin (retire celles dont tu ne veux pas) :', sug_restore:'Remettre les suggestions retirées',
   tk_card:'Tâches flexibles', tk_empty:'Pas de tâche. C\'est très bien comme ça.', tk_open:'+ Ajouter une tâche',
   tk_add:'Ajouter une tâche flexible', tk_hint:"Quelque chose sans heure fixe (révisions, projet, courses). Rythmo trouve un créneau libre les jours choisis.", tk_name:'Nom de la tâche', tk_name_ph:'ex. Projet de groupe', tk_dur:'Durée', tk_btn:'Ajouter la tâche', tk_added:'Tâche ajoutée.', tk_list:'Tes tâches flexibles', tk_why:'Placée dans un créneau libre ({m} min).', tk_none:"Pas de place aujourd'hui pour : {n}. Essaie un autre jour ou une tâche plus courte.", tk_default:'Tâche',
-  meal_soft:'vers {t} – suggestion', lunch_free_why:'Pas de cours aujourd\'hui : mange quand ça te va.', lunch_after_why:'Après tes cours, tranquillement.',
+  nav_week:'Semaine', now:'Maintenant', prev_day:'Jour précédent', next_day:'Jour suivant', pick_day:'Choisir un jour', close:'Fermer',
+  edit_block:'Modifier : {b}, {t}', tap_hint:'Touche un bloc pour le déplacer ou le retirer ce jour-là.', today_empty:'Rien de prévu. Profites-en, ou ajoute une petite chose.',
+  edited_day:'Ta journée est à ton image.', badge_work:'Stage / travail', badge_off:'Jour off', badge_edited:'Modifié', work_default:'Stage',
+  de_title:'Modifier ce jour', de_hint:'Ne change que cette date. Ton emploi du temps habituel ne bouge pas.', de_kind:'Ce jour est', de_normal:'Un jour habituel', de_work:'Stage / travail', de_off:'Jour off',
+  de_work_label:'Nom (facultatif)', de_save:'Enregistrer ce jour', de_sport:'Sport ce jour-là', de_add:'Ajouter un cours ce jour-là seulement', de_only_day:'ce jour seulement', de_removed:'Retiré ce jour-là', de_restore:'Remettre',
+  de_reset:'Réinitialiser ce jour', de_reset_done:'Ce jour suit de nouveau ton emploi du temps habituel.',
+  sh_only_day:'Les changements ne valent que pour ce jour.', sh_save_day:'Enregistrer pour ce jour', sh_rm_class:'Retirer ce cours ce jour-là', sh_not_work:'Ce n\'est plus un jour de stage', sh_class_hint:'Pour le changer chaque semaine, va dans l\'onglet Cours.',
+  sh_wake:'Réveil ce jour-là', sh_bed:'Coucher cette nuit', sh_bed_hint:'Avant midi, ça compte comme après minuit.', sh_time:'Heure ce jour-là', sh_auto:'Revenir à l\'heure automatique', sh_skip:'Le retirer ce jour-là', sh_sport_settings:'Réglages du sport',
+  wk_title:'Ta semaine', wk_prev:'Précédente', wk_this:'Cette semaine', wk_next:'Suivante', wk_view:'Affichage', wk_grid:'Grille', wk_list:'Liste', wk_open:'Ouvrir {d}', wk_free_day:'Pas de cours. Une journée calme.',
+  wk_empty:'Cette semaine est encore vide. Importe tes cours ou ajoute-les à la main.',
+  meal_soft:'vers {t} – suggestion', lunch_free_why:'Pas de cours aujourd\'hui : mange quand ça te va.', lunch_after_why:'Après tes cours, tranquillement.', lunch_work_why:'Ta pause déjeuner pendant la journée.', travel_go:'Trajet aller',
   sp_title:'Sport (facultatif)', sp_intro:'Le sport, c\'est facultatif. On t\'en propose juste un petit si tu veux.', sp_toggle:'Me proposer du sport', sp_dur:'Durée', sp_when:'Moment', sp_morning:'Le matin', sp_evening:'Le soir', sp_any:'Peu importe',
   set_title:'Réglages', set_planning:'Planning', set_sleep:'Sommeil dont tu as besoin', set_commute:'Temps de trajet vers l\'école (aller)', set_free:'Réveil les jours sans cours',
   set_theme:'Thème', set_theme_hint:'Choisis l\'apparence la plus facile à lire pour toi.', set_auto:'Automatique : Nuit le soir', set_auto_hint:'Passe en Nuit entre 21 h et 6 h, sans changer ton choix.',
@@ -386,7 +462,7 @@ function freshState() {
   return { v: SCHEMA, lang: (navigator.language || 'en').toLowerCase().startsWith('fr') ? 'fr' : 'en', sample: false,
     settings: { sleep: 8, commute: 30, sport: 30, freeWake: '08:00', theme: 'horizon', themePicked: false, autoNight: false,
       sportOn: false, sportMin: 30, sportWhen: 'any' }, // new users: no sport until they opt in
-    classes: [], tasks: [], checkins: {}, challenges: {}, water: {}, done: {}, hiddenSug: {} };
+    classes: [], tasks: [], checkins: {}, challenges: {}, water: {}, done: {}, hiddenSug: {}, overrides: {}, ui: { weekMode: 'grid' } };
 }
 /* One-time upgrades. Never delete old keys: an older build reading the same storage keeps working. */
 function migrate(s) {
@@ -405,7 +481,8 @@ function sanitize(s) {
   const b = freshState();
   const out = Object.assign({}, b, s);
   out.settings = Object.assign({}, b.settings, isObj(s.settings) ? s.settings : {});
-  ['checkins', 'challenges', 'water', 'done', 'hiddenSug'].forEach(k => { if (!isObj(out[k])) out[k] = {}; });
+  ['checkins', 'challenges', 'water', 'done', 'hiddenSug', 'overrides', 'ui'].forEach(k => { if (!isObj(out[k])) out[k] = {}; });
+  out.overrides = cleanOverrides(out.overrides);
   const okDays = d => Array.isArray(d) ? d.map(Number).filter(n => n >= 0 && n <= 6) : [];
   out.classes = (Array.isArray(out.classes) ? out.classes : []).filter(c => isObj(c) && HHMM.test(c.start) && HHMM.test(c.end))
     .map(c => ({ id: String(c.id || uid()), title: String(c.title || '').slice(0, 40), start: c.start, end: c.end, days: okDays(c.days) }));
@@ -417,6 +494,27 @@ function sanitize(s) {
   if (!['morning', 'evening', 'any'].includes(out.settings.sportWhen)) out.settings.sportWhen = 'any';
   ['sleep', 'commute', 'sport'].forEach(k => { out.settings[k] = +out.settings[k]; if (!isFinite(out.settings[k])) out.settings[k] = b.settings[k]; });
   if (out.lang !== 'fr' && out.lang !== 'en') out.lang = b.lang;
+  return out;
+}
+const DATEK = /^\d{4}-\d{2}-\d{2}$/;
+/* Keep only well-formed per-day overrides, and only from the last 60 days on (they are keyed by date and would grow forever). */
+function cleanOverrides(src) {
+  const out = {}, d0 = new Date(); d0.setDate(d0.getDate() - 60);
+  const min = d0.getFullYear() + '-' + String(d0.getMonth() + 1).padStart(2, '0') + '-' + String(d0.getDate()).padStart(2, '0');
+  const tmap = m => { const r = {}; if (isObj(m)) Object.keys(m).forEach(k => { if (HHMM.test(m[k])) r[String(k).slice(0, 40)] = m[k]; }); return r; };
+  const bmap = m => { const r = {}; if (isObj(m)) Object.keys(m).forEach(k => { if (m[k]) r[String(k).slice(0, 40)] = true; }); return r; };
+  Object.keys(src || {}).forEach(dk => {
+    const o = src[dk]; if (!DATEK.test(dk) || dk < min || !isObj(o)) return;
+    const c = {};
+    if (o.kind === 'off') c.kind = 'off';
+    if (o.kind === 'work' && isObj(o.work) && HHMM.test(o.work.start) && HHMM.test(o.work.end)) { c.kind = 'work'; c.work = { label: String(o.work.label || '').slice(0, 40), start: o.work.start, end: o.work.end }; }
+    if (Array.isArray(o.add)) { const a = o.add.filter(x => isObj(x) && HHMM.test(x.start) && HHMM.test(x.end)).slice(0, 12).map(x => ({ id: String(x.id || uid()).slice(0, 20), title: String(x.title || '').slice(0, 40), start: x.start, end: x.end })); if (a.length) c.add = a; }
+    const rm = bmap(o.remove), sk = bmap(o.skip), at = tmap(o.at);
+    if (Object.keys(rm).length) c.remove = rm; if (Object.keys(sk).length) c.skip = sk; if (Object.keys(at).length) c.at = at;
+    if (o.noSport) c.noSport = true;
+    if (HHMM.test(o.wake)) c.wake = o.wake; if (HHMM.test(o.bed)) c.bed = o.bed;
+    if (Object.keys(c).length) out[dk] = c;
+  });
   return out;
 }
 const uid = () => Math.random().toString(36).slice(2, 9);
@@ -450,61 +548,79 @@ function download(name, text, type) {
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
 }
 
-/* ===================== ENGINE (simple rules, no AI) ===================== */
-function classesFor(wd) {
-  return state.classes.filter(c => c.days.includes(wd)).map(c => ({ title: c.title, s: toMin(c.start), e: toMin(c.end) })).sort((a, b) => a.s - b.s);
+/* ===================== ENGINE (simple rules, no AI, date-based) ===================== */
+/* Per-day overrides: state.overrides['YYYY-MM-DD'] = { kind?:'work'|'off', work?:{label,start,end},
+   add?:[{id,title,start,end}], remove?:{classId:true}, noSport?:true, at?:{blockKey:'HH:MM'}, skip?:{blockKey:true},
+   wake?:'HH:MM', bed?:'HH:MM' }. Block keys: wake, bf, lunch, dinner, sport, wind, bed, task:<id>, mo:<sug>, c:<classId>. */
+const ovOf = date => state.overrides[key(date)] || {};
+function classesOn(date) {
+  const ov = ovOf(date), wd = wdOf(date), out = [];
+  if (ov.kind === 'work' && ov.work) out.push({ id: 'work', title: ov.work.label || t('work_default'), s: toMin(ov.work.start), e: toMin(ov.work.end), src: 'work' });
+  else if (ov.kind !== 'off') state.classes.forEach(c => { if (c.days.includes(wd) && !(ov.remove && ov.remove[c.id])) out.push({ id: c.id, title: c.title, s: toMin(c.start), e: toMin(c.end), src: 'pattern' }); });
+  (ov.add || []).forEach(c => out.push({ id: c.id, title: c.title, s: toMin(c.start), e: toMin(c.end), src: 'extra' }));
+  return out.filter(c => c.e > c.s).sort((a, b) => a.s - b.s);
 }
-function dayHard(wd) {
-  const cl = classesFor(wd);
+function dayHard(date) {
+  const cl = classesOn(date);
   if (!cl.length) return false;
   return cl.reduce((n, c) => n + c.e - c.s, 0) >= 360 || cl[cl.length - 1].e >= 1080 || cl.length >= 4;
 }
-const BED_CAP = 1410; // 23:30, latest recommended lights-out
-function wakeInfo(wd, prevHard) {
-  const cl = classesFor(wd), S = state.settings;
+function bedCapMin() { const v = state.settings.bedCap; if (!HHMM.test(v || '')) return 1410; const m = toMin(v); return m < 720 ? m + 1440 : m; }
+function wakeInfo(date, prevHard) {
+  const cl = classesOn(date), S = state.settings, ov = ovOf(date);
+  if (ov.wake && HHMM.test(ov.wake)) return { wake: toMin(ov.wake), first: cl[0] || null, manual: true };
   if (!cl.length) return { wake: toMin(S.freeWake), first: null };
   const byClass = Math.max(300, cl[0].s - S.commute - 60);
-  const cap = BED_CAP + S.sleep * 60 + 15 - 1440 + (prevHard ? 60 : 0);
+  // regular rhythm: a late first class is not a reason to wake up late (a little extra rest after a heavy day)
+  const cap = bedCapMin() + S.sleep * 60 + 15 - 1440 + (prevHard ? 60 : 0);
   return { wake: Math.min(byClass, cap), first: cl[0], calm: cap < byClass };
 }
 const overlaps = (a1, a2, b1, b2) => a1 < b2 && b1 < a2;
 function computeDay(date) {
-  const S = state.settings, wd = wdOf(date), cl = classesFor(wd);
-  const ph = dayHard((wd + 6) % 7), w = wakeInfo(wd, ph), wn = wakeInfo((wd + 1) % 7, dayHard(wd));
-  const sleepMin = S.sleep * 60;
+  const S = state.settings, wd = wdOf(date), cl = classesOn(date), ov = ovOf(date), at = ov.at || {}, skip = ov.skip || {};
+  const prev = addDays(date, -1), next = addDays(date, 1);
+  const ph = dayHard(prev), w = wakeInfo(date, ph), wn = wakeInfo(next, dayHard(date));
+  const sleepMin = S.sleep * 60, CAP = bedCapMin();
   const lastEnd = cl.length ? cl[cl.length - 1].e : 0;
   let bed = 1440 + wn.wake - sleepMin - 15;
-  const capped = bed > BED_CAP;
-  if (capped) bed = BED_CAP;
+  const capped = bed > CAP;
+  if (capped) bed = CAP; // regular bedtime: a late start tomorrow is not a reason to sleep late
   const bedIdeal = bed;
   if (lastEnd) bed = Math.max(bed, lastEnd + S.commute + 90);
+  let bedManual = false;
+  if (ov.bed && HHMM.test(ov.bed)) { bed = toMin(ov.bed); if (bed < 720) bed += 1440; bedManual = true; }
   const hours = (1440 + wn.wake - bed - 15) / 60;
-  const short = bed > bedIdeal + 1;
-  const items = []; const meals = [];
-  items.push({ t: w.wake, type: 'wake', title: t('wake'), why: w.first ? (w.calm ? t('wake_calm', { c: fmt(w.first.s) }) : t('wake_class', { c: fmt(w.first.s), m: S.commute + 60 })) : t('wake_free') });
-  const bf = w.wake + 20; meals.push([bf, bf + 20]);
-  items.push({ t: bf, dur: 20, type: 'meal', soft: true, title: t('breakfast'), why: t('breakfast_why') });
-  cl.forEach(c => items.push({ t: c.s, end: c.e, type: 'class', title: c.title }));
-  const trips = [];
+  const short = !bedManual && bed > bedIdeal + 1;
+  const items = [], meals = [], trips = [];
+  const mv = (k, def) => (at[k] && HHMM.test(at[k])) ? toMin(at[k]) : def;
+  items.push({ k: 'wake', t: w.wake, type: 'wake', title: t('wake'), why: w.manual ? t('edited_day') : w.first ? (w.calm ? t('wake_calm', { c: fmt(w.first.s) }) : t('wake_class', { c: fmt(w.first.s), m: S.commute + 60 })) : t('wake_free') });
+  const bf = mv('bf', w.wake + 20);
+  if (!skip.bf) { meals.push([bf, bf + 20]); items.push({ k: 'bf', t: bf, dur: 20, type: 'meal', soft: true, moved: !!at.bf, title: t('breakfast'), why: t('breakfast_why') }); }
+  cl.forEach(c => items.push({ k: 'c:' + c.id, t: c.s, end: c.e, type: 'class', src: c.src, cid: c.id, title: c.title }));
   if (cl.length && S.commute > 0) {
     trips.push([cl[0].s - S.commute, cl[0].s], [lastEnd, lastEnd + S.commute]);
-    items.push({ t: trips[0][0], end: trips[0][1], type: 'travel', title: t('travel_to') },
-               { t: trips[1][0], end: trips[1][1], type: 'travel', title: t('travel_home') });
+    const isWork = cl[0].src === 'work';
+    items.push({ k: 'trv0', t: trips[0][0], end: trips[0][1], type: 'travel', title: t(isWork ? 'travel_go' : 'travel_to') },
+               { k: 'trv1', t: trips[1][0], end: trips[1][1], type: 'travel', title: t('travel_home') });
   }
+  // Calm morning (late first class): suggestions that depend on how heavy yesterday was
   if (w.calm && cl.length) {
-    const ci = state.checkins[key(addDays(date, -1))];
+    const ci = state.checkins[key(prev)];
     const tired = ph || !!(ci && (ci.energy <= 2 || ci.sleepH < S.sleep - 1));
     const m0 = bf + 25, mEnd = cl[0].s - S.commute - 30, win = mEnd - m0;
     const hid = state.hiddenSug || {};
-    const add = (at, dur, title, why) => { if (hid[title]) return; items.push({ t: at, dur, type: 'morning', sug: title, title: t(title), why: t(why) }); trips.push([at, at + dur]); };
+    const add = (t0, dur, sug, why) => { const k = 'mo:' + sug; if (hid[sug] || skip[k]) return; const x = mv(k, t0); items.push({ k, t: x, dur, type: 'morning', sug, moved: !!at[k], title: t(sug), why: t(why) }); trips.push([x, x + dur]); };
     if (win >= (tired ? 30 : 60)) {
       if (tired) { add(m0, 15, 'mo_gentle', 'mo_gentle_why'); if (win >= 75) add(m0 + 30, 20, 'mo_calm', 'mo_calm_why'); }
       else { add(m0, 45, 'mo_focus', 'mo_focus_why'); if (win >= 90) add(m0 + 60, 15, 'mo_move', 'mo_move_why'); }
       add(mEnd - 10, 10, 'mo_prep', 'mo_prep_why');
     }
   }
+  // Lunch (a suggested window, not an order)
   let lt = null, tight = false, tightAfter = null;
-  if (!cl.length) lt = Math.max(750, Math.ceil((bf + 150) / 15) * 15);
+  const workLunch = cl.some(c => c.src === 'work' && c.s <= 720 && c.e >= 810); // a work/internship day: lunch break at work
+  if (workLunch) lt = 750;
+  else if (!cl.length) lt = Math.max(750, Math.ceil((bf + 150) / 15) * 15);
   else {
     let best = null;
     for (let x = 690; x <= 840; x += 15) {
@@ -515,48 +631,59 @@ function computeDay(date) {
     if (best !== null) lt = best;
     else { tight = true; const after = cl.find(c => c.e >= 690 && c.e <= 900); tightAfter = after || cl[cl.length - 1]; lt = tightAfter.e + 10; }
   }
-  meals.push([lt, lt + (tight ? 20 : 45)]);
-  items.push(tight ? { t: lt, dur: 20, type: 'meal', soft: true, title: t('lunch_tight'), why: t('lunch_tight_why', { c: tightAfter.title }) }
-                   : { t: lt, dur: 45, type: 'meal', soft: true, title: t('lunch'), why: !cl.length ? t('lunch_free_why') : lt >= lastEnd ? t('lunch_after_why') : t('lunch_why') });
+  if (at.lunch) { lt = mv('lunch', lt); tight = false; }
+  if (!skip.lunch) {
+    meals.push([lt, lt + (tight ? 20 : 45)]);
+    items.push(tight ? { k: 'lunch', t: lt, dur: 20, type: 'meal', soft: true, title: t('lunch_tight'), why: t('lunch_tight_why', { c: tightAfter.title }) }
+                     : { k: 'lunch', t: lt, dur: 45, type: 'meal', soft: true, moved: !!at.lunch, title: t('lunch'), why: at.lunch ? t('edited_day') : workLunch ? t('lunch_work_why') : !cl.length ? t('lunch_free_why') : lt >= lastEnd ? t('lunch_after_why') : t('lunch_why') });
+  }
+  // Dinner
   let dinner = Math.max(Math.min(1170, bed - 180), 1080), late = false;
   if (lastEnd && lastEnd + S.commute + 15 > dinner) { dinner = lastEnd + S.commute + 15; late = true; }
   if (dinner > bed - 90) late = true;
-  meals.push([dinner, dinner + 45]);
-  items.push({ t: dinner, dur: 45, type: 'meal', soft: true, title: late ? t('dinner_late') : t('dinner'), why: late ? t('dinner_late_why') : t('dinner_why') });
+  if (at.dinner) { dinner = mv('dinner', dinner); late = false; }
+  if (!skip.dinner) { meals.push([dinner, dinner + 45]); items.push({ k: 'dinner', t: dinner, dur: 45, type: 'meal', soft: true, moved: !!at.dinner, title: late ? t('dinner_late') : t('dinner'), why: late ? t('dinner_late_why') : t('dinner_why') }); }
   // Sport (optional). Fix: the old code kept the slot closest to 17:30, so a day ending at 10:30 still got
   // 17:30. Now: the FIRST free slot after classes + travel home, in the moment the user prefers.
   let sportT = null;
-  if (S.sportOn) {
+  const sportWanted = S.sportOn && !ov.noSport && !skip.sport;
+  if (sportWanted) {
     const dur = S.sportMin, to = Math.min(1260, bed - 120);
     const anchor = cl.length ? lastEnd + S.commute + 15 : w.wake + 60;
     const free = x => !cl.some(c => overlaps(x, x + dur, c.s - 15, c.e + 15)) &&
       !trips.some(r => overlaps(x, x + dur, r[0] - 10, r[1] + 10)) &&
       !meals.some(m => overlaps(x, x + dur, m[0] - 30, m[1] + 30));
     const first = (a, b) => { for (let x = Math.ceil(a / 15) * 15; x + dur <= b; x += 15) if (free(x)) return x; return null; };
-    if (S.sportWhen === 'morning') sportT = first(Math.max(w.wake + 45, 360), Math.min(720, to));
-    else if (S.sportWhen === 'evening') sportT = first(Math.max(anchor, 1020), to);
-    if (sportT === null) sportT = first(Math.max(anchor, w.wake + 45), to);
-    if (sportT !== null) items.push({ t: sportT, dur, type: 'sport', title: t('sport', { m: dur }), why: t('sport_why') });
+    if (at.sport) sportT = mv('sport', 0);
+    else {
+      if (S.sportWhen === 'morning') sportT = first(Math.max(w.wake + 45, 360), Math.min(720, to));
+      else if (S.sportWhen === 'evening') sportT = first(Math.max(anchor, 1020), to);
+      if (sportT === null) sportT = first(Math.max(anchor, w.wake + 45), to);
+    }
+    if (sportT !== null) items.push({ k: 'sport', t: sportT, dur, type: 'sport', moved: !!at.sport, title: t('sport', { m: dur }), why: t('sport_why') });
   }
+  // Flexible tasks (no fixed hour): drop each one into a free slot on its days
   const unplaced = [];
-  const tasks = (state.tasks || []).filter(k => k.days.includes(wd)).sort((a, b) => b.dur - a.dur);
+  const tasks = state.tasks.filter(k => k.days.includes(wd) && !skip['task:' + k.id]).sort((a, b) => b.dur - a.dur);
   if (tasks.length) {
     const busyR = items.map(it => [it.t, it.end || it.t + (it.dur || (it.type === 'wake' ? 15 : 0))]);
     tasks.forEach(k => {
+      const bk = 'task:' + k.id;
       let best = null;
-      for (let x = Math.max(w.wake + 60, 480); x + k.dur <= bed - 90; x += 15) {
+      if (at[bk]) best = mv(bk, 0);
+      else for (let x = Math.max(w.wake + 60, 480); x + k.dur <= bed - 90; x += 15) {
         if (busyR.some(b => overlaps(x, x + k.dur, b[0] - 10, b[1] + 10))) continue;
         if (best === null || Math.abs(x - 900) < Math.abs(best - 900)) best = x;
       }
       if (best === null) { unplaced.push(k.title); return; }
       busyR.push([best, best + k.dur]);
-      items.push({ t: best, dur: k.dur, type: 'task', title: k.title, why: t('tk_why', { m: k.dur }) });
+      items.push({ k: bk, t: best, dur: k.dur, type: 'task', moved: !!at[bk], title: k.title, why: t('tk_why', { m: k.dur }) });
     });
   }
-  items.push({ t: bed - 45, dur: 45, type: 'wind', title: t('winddown'), why: t('winddown_why') });
-  items.push({ t: bed, type: 'bed', title: t('lightsout'), why: capped && bed === BED_CAP ? t('lightsout_reg') : t('lightsout_why') });
+  if (!skip.wind) items.push({ k: 'wind', t: mv('wind', bed - 45), dur: 45, type: 'wind', moved: !!at.wind, title: t('winddown'), why: t('winddown_why') });
+  items.push({ k: 'bed', t: bed, type: 'bed', title: t('lightsout'), why: bedManual ? t('edited_day') : capped && bed === CAP ? t('lightsout_reg') : t('lightsout_why') });
   items.sort((a, b) => a.t - b.t);
-  return { items, bed, wake: w.wake, wakeNext: wn.wake, hours, short, noSport: S.sportOn && sportT === null, unplaced };
+  return { date, items, bed, wake: w.wake, wakeNext: wn.wake, hours, short, noSport: sportWanted && sportT === null, unplaced, ov, cl };
 }
 function challengeFor(date, P) {
   const y = addDays(date, -1), ci = state.checkins[key(y)];
@@ -572,6 +699,7 @@ function weekDone() { let n = 0; for (let i = 0; i < 7; i++) if (state.challenge
 const SVG = p => '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + '</svg>';
 const ICON = {
   plan: SVG('<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/>'),
+  week: SVG('<rect x="3" y="4" width="18" height="17" rx="3"/><path d="M3 9h18M9 9v12M15 9v12"/>'),
   checkin: SVG('<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>'),
   schedule: SVG('<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>'),
   settings: SVG('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>')
@@ -592,7 +720,7 @@ const ICK = { wake: 'wake', bed: 'sleep', wind: 'wind', meal: 'meal', class: 'cl
 const SUGGEST = { meal: 1, sport: 1, morning: 1, task: 1 };
 
 let tab = 'plan', curDate = today(), draft = null, msg = '', msgErr = false, resetArm = false, busy = false, scrollTask = false;
-const TABS = ['plan', 'checkin', 'schedule', 'settings'];
+const TABS = ['plan', 'week', 'checkin', 'schedule', 'settings'];
 
 function header() {
   return '<div class="top"><div class="brand"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" fill="var(--accent)"/></svg>Rythmo</div>' + langToggle() + '</div>';
@@ -601,7 +729,7 @@ function langToggle() {
   return '<div class="lang" role="group" aria-label="' + esc(t('lang_label')) + '"><button data-act="lang" data-v="en" aria-pressed="' + (state.lang === 'en') + '" lang="en">EN</button><button data-act="lang" data-v="fr" aria-pressed="' + (state.lang === 'fr') + '" lang="fr">FR</button></div>';
 }
 function nav() {
-  const lab = { plan: t('nav_plan'), checkin: t('nav_checkin'), schedule: t('nav_schedule'), settings: t('nav_settings') };
+  const lab = { plan: t('nav_plan'), week: t('nav_week'), checkin: t('nav_checkin'), schedule: t('nav_schedule'), settings: t('nav_settings') };
   return '<nav class="tabs" aria-label="' + esc(t('nav_main')) + '"><div style="--n:' + TABS.length + '">' + TABS.map(id => '<button data-act="tab" data-v="' + esc(id) + '"' + (tab === id ? ' aria-current="page"' : '') + '>' + ICON[id] + '<span>' + esc(lab[id]) + '</span></button>').join('') + '</div></nav>';
 }
 function fbCard() {
@@ -637,31 +765,86 @@ function emptyPlan() {
     '<button class="tbtn" data-act="tab" data-v="schedule">' + esc(t('qs_detail')) + '</button></div>' + footer();
 }
 
-function blockHtml(it) {
+const parseKey = s => { const p = String(s).split('-'); const d = new Date(+p[0], +p[1] - 1, +p[2]); return isNaN(d) ? today() : d; };
+const bid = (dk, k) => 'b-' + dk + '-' + String(k).replace(/[^a-zA-Z0-9]/g, '_');
+const PEN = SVG('<path d="M4 20h4L19 9l-4-4L4 16zM14 6l4 4"/>');
+const durOf = it => it.end ? it.end - it.t : (it.dur || (it.type === 'wake' ? 15 : 0));
+function blockHtml(it, dk) {
   const kind = KIND[it.type] || 'free', sug = SUGGEST[it.type];
-  const end = it.end || (it.dur ? it.t + it.dur : 0);
   const hint = (it.soft ? '<span class="tag">' + esc(t('meal_soft', { t: fmtL(it.t) })) + '</span>' : '') + (it.why ? '<span class="hint">' + esc(it.why) + '</span>' : '');
-  return '<div class="block ' + kind + (sug ? ' suggestion' : '') + '"><span class="ic">' + SVG(BI[ICK[it.type]] || BI.free) + '</span><span class="bd"><span class="ttl">' + esc(it.title) + (it.end ? ' <span class="time muted">· ' + fmt(it.t) + '–' + fmt(it.end) + '</span>' : '') + '</span>' + hint + '</span></div>';
+  const inner = '<span class="ic">' + SVG(BI[ICK[it.type]] || BI.free) + '</span><span class="bd"><span class="ttl">' + esc(it.title) + (it.end ? ' <span class="time muted">· ' + fmt(it.t) + '–' + fmt(it.end) + '</span>' : '') + '</span>' + hint + '</span>';
+  const cls = 'block ' + kind + (sug ? ' suggestion' : '') + (it.moved ? ' moved' : '');
+  if (it.type === 'travel') return '<div class="' + cls + '">' + inner + '</div>';
+  return '<button class="' + cls + '" id="' + esc(bid(dk, it.k)) + '" data-act="edit" data-d="' + esc(dk) + '" data-k="' + esc(it.k) + '" aria-haspopup="dialog" aria-label="' + esc(t('edit_block', { b: it.title, t: fmt(it.t) })) + '">' + inner + '<span class="pen" aria-hidden="true">' + PEN + '</span></button>';
 }
-function timeline(P, isToday) {
+function timeline(P, dk, isToday) {
   const now = new Date(), nm = now.getHours() * 60 + now.getMinutes();
-  return '<ul class="tl">' + P.items.map(it => {
-    const end = it.end || it.t + (it.dur || 0), past = isToday && end < nm;
-    return '<li class="' + (past ? 'past' : '') + '"><span class="g">' + (it.soft ? '~' : '') + fmt(it.t) + '</span>' + blockHtml(it) + '</li>';
-  }).join('') + '</ul>';
+  let nowDone = !isToday, h = '<ul class="tl">';
+  P.items.forEach(it => {
+    if (!nowDone && it.t > nm) { nowDone = true; h += '<li class="nowrow" aria-label="' + esc(t('now') + ' ' + fmt(nm)) + '"><span class="g"><span class="nowpill">' + fmt(nm) + '</span></span><span class="now-line"></span></li>'; }
+    const past = isToday && it.t + durOf(it) < nm;
+    h += '<li class="' + (past ? 'past' : '') + '"><span class="g">' + (it.soft ? '~' : '') + fmt(it.t) + '</span>' + blockHtml(it, dk) + '</li>';
+  });
+  return h + '</ul>';
+}
+const ovEmpty = o => !Object.keys(o).some(k => { const v = o[k]; return Array.isArray(v) ? v.length : isObj(v) ? Object.keys(v).length : v != null && v !== false && v !== ''; });
+function setOv(dk, fn) {
+  const o = JSON.parse(JSON.stringify(state.overrides[dk] || {}));
+  fn(o);
+  ['at', 'skip', 'remove'].forEach(k => { if (o[k] && !Object.keys(o[k]).length) delete o[k]; });
+  if (o.add && !o.add.length) delete o.add;
+  if (o.kind !== 'work') delete o.work;
+  if (!o.kind) delete o.kind;
+  if (ovEmpty(o)) delete state.overrides[dk]; else state.overrides[dk] = o;
+  save();
+}
+function dayBadge(P) {
+  const o = P.ov;
+  if (o.kind === 'work') return t('badge_work');
+  if (o.kind === 'off') return t('badge_off');
+  return ovEmpty(o) ? '' : t('badge_edited');
+}
+function dayEditCard(P, dk) {
+  const o = P.ov, kind = o.kind || 'normal', S = state.settings;
+  const removed = state.classes.filter(c => o.remove && o.remove[c.id]);
+  let h = '<section class="card stack" id="dayedit"><h2>' + esc(t('de_title')) + '</h2><p class="hint" style="margin:0">' + esc(t('de_hint')) + '</p>';
+  h += chipRow(t('de_kind'), 'daykind', ['normal', 'work', 'off'], kind, v => t('de_' + v));
+  if (kind === 'work') {
+    const w = o.work || {};
+    h += '<form id="workf" class="stack" style="margin:0"><label class="f" for="wk-l">' + esc(t('de_work_label')) + '<input id="wk-l" type="text" maxlength="40" value="' + esc(w.label || '') + '" placeholder="' + esc(t('work_default')) + '"></label>' +
+      '<div class="grid2"><label class="f" for="wk-s">' + esc(t('sc_start')) + '<input id="wk-s" type="time" required value="' + esc(w.start || '09:00') + '"></label><label class="f" for="wk-e">' + esc(t('sc_end')) + '<input id="wk-e" type="time" required value="' + esc(w.end || '17:30') + '"></label></div>' +
+      '<button class="btn pri full" type="submit">' + esc(t('de_save')) + '</button></form>';
+  }
+  if (S.sportOn) h += toggle('daysport', !o.noSport, t('de_sport'));
+  if ((o.add || []).length) h += '<ul class="cl">' + o.add.map(c => '<li><div class="m"><b>' + esc(c.title) + '</b><small>' + esc(c.start) + '–' + esc(c.end) + ' · ' + esc(t('de_only_day')) + '</small></div><button class="x" data-act="dayrm" data-d="' + esc(dk) + '" data-v="' + esc(c.id) + '">' + esc(t('sc_remove')) + '</button></li>').join('') + '</ul>';
+  if (removed.length && kind === 'normal') h += '<ul class="cl">' + removed.map(c => '<li><div class="m"><b>' + esc(c.title) + '</b><small>' + esc(t('de_removed')) + '</small></div><button class="x" data-act="dayunrm" data-d="' + esc(dk) + '" data-v="' + esc(c.id) + '">' + esc(t('de_restore')) + '</button></li>').join('') + '</ul>';
+  h += '<details class="imp" style="margin:0"><summary>+ ' + esc(t('de_add')) + '</summary><form id="dayaddf" class="stack" style="margin:0"><label class="f" for="da-n">' + esc(t('sc_name')) + '<input id="da-n" type="text" maxlength="40" placeholder="' + esc(t('sc_name_ph')) + '"></label>' +
+    '<div class="grid2"><label class="f" for="da-s">' + esc(t('sc_start')) + '<input id="da-s" type="time" value="14:00" required></label><label class="f" for="da-e">' + esc(t('sc_end')) + '<input id="da-e" type="time" value="16:00" required></label></div>' +
+    '<button class="btn pri full" type="submit">' + esc(t('sc_add_btn')) + '</button></form></details>';
+  if (!ovEmpty(o)) h += '<button class="btn full" data-act="dayreset" data-d="' + esc(dk) + '">' + esc(t('de_reset')) + '</button>';
+  return h + '</section>';
+}
+function dayHeader(P, date, isToday) {
+  const t0 = today(), k = key(date), b = dayBadge(P);
+  let h = '<header class="day-header"><div class="dh-top"><p class="eyebrow">' + esc(isToday ? t('today') : '') + (b ? ' <span class="badge">' + esc(b) + '</span>' : '') + '</p>' +
+    '<div class="dh-nav"><button class="rb" data-act="openday" data-v="' + esc(key(addDays(date, -1))) + '" aria-label="' + esc(t('prev_day')) + '">‹</button><button class="rb" data-act="openday" data-v="' + esc(key(addDays(date, 1))) + '" aria-label="' + esc(t('next_day')) + '">›</button></div></div>' +
+    '<h1>' + esc(longDate(date)) + '</h1>';
+  h += '<div class="pills" role="group" aria-label="' + esc(t('pick_day')) + '">' + [0, 1, 2, 3, 4, 5, 6].map(i => { const d = addDays(t0, i), dk = key(d); return '<button class="chip" data-act="openday" data-v="' + esc(dk) + '"' + (dk === k ? ' aria-current="date"' : '') + '>' + esc(i === 0 ? t('today') : dayName(d, 'short') + ' ' + d.getDate()) + '</button>'; }).join('') + '</div>';
+  return h + '<div class="sum"><div><span>' + esc(t('bed_around')) + '</span><b>' + fmt(P.bed) + '</b></div><div><span>' + esc(t('wake_next')) + '</span><b>' + fmt(P.wakeNext) + '</b></div><div><span>' + esc(t('sleep_h')) + '</span><b>' + esc(fmtH(P.hours)) + ' h</b></div></div></header>';
 }
 function screenPlan() {
-  if (!state.classes.length) return emptyPlan();
-  const t0 = today(), date = curDate, P = computeDay(date), k = key(date), isToday = k === key(t0);
-  let h = '<header class="day-header"><p class="eyebrow">' + esc(isToday ? t('today') : '') + '</p><h1>' + esc(longDate(date)) + '</h1>';
-  h += '<div class="pills" role="group" aria-label="' + esc(t('today')) + '">' + [0, 1, 2, 3, 4, 5, 6].map(i => { const d = addDays(t0, i), dk = key(d); return '<button class="chip" data-act="day" data-v="' + esc(dk) + '"' + (dk === k ? ' aria-current="date"' : '') + '>' + esc(i === 0 ? t('today') : dayName(d, 'short') + ' ' + d.getDate()) + '</button>'; }).join('') + '</div>';
-  h += '<div class="sum"><div><span>' + esc(t('bed_around')) + '</span><b>' + fmt(P.bed) + '</b></div><div><span>' + esc(t('wake_next')) + '</span><b>' + fmt(P.wakeNext) + '</b></div><div><span>' + esc(t('sleep_h')) + '</span><b>' + esc(fmtH(P.hours)) + ' h</b></div></div></header>';
+  if (!state.classes.length && !Object.keys(state.overrides).length) return emptyPlan();
+  const date = curDate, P = computeDay(date), k = key(date), isToday = k === key(today());
+  let h = dayHeader(P, date, isToday) + msgP();
   if (state.sample) h += '<p class="sub">' + esc(t('example_note')) + '</p>';
   if (P.unplaced.length) h += '<div class="warn">' + esc(t('tk_none', { n: P.unplaced.join(', ') })) + '</div>';
   if (P.short) h += '<div class="warn">' + esc(t('short_night', { h: fmtH(P.hours) })) + '</div>';
-  h += timeline(P, isToday);
+  if (!P.cl.length && P.items.length <= 5) h += '<p class="sub">' + esc(t('today_empty')) + '</p>';
+  h += '<p class="hint">' + esc(t('tap_hint')) + '</p>' + timeline(P, k, isToday);
+  if (P.noSport) h += '<div class="tip">' + esc(t('sport_none')) + '</div>';
   const w = state.water[k] || 0;
   h += '<section class="card"><h2>' + esc(t('water')) + '</h2>' + (isToday ? '<div class="stepper"><button class="rb" data-act="water" data-v="-1" aria-label="-1">−</button><span class="v">' + w + '</span><button class="rb" data-act="water" data-v="1" aria-label="+1">+</button></div><p class="hint">' + esc(t('water_goal', { n: 6 })) + '</p>' : '<p>' + esc(t('water_goal_day', { n: 6 })) + '</p>') + '</section>';
+  h += dayEditCard(P, k);
   const dayTasks = state.tasks.filter(x => x.days.includes(wdOf(date)));
   const morning = P.items.filter(x => x.type === 'morning');
   h += '<section class="card stack"><h2>' + esc(t('tk_card')) + '</h2>' +
@@ -669,12 +852,91 @@ function screenPlan() {
     (morning.length ? '<p class="hint" style="margin:0">' + esc(t('sug_card')) + '</p><ul class="cl">' + morning.map(x => '<li><div class="m"><b>' + esc(x.title) + '</b></div><button class="x" data-act="hidesug" data-v="' + esc(x.sug) + '">' + esc(t('sc_remove')) + '</button></li>').join('') + '</ul>' : '') +
     (Object.keys(state.hiddenSug).length ? '<button class="tbtn" data-act="showsug">' + esc(t('sug_restore')) + '</button>' : '') +
     '<button class="btn full" data-act="addtask">' + esc(t('tk_open')) + '</button></section>';
-  if (P.noSport) h += '<div class="tip">' + esc(t('sport_none')) + '</div>';
   const ch = challengeFor(date, P), done = !!state.challenges[k];
   h += '<section class="card stack"><h2>' + esc(t('chal_title')) + '</h2><p style="margin:0">' + esc(ch.text) + '</p>' +
     '<button class="btn' + (done ? '' : ' pri') + ' full" data-act="chal" data-v="' + esc(k) + '" aria-pressed="' + done + '">' + esc(done ? t('chal_done') : t('chal_mark')) + '</button>' +
     '<p class="hint" style="margin:0">' + esc(t('chal_week', { n: weekDone() })) + '</p></section>';
   return h + fbCard() + footer();
+}
+
+/* ---------- Block editor (bottom sheet) ---------- */
+let sheet = null; // { d: 'YYYY-MM-DD', k: blockKey }
+function sheetItem() {
+  if (!sheet) return null;
+  const P = computeDay(parseKey(sheet.d));
+  return P.items.find(x => x.k === sheet.k) || null;
+}
+function sheetHtml() {
+  const it = sheetItem(); if (!it) { sheet = null; return ''; }
+  const d = parseKey(sheet.d), dk = sheet.d, o = state.overrides[dk] || {};
+  const timeIn = (id, lab, v) => '<label class="f" for="' + id + '">' + esc(lab) + '<input id="' + id + '" type="time" required value="' + esc(v) + '"></label>';
+  let body = '';
+  if (it.type === 'class') {
+    body = '<form id="sheetf" class="stack" style="margin:0"><div class="grid2">' + timeIn('sh-s', t('sc_start'), fmt(it.t)) + timeIn('sh-e', t('sc_end'), fmt(it.end)) + '</div>' +
+      '<button class="btn pri full" type="submit">' + esc(t('sh_save_day')) + '</button></form>' +
+      '<button class="btn warnb full" data-act="sheetrmclass">' + esc(it.src === 'work' ? t('sh_not_work') : t('sh_rm_class')) + '</button>' +
+      (it.src === 'pattern' ? '<p class="hint" style="margin:0">' + esc(t('sh_class_hint')) + '</p>' : '');
+  } else if (it.type === 'wake' || it.type === 'bed') {
+    const manual = it.type === 'wake' ? !!o.wake : !!o.bed;
+    body = '<form id="sheetf" class="stack" style="margin:0">' + timeIn('sh-t', it.type === 'wake' ? t('sh_wake') : t('sh_bed'), fmt(it.t)) +
+      (it.type === 'bed' ? '<p class="hint" style="margin:0">' + esc(t('sh_bed_hint')) + '</p>' : '') +
+      '<button class="btn pri full" type="submit">' + esc(t('sh_save_day')) + '</button></form>' +
+      (manual ? '<button class="btn full" data-act="sheetreset">' + esc(t('sh_auto')) + '</button>' : '');
+  } else {
+    body = '<form id="sheetf" class="stack" style="margin:0">' + timeIn('sh-t', t('sh_time'), fmt(it.t)) +
+      '<button class="btn pri full" type="submit">' + esc(t('sh_save_day')) + '</button></form>' +
+      (it.moved ? '<button class="btn full" data-act="sheetreset">' + esc(t('sh_auto')) + '</button>' : '') +
+      '<button class="btn warnb full" data-act="sheetskip">' + esc(t('sh_skip')) + '</button>' +
+      (it.type === 'sport' ? '<button class="tbtn" data-act="tab" data-v="settings">' + esc(t('sh_sport_settings')) + '</button>' : '');
+  }
+  return '<div class="sheet-bg" data-act="sheetclose"></div><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-title"><div class="stack">' +
+    '<div class="sh-head"><div><p class="eyebrow" style="margin:0">' + esc(longDate(d)) + '</p><h2 id="sh-title" style="margin:0">' + esc(it.title) + '</h2></div><button class="rb" data-act="sheetclose" id="sh-close" aria-label="' + esc(t('close')) + '">✕</button></div>' +
+    '<p class="hint" style="margin:0">' + esc(t('sh_only_day')) + '</p>' + body + '</div></div>';
+}
+
+/* ---------- Week view ---------- */
+let weekJump = null;
+const weekStartOf = d => addDays(d, -wdOf(d));
+function screenWeek() {
+  const ws = weekStartOf(curDate), days = [0, 1, 2, 3, 4, 5, 6].map(i => addDays(ws, i)), Ps = days.map(computeDay), tk = key(today());
+  const mode = state.ui.weekMode === 'list' ? 'list' : 'grid';
+  const rng = new Intl.DateTimeFormat(state.lang, { day: 'numeric', month: 'short' });
+  let h = '<h1>' + esc(t('wk_title')) + '</h1><p class="sub">' + esc(rng.format(days[0]) + ' – ' + rng.format(days[6])) + '</p>';
+  h += '<div class="wk-bar"><div class="chips"><button class="chip" data-act="wkmove" data-v="-7">‹ ' + esc(t('wk_prev')) + '</button><button class="chip" data-act="wkmove" data-v="0">' + esc(t('wk_this')) + '</button><button class="chip" data-act="wkmove" data-v="7">' + esc(t('wk_next')) + ' ›</button></div>' +
+    '<div class="chips" role="group" aria-label="' + esc(t('wk_view')) + '"><button class="chip" data-act="wkmode" data-v="grid" aria-pressed="' + (mode === 'grid') + '">' + esc(t('wk_grid')) + '</button><button class="chip" data-act="wkmode" data-v="list" aria-pressed="' + (mode === 'list') + '">' + esc(t('wk_list')) + '</button></div></div>';
+  if (Ps.every(P => !P.cl.length)) h += '<div class="tip">' + esc(t('wk_empty')) + ' <button class="tbtn" data-act="tab" data-v="schedule">' + esc(t('nav_schedule')) + '</button></div>';
+  const head = (P, d) => { const dk = key(d), b = dayBadge(P); return '<button class="wk-h' + (dk === tk ? ' is-today' : '') + '" data-act="openday" data-v="' + esc(dk) + '" aria-label="' + esc(t('wk_open', { d: longDate(d) })) + '"><b>' + esc(dayName(d, 'short')) + ' ' + d.getDate() + '</b>' + (b ? '<span class="badge">' + esc(b) + '</span>' : '') + '</button>'; };
+  if (mode === 'list') {
+    h += '<div class="wk-list">' + Ps.map((P, i) => {
+      const d = days[i], dk = key(d), rows = P.items.filter(it => ['class', 'sport', 'task'].includes(it.type));
+      return '<section class="card" id="col-' + esc(dk) + '">' + head(P, d) + '<p class="hint" style="margin:6px 0">' + esc(t('wake') + ' ' + fmt(P.wake) + ' · ' + t('bed_around') + ' ' + fmt(P.bed)) + '</p>' +
+        (rows.length ? '<ul class="tl">' + rows.map(it => '<li><span class="g">' + fmt(it.t) + '</span>' + blockHtml(it, dk) + '</li>').join('') + '</ul>' : '<p class="hint" style="margin:0">' + esc(t('wk_free_day')) + '</p>') + '</section>';
+    }).join('') + '</div>';
+    return h + footer();
+  }
+  const start = Math.max(300, Math.floor((Math.min(...Ps.map(P => P.wake)) - 30) / 60) * 60);
+  const end = Math.min(1560, Math.ceil((Math.max(...Ps.map(P => P.bed)) + 30) / 60) * 60);
+  const y = m => 'calc(var(--ppm) * ' + (m - start) + ')';
+  const hours = []; for (let m = start; m <= end; m += 60) hours.push(m);
+  h += '<div class="wk-strip" role="group" aria-label="' + esc(t('pick_day')) + '">' + days.map((d, i) => { const dk = key(d), types = [...new Set(Ps[i].items.map(it => KIND[it.type]))].filter(x => x !== 'sleep').slice(0, 4); return '<button data-act="wkjump" data-v="' + esc(dk) + '"' + (dk === tk ? ' aria-current="date"' : '') + '><span>' + esc(dayName(d, 'narrow')) + '</span><b>' + d.getDate() + '</b><span class="dots" aria-hidden="true">' + types.map(k => '<i style="background:var(--b-' + k + ')"></i>').join('') + '</span></button>'; }).join('') + '</div>';
+  h += '<div class="wk" style="--span:' + (end - start) + '">';
+  h += '<div class="wk-g" aria-hidden="true"><div class="wk-h"></div><div class="wk-body">' + hours.map(m => '<span style="top:' + y(m) + '">' + fmt(m) + '</span>').join('') + '</div></div>';
+  Ps.forEach((P, i) => {
+    const d = days[i], dk = key(d);
+    h += '<section class="wk-col' + (dk === tk ? ' is-today' : '') + '" id="col-' + esc(dk) + '" aria-label="' + esc(longDate(d)) + '">' + head(P, d) + '<div class="wk-body">' +
+      hours.map(m => '<i class="hl" style="top:' + y(m) + '"><span>' + fmt(m) + '</span></i>').join('');
+    P.items.forEach(it => {
+      if (it.type === 'wind') return;
+      if (it.type === 'bed' || it.type === 'wake') { h += '<div class="wk-bed' + (it.type === 'wake' ? ' wake' : '') + '" style="top:' + y(Math.min(it.t, end)) + '"><span>' + esc((it.type === 'bed' ? t('bed_around') : t('wake')) + ' ' + fmt(it.t)) + '</span></div>'; return; }
+      const dur = Math.max(durOf(it), 15), kind = KIND[it.type] || 'free';
+      const lab = fmt(it.t) + ' ' + it.title;
+      const style = 'top:' + y(it.t) + ';height:calc(var(--ppm) * ' + dur + ')';
+      if (it.type === 'travel') h += '<div class="wk-b block ' + kind + '" style="' + style + '" title="' + esc(lab) + '"><span>' + esc(lab) + '</span></div>';
+      else h += '<button class="wk-b block ' + kind + (SUGGEST[it.type] ? ' suggestion' : '') + '" style="' + style + '" id="' + esc(bid(dk, it.k)) + '" data-act="edit" data-d="' + esc(dk) + '" data-k="' + esc(it.k) + '" title="' + esc(lab) + '" aria-label="' + esc(t('edit_block', { b: it.title, t: fmt(it.t) }) + ', ' + longDate(d)) + '"><span>' + esc(lab) + '</span></button>';
+    });
+    h += '</div></section>';
+  });
+  return h + '</div>' + footer();
 }
 
 function initDraft() {
@@ -767,15 +1029,31 @@ function screenSettings() {
 
 function render() {
   if (!TABS.includes(tab)) tab = 'plan';
-  const scr = tab === 'plan' ? screenPlan() : tab === 'checkin' ? screenCheckin() : tab === 'schedule' ? screenSchedule() : screenSettings();
+  if (tab !== 'plan' && tab !== 'week') sheet = null;
+  const scr = tab === 'plan' ? screenPlan() : tab === 'week' ? screenWeek() : tab === 'checkin' ? screenCheckin() : tab === 'schedule' ? screenSchedule() : screenSettings();
   const fid = document.activeElement && document.activeElement.id, y = window.scrollY;
-  $app.innerHTML = '<div class="shell">' + header() + '<main id="main">' + scr + '</main></div>' + nav();
+  const wk = tab === 'week' && state.ui.weekMode !== 'list';
+  $app.innerHTML = '<div class="shell' + (tab === 'week' ? ' wide' : '') + '"' + (sheet ? ' inert' : '') + '>' + header() + '<main id="main">' + scr + '</main></div>' + '<div' + (sheet ? ' inert' : '') + '>' + nav() + '</div>' + sheetHtml();
   document.documentElement.setAttribute('data-theme', effTheme());
   document.documentElement.lang = state.lang;
-  if (fid) { const el = document.getElementById(fid); if (el) el.focus({ preventScroll: true }); }
+  document.title = 'Rythmo';
+  if (sheet) { const f = document.getElementById(fid) || document.querySelector('.sheet input, .sheet button'); if (f && f.closest('.sheet')) f.focus({ preventScroll: true }); else { const c = document.getElementById('sh-close'); if (c) c.focus(); } }
+  else if (fid) { const el = document.getElementById(fid); if (el) el.focus({ preventScroll: true }); }
   window.scrollTo(0, y);
   if (scrollTask) { scrollTask = false; const d = document.getElementById('s-task'); if (d) { d.open = true; d.scrollIntoView({ block: 'center' }); } }
+  if (wk && weekJump) { const c = document.getElementById('col-' + weekJump); weekJump = null; if (c) c.scrollIntoView({ inline: 'start', block: 'nearest' }); }
+  syncHash();
 }
+/* Routing: #plan, #week, #checkin, #schedule, #settings, #day=YYYY-MM-DD (back button works). */
+function routeHash() { return tab === 'plan' && key(curDate) !== key(today()) ? 'day=' + key(curDate) : tab; }
+function syncHash() { const h = routeHash(); if (String(location.hash).slice(1) !== h) { try { history.pushState(null, '', '#' + h); } catch (e) {} } }
+function readHash() {
+  const h = String(location.hash || '').slice(1);
+  if (/^day=\d{4}-\d{2}-\d{2}$/.test(h)) { tab = 'plan'; curDate = parseKey(h.slice(4)); return true; }
+  if (TABS.includes(h)) { tab = h; return true; }
+  return false;
+}
+window.addEventListener('popstate', () => { if (readHash()) { sheet = null; msg = ''; render(); } });
 
 /* ===================== CALENDAR IMPORT ===================== */
 function icsDate(v) {
@@ -827,14 +1105,33 @@ async function fetchICS(u) {
     return txt;
   } finally { clearTimeout(tm); }
 }
-const firstClassDate = () => { for (let i = 0; i < 7; i++) { const d = addDays(today(), i); if (classesFor(wdOf(d)).length) return d; } return today(); };
+const firstClassDate = () => { for (let i = 0; i < 7; i++) { const d = addDays(today(), i); if (classesOn(d).length) return d; } return today(); };
 
 /* ===================== ACTIONS ===================== */
 function say(m, err) { msg = m; msgErr = !!err; }
+function closeSheet() { if (!sheet) return; const back = bid(sheet.d, sheet.k); sheet = null; setTimeout(() => { const el = document.getElementById(back); if (el) el.focus(); }, 0); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && sheet) { closeSheet(); render(); } });
 const ACT = {
-  tab: v => { tab = v; msg = ''; if (v === 'checkin') draft = null; window.scrollTo(0, 0); },
+  tab: v => { tab = v; msg = ''; sheet = null; if (v === 'checkin') draft = null; if (v === 'week') weekJump = key(curDate); window.scrollTo(0, 0); },
   lang: v => { state.lang = v === 'en' ? 'en' : 'fr'; save(); },
-  day: v => { const p = String(v).split('-'); curDate = new Date(+p[0], +p[1] - 1, +p[2]); },
+  openday: v => { curDate = parseKey(v); tab = 'plan'; msg = ''; sheet = null; },
+  edit: (v, b) => { sheet = { d: b.dataset.d, k: b.dataset.k }; msg = ''; },
+  sheetclose: () => { closeSheet(); },
+  sheetskip: () => { const it = sheetItem(); if (!it) return; setOv(sheet.d, o => { if (it.k === 'sport') o.noSport = true; else { o.skip = o.skip || {}; o.skip[it.k] = true; } if (o.at) delete o.at[it.k]; }); say(t('edited_day')); closeSheet(); },
+  sheetreset: () => { const it = sheetItem(); if (!it) return; setOv(sheet.d, o => { if (it.k === 'wake') delete o.wake; else if (it.k === 'bed') delete o.bed; else if (o.at) delete o.at[it.k]; }); say(t('edited_day')); },
+  sheetrmclass: () => { const it = sheetItem(); if (!it) return; setOv(sheet.d, o => {
+      if (it.src === 'work') delete o.kind;
+      else if (it.src === 'extra') o.add = (o.add || []).filter(c => c.id !== it.cid);
+      else { o.remove = o.remove || {}; o.remove[it.cid] = true; }
+    }); say(t('edited_day')); closeSheet(); },
+  daykind: (v, b) => { const dk = key(curDate); setOv(dk, o => { if (v === 'normal') delete o.kind; else if (v === 'off') o.kind = 'off'; else { o.kind = 'work'; o.work = o.work || { label: '', start: '09:00', end: '17:30' }; } }); say(t('edited_day')); },
+  daysport: () => { const dk = key(curDate); setOv(dk, o => { if (o.noSport) delete o.noSport; else o.noSport = true; }); },
+  dayrm: (v, b) => { setOv(b.dataset.d, o => { o.add = (o.add || []).filter(c => c.id !== v); }); },
+  dayunrm: (v, b) => { setOv(b.dataset.d, o => { if (o.remove) delete o.remove[v]; }); },
+  dayreset: (v, b) => { delete state.overrides[b.dataset.d]; save(); say(t('de_reset_done')); },
+  wkmove: v => { curDate = +v === 0 ? today() : addDays(weekStartOf(curDate), +v); weekJump = key(+v === 0 ? today() : weekStartOf(curDate)); },
+  wkmode: v => { state.ui.weekMode = v === 'list' ? 'list' : 'grid'; save(); },
+  wkjump: v => { weekJump = v; },
   water: v => { const k = key(today()); state.water[k] = Math.max(0, Math.min(20, (state.water[k] || 0) + (+v))); save(); },
   chal: v => { state.challenges[v] = !state.challenges[v]; save(); },
   sleep: v => { draft.sleepH = Math.max(3, Math.min(12, draft.sleepH + (+v))); },
@@ -897,6 +1194,34 @@ $app.addEventListener('submit', e => {
     if (!days.length) { say(t('sc_need_day'), true); render(); return; }
     state.tasks = state.tasks.concat([{ id: uid(), title, dur, days }]); save(); say(t('tk_added')); render(); return;
   }
+  if (id === 'sheetf') {
+    const it = sheetItem(); if (!it) { sheet = null; render(); return; }
+    const dk = sheet.d, v = id2 => (document.getElementById(id2) || {}).value || '';
+    if (it.type === 'class') {
+      const s0 = v('sh-s'), e0 = v('sh-e');
+      if (!HHMM.test(s0) || !HHMM.test(e0) || toMin(e0) <= toMin(s0)) { say(t('sc_bad_time'), true); render(); return; }
+      setOv(dk, o => {
+        if (it.src === 'work') { o.work = Object.assign({}, o.work, { start: s0, end: e0 }); }
+        else if (it.src === 'extra') o.add = (o.add || []).map(c => c.id === it.cid ? Object.assign({}, c, { start: s0, end: e0 }) : c);
+        else { o.remove = o.remove || {}; o.remove[it.cid] = true; o.add = (o.add || []).concat([{ id: uid(), title: it.title, start: s0, end: e0 }]); }
+      });
+    } else {
+      const x = v('sh-t'); if (!HHMM.test(x)) { render(); return; }
+      setOv(dk, o => { if (it.k === 'wake') o.wake = x; else if (it.k === 'bed') o.bed = x; else { o.at = o.at || {}; o.at[it.k] = x; if (o.skip) delete o.skip[it.k]; } });
+    }
+    say(t('edited_day')); closeSheet(); render(); return;
+  }
+  if (id === 'workf') {
+    const s0 = document.getElementById('wk-s').value, e0 = document.getElementById('wk-e').value, lb = document.getElementById('wk-l').value.trim().slice(0, 40);
+    if (!HHMM.test(s0) || !HHMM.test(e0) || toMin(e0) <= toMin(s0)) { say(t('sc_bad_time'), true); render(); return; }
+    setOv(key(curDate), o => { o.kind = 'work'; o.work = { label: lb, start: s0, end: e0 }; }); say(t('edited_day')); render(); return;
+  }
+  if (id === 'dayaddf') {
+    const title = document.getElementById('da-n').value.trim().slice(0, 40) || t('sc_default');
+    const s0 = document.getElementById('da-s').value, e0 = document.getElementById('da-e').value;
+    if (!HHMM.test(s0) || !HHMM.test(e0) || toMin(e0) <= toMin(s0)) { say(t('sc_bad_time'), true); render(); return; }
+    setOv(key(curDate), o => { o.add = (o.add || []).concat([{ id: uid(), title, start: s0, end: e0 }]); }); say(t('edited_day')); render(); return;
+  }
   if (id === 'addf') {
     const title = document.getElementById('cn').value.trim().slice(0, 40) || t('sc_default');
     const start = document.getElementById('cs').value, end = document.getElementById('ce').value;
@@ -932,7 +1257,10 @@ $app.addEventListener('change', e => {
   }
 })();
 save();
-if (state.classes.length) curDate = firstClassDate();
+if (!readHash() && state.classes.length) curDate = firstClassDate();
+try { history.replaceState(null, '', '#' + routeHash()); } catch (e) {}
+/* Test/debug handle (read-only helpers, no data leaves the page). */
+window.Rythmo = { computeDay, classesOn, importICS, key, parseKey, get state() { return state; } };
 render();
 })();
 </script>
