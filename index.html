@@ -202,6 +202,8 @@ details.imp>.stack{padding:0 var(--s-4) var(--s-4)}
 .block .tag{display:inline-block;font-size:var(--fs-small);color:var(--muted);font-style:italic}
 .block.travel,.block.class{padding-block:6px}
 .tl>li.past .block{opacity:.7}
+.cbx{display:flex;align-items:center;gap:10px;min-height:44px;font-weight:600}
+.cbx input{width:22px;height:22px;accent-color:var(--accent)}
 
 /* Bottom nav */
 nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:4;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -377,7 +379,7 @@ const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSc82fZq4bbi5RvtrHeVOe
 const RELAY = 'https://rythmo.tao-laou-hao.workers.dev';
 const THEMES = ['horizon', 'nuit', 'doux', 'clair'];
 const LEGACY = { a: 'horizon', b: 'horizon', c: 'doux', d: 'clair', e: 'nuit' }; // old variants A-E
-const SCHEMA = 2;
+const SCHEMA = 3;
 const BEDCAPS = ['21:30', '22:00', '22:30', '23:00', '23:30', '00:00'];
 
 /* ===================== TEXT (EN / FR) ===================== */
@@ -423,6 +425,11 @@ en: {
   sug_card:'Morning suggestions (remove any you do not want):', sug_restore:'Restore removed suggestions',
   tk_card:'Flexible tasks', tk_empty:'No tasks. That\'s perfectly fine.', tk_open:'+ Add a task',
   tk_add:'Add a flexible task', tk_hint:'Something without a fixed hour (study, project, errands). Rythmo finds a free slot on the days you pick.', tk_name:'Task name', tk_name_ph:'e.g. Group project', tk_dur:'How long', tk_btn:'Add task', tk_added:'Task added.', tk_list:'Your flexible tasks', tk_why:'Placed in a free slot ({m} min).', tk_none:'No room today for: {n}. Try another day or a shorter task.', tk_default:'Task',
+  imp_ok:'{n} classes imported over {w}.', imp_ok_one:'1 class imported over {w}.', weeks:'{n} weeks', weeks_one:'1 week', imp_past:'This calendar only has past events: {n} classes copied as a weekly timetable.',
+  imp_card:'Imported calendar', imp_until:'Until {d}.', imp_exact:'Each date shows its real classes: cancelled sessions, one-off events and alternate weeks stay exact. Import again to refresh.', imp_remove:'Remove the imported calendar', imp_removed:'Imported calendar removed.',
+  imp_legacy:'Did these classes come from an older import? Import your calendar again so each week follows the real dates (cancelled sessions, alternate weeks).', imp_hint_ok:'Got it',
+  sc_list_weekly:'Classes every week (added by hand)', sc_none_weekly:'None. Your imported calendar is used.',
+  de_school:'It is a class at school (adds the commute)', de_add_btn:'Add',
   nt_title:'Notes & to-do', nt_empty:'Nothing on the list. That\'s fine too.', nt_add_label:'New to-do', nt_add_ph:'e.g. Print the report', nt_add:'Add', nt_clear:'Remove done items', nt_note:'Free note', nt_note_ph:'Anything you want to remember…', nt_note_hint:'Saved on this device when you leave the field.',
   hp_intro:'Where do I find my calendar link? Pick your calendar:',
   hp_g_t:'Google Calendar', hp_g_1:'On a computer, open calendar.google.com (the phone app does not show the link).', hp_g_2:'Settings (gear) > Settings, then click your calendar under "Settings for my calendars".', hp_g_3:'Scroll to "Integrate calendar" and copy "Secret address in iCal format".', hp_g_4:'Paste it above. Keep it private: anyone with it can read the calendar.',
@@ -458,7 +465,7 @@ en: {
   edit_block:'Edit: {b}, {t}', tap_hint:'Tap a block to move it or remove it for this day.', today_empty:'Nothing planned. Enjoy it, or add one small thing.',
   edited_day:'Your day, your way.', badge_work:'Internship / work', badge_off:'Day off', badge_edited:'Edited', work_default:'Internship',
   de_title:'Edit this day', de_hint:'Changes only this date. Your usual timetable stays the same.', de_kind:'This day is', de_normal:'A usual day', de_work:'Internship / work', de_off:'Day off',
-  de_work_label:'Name (optional)', de_save:'Save this day', de_sport:'Sport this day', de_add:'Add a class on this day only', de_only_day:'this day only', de_removed:'Removed this day', de_restore:'Put back',
+  de_work_label:'Name (optional)', de_save:'Save this day', de_sport:'Sport this day', de_add:'Add an event on this day only', de_only_day:'this day only', de_removed:'Removed this day', de_restore:'Put back',
   de_reset:'Reset this day', de_reset_done:'This day follows your usual timetable again.',
   sh_only_day:'Changes apply to this day only.', sh_save_day:'Save for this day', sh_rm_class:'Remove this class on this day', sh_not_work:'Not an internship day any more', sh_class_hint:'To change it every week, go to the Classes tab.',
   sh_wake:'Wake-up this day', sh_bed:'Bedtime this night', sh_bed_hint:'Before noon counts as after midnight.', sh_time:'Time this day', sh_auto:'Back to the automatic time', sh_skip:'Remove it on this day', sh_sport_settings:'Sport settings',
@@ -516,6 +523,11 @@ fr: {
   sug_card:'Suggestions du matin (retire celles dont tu ne veux pas) :', sug_restore:'Remettre les suggestions retirées',
   tk_card:'Tâches flexibles', tk_empty:'Pas de tâche. C\'est très bien comme ça.', tk_open:'+ Ajouter une tâche',
   tk_add:'Ajouter une tâche flexible', tk_hint:"Quelque chose sans heure fixe (révisions, projet, courses). Rythmo trouve un créneau libre les jours choisis.", tk_name:'Nom de la tâche', tk_name_ph:'ex. Projet de groupe', tk_dur:'Durée', tk_btn:'Ajouter la tâche', tk_added:'Tâche ajoutée.', tk_list:'Tes tâches flexibles', tk_why:'Placée dans un créneau libre ({m} min).', tk_none:"Pas de place aujourd'hui pour : {n}. Essaie un autre jour ou une tâche plus courte.", tk_default:'Tâche',
+  imp_ok:'{n} cours importés sur {w}.', imp_ok_one:'1 cours importé sur {w}.', weeks:'{n} semaines', weeks_one:'1 semaine', imp_past:'Cet agenda ne contient que des événements passés : {n} cours copiés comme emploi du temps hebdomadaire.',
+  imp_card:'Agenda importé', imp_until:'Jusqu\'au {d}.', imp_exact:'Chaque date affiche ses vrais cours : séances annulées, événements ponctuels et semaines alternées restent exacts. Réimporte pour mettre à jour.', imp_remove:'Retirer l\'agenda importé', imp_removed:'Agenda importé retiré.',
+  imp_legacy:'Ces cours viennent d\'un ancien import ? Réimporte ton agenda pour que chaque semaine suive les vraies dates (séances annulées, semaines alternées).', imp_hint_ok:'Compris',
+  sc_list_weekly:'Cours chaque semaine (ajoutés à la main)', sc_none_weekly:'Aucun. Ton agenda importé est utilisé.',
+  de_school:'C\'est un cours à l\'école (ajoute le trajet)', de_add_btn:'Ajouter',
   nt_title:'Notes et à faire', nt_empty:'Rien sur la liste. C\'est bien aussi.', nt_add_label:'Nouvelle chose à faire', nt_add_ph:'ex. Imprimer le rapport', nt_add:'Ajouter', nt_clear:'Retirer ce qui est fait', nt_note:'Note libre', nt_note_ph:'Ce que tu veux garder en tête…', nt_note_hint:'Enregistrée sur cet appareil quand tu quittes le champ.',
   hp_intro:'Où trouver le lien de ton agenda ? Choisis ton calendrier :',
   hp_g_t:'Google Agenda', hp_g_1:'Sur un ordinateur, ouvre calendar.google.com (l\'appli mobile n\'affiche pas le lien).', hp_g_2:'Paramètres (roue dentée) > Paramètres, puis clique sur ton agenda sous « Paramètres de mes agendas ».', hp_g_3:'Descends à « Intégrer l\'agenda » et copie l\'« Adresse secrète au format iCal ».', hp_g_4:'Colle-la ci-dessus. Garde-la pour toi : elle donne accès à ton agenda.',
@@ -551,7 +563,7 @@ fr: {
   edit_block:'Modifier : {b}, {t}', tap_hint:'Touche un bloc pour le déplacer ou le retirer ce jour-là.', today_empty:'Rien de prévu. Profites-en, ou ajoute une petite chose.',
   edited_day:'Ta journée est à ton image.', badge_work:'Stage / travail', badge_off:'Jour off', badge_edited:'Modifié', work_default:'Stage',
   de_title:'Modifier ce jour', de_hint:'Ne change que cette date. Ton emploi du temps habituel ne bouge pas.', de_kind:'Ce jour est', de_normal:'Un jour habituel', de_work:'Stage / travail', de_off:'Jour off',
-  de_work_label:'Nom (facultatif)', de_save:'Enregistrer ce jour', de_sport:'Sport ce jour-là', de_add:'Ajouter un cours ce jour-là seulement', de_only_day:'ce jour seulement', de_removed:'Retiré ce jour-là', de_restore:'Remettre',
+  de_work_label:'Nom (facultatif)', de_save:'Enregistrer ce jour', de_sport:'Sport ce jour-là', de_add:'Ajouter un événement ce jour-là seulement', de_only_day:'ce jour seulement', de_removed:'Retiré ce jour-là', de_restore:'Remettre',
   de_reset:'Réinitialiser ce jour', de_reset_done:'Ce jour suit de nouveau ton emploi du temps habituel.',
   sh_only_day:'Les changements ne valent que pour ce jour.', sh_save_day:'Enregistrer pour ce jour', sh_rm_class:'Retirer ce cours ce jour-là', sh_not_work:'Ce n\'est plus un jour de stage', sh_class_hint:'Pour le changer chaque semaine, va dans l\'onglet Cours.',
   sh_wake:'Réveil ce jour-là', sh_bed:'Coucher cette nuit', sh_bed_hint:'Avant midi, ça compte comme après minuit.', sh_time:'Heure ce jour-là', sh_auto:'Revenir à l\'heure automatique', sh_skip:'Le retirer ce jour-là', sh_sport_settings:'Réglages du sport',
@@ -581,7 +593,7 @@ function freshState() {
   return { v: SCHEMA, onboarded: false, lang: (navigator.language || 'en').toLowerCase().startsWith('fr') ? 'fr' : 'en', sample: false,
     settings: { sleep: 8, commute: 30, sport: 30, freeWake: '08:00', bedCap: '23:30', theme: 'horizon', themePicked: false, autoNight: false,
       sportOn: false, sportMin: 30, sportWhen: 'any', waterGoal: 8 }, // new users: no sport until they opt in
-    classes: [], tasks: [], checkins: {}, challenges: {}, water: {}, done: {}, hiddenSug: {}, overrides: {}, ui: { weekMode: 'grid' }, note: '', todos: [],
+    classes: [], tasks: [], checkins: {}, challenges: {}, water: {}, done: {}, hiddenSug: {}, cal: null, overrides: {}, ui: { weekMode: 'grid' }, note: '', todos: [],
     reminders: { enabled: false, bed: { on: true, before: 15 }, checkin: { on: true, time: '21:30' }, water: { on: false }, screens: { on: false, before: 45 } } };
 }
 /* One-time upgrades. Never delete old keys: an older build reading the same storage keeps working. */
@@ -595,6 +607,12 @@ function migrate(s) {
     // Testers who already have classes skip the tutorial (they can replay it from Settings).
     if (s.settings.waterGoal === undefined) s.settings.waterGoal = 6; // the old fixed goal, kept for existing testers
     if (s.onboarded === undefined) s.onboarded = Array.isArray(s.classes) && s.classes.length > 0;
+  }
+  if (v < 3) {
+    // v3: imported calendars are stored per date (state.cal). Classes saved before v3 may come from an old
+    // import (weekly template of one week): mark them 'legacy' so the next calendar import replaces them,
+    // exactly like imports always did, while classes typed by hand from now on are kept.
+    if (Array.isArray(s.classes)) s.classes.forEach(c => { if (isObj(c) && !c.origin) c.origin = s.sample ? 'sample' : 'legacy'; });
   }
   s.v = SCHEMA;
   return s;
@@ -621,7 +639,8 @@ function sanitize(s) {
   if (!HHMM.test(out.reminders.checkin.time)) out.reminders.checkin.time = '21:30';
   const okDays = d => Array.isArray(d) ? d.map(Number).filter(n => n >= 0 && n <= 6) : [];
   out.classes = (Array.isArray(out.classes) ? out.classes : []).filter(c => isObj(c) && HHMM.test(c.start) && HHMM.test(c.end))
-    .map(c => ({ id: String(c.id || uid()), title: String(c.title || '').slice(0, 40), start: c.start, end: c.end, days: okDays(c.days) }));
+    .map(c => ({ id: String(c.id || uid()), title: String(c.title || '').slice(0, 40), start: c.start, end: c.end, days: okDays(c.days), origin: ['manual', 'legacy', 'sample'].includes(c.origin) ? c.origin : 'manual' }));
+  out.cal = cleanCal(out.cal);
   out.tasks = (Array.isArray(out.tasks) ? out.tasks : []).filter(k => isObj(k) && +k.dur > 0)
     .map(k => ({ id: String(k.id || uid()), title: String(k.title || '').slice(0, 40), dur: Math.min(600, +k.dur), days: okDays(k.days) }));
   if (!THEMES.includes(out.settings.theme)) out.settings.theme = 'horizon';
@@ -647,7 +666,7 @@ function cleanOverrides(src) {
     const c = {};
     if (o.kind === 'off') c.kind = 'off';
     if (o.kind === 'work' && isObj(o.work) && HHMM.test(o.work.start) && HHMM.test(o.work.end)) { c.kind = 'work'; c.work = { label: String(o.work.label || '').slice(0, 40), start: o.work.start, end: o.work.end }; }
-    if (Array.isArray(o.add)) { const a = o.add.filter(x => isObj(x) && HHMM.test(x.start) && HHMM.test(x.end)).slice(0, 12).map(x => ({ id: String(x.id || uid()).slice(0, 20), title: String(x.title || '').slice(0, 40), start: x.start, end: x.end })); if (a.length) c.add = a; }
+    if (Array.isArray(o.add)) { const a = o.add.filter(x => isObj(x) && HHMM.test(x.start) && HHMM.test(x.end)).slice(0, 12).map(x => ({ id: String(x.id || uid()).slice(0, 20), title: String(x.title || '').slice(0, 40), start: x.start, end: x.end, school: x.school !== false })); if (a.length) c.add = a; }
     const rm = bmap(o.remove), sk = bmap(o.skip), at = tmap(o.at);
     if (Object.keys(rm).length) c.remove = rm; if (Object.keys(sk).length) c.skip = sk; if (Object.keys(at).length) c.at = at;
     if (o.noSport) c.noSport = true;
@@ -655,6 +674,15 @@ function cleanOverrides(src) {
     if (Object.keys(c).length) out[dk] = c;
   });
   return out;
+}
+/* Imported calendar, per date: { from, to, n, weeks, days: { 'YYYY-MM-DD': [{id,title,start,end}] } } */
+function cleanCal(c) {
+  if (!isObj(c) || !DATEK.test(c.from) || !DATEK.test(c.to) || !isObj(c.days)) return null;
+  const days = {}; let n = 0;
+  Object.keys(c.days).forEach(dk => { if (!DATEK.test(dk) || !Array.isArray(c.days[dk])) return;
+    const l = c.days[dk].filter(x => isObj(x) && HHMM.test(x.start) && HHMM.test(x.end)).slice(0, 16).map(x => ({ id: String(x.id || '').slice(0, 20) || 'i' + n, title: String(x.title || '').slice(0, 40), start: x.start, end: x.end }));
+    if (l.length) { days[dk] = l; n += l.length; } });
+  return n ? { from: c.from, to: c.to, n, weeks: Math.max(1, Math.round(+c.weeks) || 1), days } : null;
 }
 const uid = () => Math.random().toString(36).slice(2, 9);
 const stored = load();
@@ -664,6 +692,7 @@ let state = sanitize(stored ? migrate(stored) : freshState());
 const $app = document.getElementById('app');
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const t = (k, v) => { let s = (T[state.lang] || T.en)[k] || T.en[k] || k; if (v) Object.keys(v).forEach(n => { s = s.split('{' + n + '}').join(v[n]); }); return s; };
+const tp = (k, n, v) => t(n === 1 && ((T[state.lang] || T.en)[k + '_one']) ? k + '_one' : k, v); // singular/plural
 const pad = n => String(n).padStart(2, '0');
 const toMin = s => { const p = String(s).split(':'); return (+p[0]) * 60 + (+p[1] || 0); };
 const fmt = m => { m = ((Math.round(m) % 1440) + 1440) % 1440; return pad(Math.floor(m / 60)) + ':' + pad(m % 60); };
@@ -699,18 +728,26 @@ const ovOf = date => state.overrides[key(date)] || {};
 function classesOn(date) {
   const ov = ovOf(date), wd = wdOf(date), out = [];
   if (ov.kind === 'work' && ov.work) out.push({ id: 'work', title: ov.work.label || t('work_default'), s: toMin(ov.work.start), e: toMin(ov.work.end), src: 'work' });
-  else if (ov.kind !== 'off') state.classes.forEach(c => { if (c.days.includes(wd) && !(ov.remove && ov.remove[c.id])) out.push({ id: c.id, title: c.title, s: toMin(c.start), e: toMin(c.end), src: 'pattern' }); });
-  (ov.add || []).forEach(c => out.push({ id: c.id, title: c.title, s: toMin(c.start), e: toMin(c.end), src: 'extra' }));
+  else if (ov.kind !== 'off') {
+    const rm = ov.remove || {}, dk = key(date), cal = state.cal;
+    state.classes.forEach(c => { if (c.days.includes(wd) && !rm[c.id]) out.push({ id: c.id, title: c.title, s: toMin(c.start), e: toMin(c.end), src: 'pattern', school: true }); });
+    // imported calendar: that date's real events (exceptions, one-off events and alternate weeks stay exact)
+    if (cal && cal.days[dk]) cal.days[dk].forEach(c => { if (!rm[c.id]) out.push({ id: c.id, title: c.title, s: toMin(c.start), e: toMin(c.end), src: 'ics', school: true }); });
+  }
+  // one-off events added for that date: school only if marked so (a dentist appointment gets no school trip)
+  (ov.add || []).forEach(c => out.push({ id: c.id, title: c.title, s: toMin(c.start), e: toMin(c.end), src: 'extra', school: c.school !== false }));
+  if (out.length && out[0].src === 'work') out[0].school = true;
   return out.filter(c => c.e > c.s).sort((a, b) => a.s - b.s);
 }
+const schoolOn = date => classesOn(date).filter(c => c.school);
 function dayHard(date) {
-  const cl = classesOn(date);
+  const cl = schoolOn(date);
   if (!cl.length) return false;
   return cl.reduce((n, c) => n + c.e - c.s, 0) >= 360 || cl[cl.length - 1].e >= 1080 || cl.length >= 4;
 }
 function bedCapMin() { const v = state.settings.bedCap; if (!HHMM.test(v || '')) return 1410; const m = toMin(v); return m < 720 ? m + 1440 : m; }
 function wakeInfo(date, prevHard) {
-  const cl = classesOn(date), S = state.settings, ov = ovOf(date);
+  const cl = schoolOn(date), S = state.settings, ov = ovOf(date);
   if (ov.wake && HHMM.test(ov.wake)) return { wake: toMin(ov.wake), first: cl[0] || null, manual: true };
   if (!cl.length) return { wake: toMin(S.freeWake), first: null };
   const byClass = Math.max(300, cl[0].s - S.commute - 60);
@@ -720,7 +757,7 @@ function wakeInfo(date, prevHard) {
 }
 const overlaps = (a1, a2, b1, b2) => a1 < b2 && b1 < a2;
 function computeDay(date) {
-  const S = state.settings, wd = wdOf(date), cl = classesOn(date), ov = ovOf(date), at = ov.at || {}, skip = ov.skip || {};
+  const S = state.settings, wd = wdOf(date), all = classesOn(date), cl = all.filter(c => c.school), appts = all.filter(c => !c.school), ov = ovOf(date), at = ov.at || {}, skip = ov.skip || {};
   const prev = addDays(date, -1), next = addDays(date, 1);
   const ph = dayHard(prev), w = wakeInfo(date, ph), wn = wakeInfo(next, dayHard(date));
   const sleepMin = S.sleep * 60, CAP = bedCapMin();
@@ -759,6 +796,8 @@ function computeDay(date) {
       add(mEnd - 10, 10, 'mo_prep', 'mo_prep_why');
     }
   }
+  // Personal appointments: fixed blocks and obstacles, but no school trip, wake-up or bag prep around them
+  appts.forEach(c => { items.push({ k: 'c:' + c.id, t: c.s, end: c.e, type: 'appt', src: c.src, cid: c.id, title: c.title }); trips.push([c.s, c.e]); });
   // Lunch (a suggested window, not an order)
   let lt = null, tight = false, tightAfter = null;
   const workLunch = cl.some(c => c.src === 'work' && c.s <= 720 && c.e >= 810); // a work/internship day: lunch break at work
@@ -826,7 +865,7 @@ function computeDay(date) {
   if (!skip.wind) items.push({ k: 'wind', t: mv('wind', bed - 45), dur: 45, type: 'wind', moved: !!at.wind, title: t('winddown'), why: t('winddown_why') });
   items.push({ k: 'bed', t: bed, type: 'bed', title: t('lightsout'), why: bedManual ? t('edited_day') : capped && bed === CAP ? t('lightsout_reg') : t('lightsout_why') });
   items.sort((a, b) => a.t - b.t);
-  return { date, items, bed, wake: w.wake, wakeNext: wn.wake, hours, short, noSport: sportWanted && sportT === null, unplaced, ov, cl };
+  return { date, items, bed, wake: w.wake, wakeNext: wn.wake, hours, short, noSport: sportWanted && sportT === null, unplaced, ov, cl: all };
 }
 function challengeFor(date, P) {
   const y = addDays(date, -1), ci = state.checkins[key(y)];
@@ -858,8 +897,8 @@ const BI = { // block icons
   free: '<path d="M5 8h11v5a5 5 0 0 1-10 0zM16 9h2a2 2 0 0 1 0 4h-2"/>',
   wind: '<rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/>'
 };
-const KIND = { wake: 'sleep', bed: 'sleep', wind: 'sleep', meal: 'meal', class: 'class', travel: 'travel', sport: 'sport', task: 'task', morning: 'free' };
-const ICK = { wake: 'wake', bed: 'sleep', wind: 'wind', meal: 'meal', class: 'class', travel: 'travel', sport: 'sport', task: 'task', morning: 'free' };
+const KIND = { appt: 'class', wake: 'sleep', bed: 'sleep', wind: 'sleep', meal: 'meal', class: 'class', travel: 'travel', sport: 'sport', task: 'task', morning: 'free' };
+const ICK = { appt: 'task', wake: 'wake', bed: 'sleep', wind: 'wind', meal: 'meal', class: 'class', travel: 'travel', sport: 'sport', task: 'task', morning: 'free' };
 const SUGGEST = { meal: 1, sport: 1, morning: 1, task: 1 };
 
 let tab = 'plan', curDate = today(), draft = null, msg = '', msgErr = false, resetArm = false, busy = false, scrollTask = false;
@@ -967,7 +1006,8 @@ function dayEditCard(P, dk) {
   if (removed.length && kind === 'normal') h += '<ul class="cl">' + removed.map(c => '<li><div class="m"><b>' + esc(c.title) + '</b><small>' + esc(t('de_removed')) + '</small></div><button class="x" data-act="dayunrm" data-d="' + esc(dk) + '" data-v="' + esc(c.id) + '">' + esc(t('de_restore')) + '</button></li>').join('') + '</ul>';
   h += '<details class="imp" style="margin:0"><summary>+ ' + esc(t('de_add')) + '</summary><form id="dayaddf" class="stack" style="margin:0"><label class="f" for="da-n">' + esc(t('sc_name')) + '<input id="da-n" type="text" maxlength="40" placeholder="' + esc(t('sc_name_ph')) + '"></label>' +
     '<div class="grid2"><label class="f" for="da-s">' + esc(t('sc_start')) + '<input id="da-s" type="time" value="14:00" required></label><label class="f" for="da-e">' + esc(t('sc_end')) + '<input id="da-e" type="time" value="16:00" required></label></div>' +
-    '<button class="btn pri full" type="submit">' + esc(t('sc_add_btn')) + '</button></form></details>';
+    '<label class="cbx"><input type="checkbox" id="da-school"> ' + esc(t('de_school')) + '</label>' +
+    '<button class="btn pri full" type="submit">' + esc(t('de_add_btn')) + '</button></form></details>';
   if (!ovEmpty(o)) h += '<button class="btn full" data-act="dayreset" data-d="' + esc(dk) + '">' + esc(t('de_reset')) + '</button>';
   return h + '</section>';
 }
@@ -980,7 +1020,7 @@ function dayHeader(P, date, isToday) {
   return h + '<div class="sum"><div><span>' + esc(t('bed_around')) + '</span><b>' + fmt(P.bed) + '</b></div><div><span>' + esc(t('wake_next')) + '</span><b>' + fmt(P.wakeNext) + '</b></div><div><span>' + esc(t('sleep_h')) + '</span><b>' + esc(fmtH(P.hours)) + ' h</b></div></div></header>';
 }
 function screenPlan() {
-  if (!state.classes.length && !Object.keys(state.overrides).length) return emptyPlan();
+  if (!state.classes.length && !state.cal && !Object.keys(state.overrides).length) return emptyPlan();
   const date = curDate, P = computeDay(date), k = key(date), isToday = k === key(today());
   let h = dayHeader(P, date, isToday) + msgP();
   if (state.sample) h += '<p class="sub">' + esc(t('example_note')) + '</p>';
@@ -1043,7 +1083,7 @@ function sheetHtml() {
   const d = parseKey(sheet.d), dk = sheet.d, o = state.overrides[dk] || {};
   const timeIn = (id, lab, v) => '<label class="f" for="' + id + '">' + esc(lab) + '<input id="' + id + '" type="time" required value="' + esc(v) + '"></label>';
   let body = '';
-  if (it.type === 'class') {
+  if (it.type === 'class' || it.type === 'appt') {
     body = '<form id="sheetf" class="stack" style="margin:0"><div class="grid2">' + timeIn('sh-s', t('sc_start'), fmt(it.t)) + timeIn('sh-e', t('sc_end'), fmt(it.end)) + '</div>' +
       '<button class="btn pri full" type="submit">' + esc(t('sh_save_day')) + '</button></form>' +
       '<button class="btn warnb full" data-act="sheetrmclass">' + esc(it.src === 'work' ? t('sh_not_work') : t('sh_rm_class')) + '</button>' +
@@ -1080,7 +1120,7 @@ function screenWeek() {
   const head = (P, d) => { const dk = key(d), b = dayBadge(P); return '<button class="wk-h' + (dk === tk ? ' is-today' : '') + '" data-act="openday" data-v="' + esc(dk) + '" aria-label="' + esc(t('wk_open', { d: longDate(d) })) + '"><b>' + esc(dayName(d, 'short')) + ' ' + d.getDate() + '</b>' + (b ? '<span class="badge">' + esc(b) + '</span>' : '') + '</button>'; };
   if (mode === 'list') {
     h += '<div class="wk-list">' + Ps.map((P, i) => {
-      const d = days[i], dk = key(d), rows = P.items.filter(it => ['class', 'sport', 'task'].includes(it.type));
+      const d = days[i], dk = key(d), rows = P.items.filter(it => ['class', 'appt', 'sport', 'task'].includes(it.type));
       return '<section class="card" id="col-' + esc(dk) + '">' + head(P, d) + '<p class="hint" style="margin:6px 0">' + esc(t('wake') + ' ' + fmt(P.wake) + ' · ' + t('bed_around') + ' ' + fmt(P.bed)) + '</p>' +
         (rows.length ? '<ul class="tl">' + rows.map(it => '<li><span class="g">' + fmt(it.t) + '</span>' + blockHtml(it, dk) + '</li>').join('') + '</ul>' : '<p class="hint" style="margin:0">' + esc(t('wk_free_day')) + '</p>') + '</section>';
     }).join('') + '</div>';
@@ -1147,8 +1187,18 @@ function screenSchedule() {
   const noCl = !state.classes.length;
   const sec = (id, title, body, open) => '<details class="imp" id="' + esc(id) + '"' + (open ? ' open' : '') + '><summary>' + esc(title) + '</summary><div class="stack">' + body + '</div></details>';
   let h = '<h1>' + esc(t('sc_title')) + '</h1><p class="sub">' + esc(t('sc_sub')) + '</p>' + msgP();
-  h += '<h2>' + esc(t('sc_list')) + '</h2>';
-  if (noCl) h += '<p class="sub">' + esc(t('sc_none')) + '</p><button class="btn full" data-act="example" style="margin-bottom:14px">' + esc(t('example_cta')) + '</button>';
+  if (state.cal) {
+    const c = state.cal, titles = [...new Set(Object.values(c.days).flat().map(x => x.title))];
+    const df = new Intl.DateTimeFormat(state.lang, { day: 'numeric', month: 'short' });
+    h += '<section class="card stack"><h2>' + esc(t('imp_card')) + '</h2><p style="margin:0">' + esc(tp('imp_ok', c.n, { n: c.n, w: tp('weeks', c.weeks, { n: c.weeks }) })) + ' ' + esc(t('imp_until', { d: df.format(parseKey(c.to)) })) + '</p>' +
+      '<p class="hint" style="margin:0">' + esc(titles.slice(0, 8).join(' · ') + (titles.length > 8 ? ' …' : '')) + '</p><p class="hint" style="margin:0">' + esc(t('imp_exact')) + '</p>' +
+      '<button class="btn warnb" data-act="calclear">' + esc(t('imp_remove')) + '</button></section>';
+  }
+  if (state.classes.some(c => c.origin === 'legacy') && !state.cal && !state.ui.reimportHintOff)
+    h += '<div class="tip">' + esc(t('imp_legacy')) + ' <button class="tbtn" data-act="hintoff">' + esc(t('imp_hint_ok')) + '</button></div>';
+  h += '<h2>' + esc(state.cal ? t('sc_list_weekly') : t('sc_list')) + '</h2>';
+  if (noCl && state.cal) h += '<p class="sub">' + esc(t('sc_none_weekly')) + '</p>';
+  else if (noCl) h += '<p class="sub">' + esc(t('sc_none')) + '</p><button class="btn full" data-act="example" style="margin-bottom:14px">' + esc(t('example_cta')) + '</button>';
   else {
     const list = state.classes.slice().sort((a, b) => toMin(a.start) - toMin(b.start));
     h += '<ul class="cl">' + list.map(c => '<li><div class="m"><b>' + esc(c.title) + '</b><small>' + esc(c.start) + '–' + esc(c.end) + ' · ' + c.days.slice().sort().map(d => esc(dayName(WEEK[d], 'short'))).join(', ') + '</small></div><button class="x" data-act="del" data-v="' + esc(c.id) + '" aria-label="' + esc(t('sc_remove') + ' : ' + c.title) + '">' + esc(t('sc_remove')) + '</button></li>').join('') + '</ul>' +
@@ -1511,10 +1561,38 @@ function importICS(text) {
   });
   return Object.values(map).filter(c => toMin(c.end) > toMin(c.start)).slice(0, 40).map(c => Object.assign({ id: uid() }, c));
 }
+const hashId = s => { let h = 5381; for (const ch of String(s)) h = ((h * 33) ^ ch.charCodeAt(0)) >>> 0; return 'i' + h.toString(36); };
+/* Date-aware import: keep every timed event on its own date, from this week's Monday up to 26 weeks ahead.
+   EXDATE removes only that date, a one-off event stays one-off, INTERVAL=2 shows on the right weeks.
+   Identical events (same date, title and times, e.g. the same calendar pasted twice) are kept once. */
+function calFromICS(texts) {
+  const from = weekStartOf(today()), horizon = addDays(from, 7 * 26), days = {}, seen = {};
+  texts.flatMap(tx => eventsFromICS(tx, horizon))
+    .filter(x => x.s >= from && x.s < horizon && x.s.toDateString() === new Date(x.e.getTime() - 1).toDateString())
+    .sort((a, b) => a.s - b.s)
+    .forEach(x => {
+      const dk = key(x.s), st = pad(x.s.getHours()) + ':' + pad(x.s.getMinutes()), en = pad(x.e.getHours()) + ':' + pad(x.e.getMinutes());
+      const sig = dk + '|' + x.title + '|' + st + '|' + en; if (seen[sig] || toMin(en) <= toMin(st)) return; seen[sig] = 1;
+      const l = days[dk] = days[dk] || []; if (l.length < 16) l.push({ id: hashId(x.title + '|' + st + '|' + en), title: x.title, start: st, end: en });
+    });
+  const ks = Object.keys(days).sort(); if (!ks.length) return null;
+  const weeks = new Set(ks.map(k => key(weekStartOf(parseKey(k))))).size;
+  return { from: key(from), to: ks[ks.length - 1], n: ks.reduce((n, k) => n + days[k].length, 0), weeks, days };
+}
+/* Apply one or more calendar texts. Classes typed by hand are kept; an older import (or the sample week) is replaced. */
+function applyImport(texts) {
+  const cal = calFromICS(texts);
+  const keep = state.classes.filter(c => c.origin === 'manual');
+  if (cal) { state.cal = cal; state.classes = keep; state.sample = false; return { ok: true, text: tp('imp_ok', cal.n, { n: cal.n, w: tp('weeks', cal.weeks, { n: cal.weeks }) }) }; }
+  // Only past events: fall back to the weekly pattern of the last week (as before), clearly labelled.
+  const tpl = texts.flatMap(importICS);
+  if (tpl.length) { state.cal = null; state.classes = keep.concat(tpl.map(c => Object.assign(c, { origin: 'legacy' }))); state.sample = false; return { ok: true, text: t('imp_past', { n: tpl.length }) }; }
+  return { ok: false };
+}
 const EXAMPLE = [
-  ['Data Science', '08:30', '10:30', [0]], ['Maths', '10:45', '12:15', [0]], ['Project', '14:00', '17:00', [0]],
-  ['English', '10:00', '12:00', [1]], ['Machine Learning', '13:30', '16:30', [1]], ['Python lab', '08:30', '12:30', [2]],
-  ['Statistics', '09:00', '11:00', [3]], ['Workshop', '14:00', '18:00', [3]], ['Business', '08:30', '10:30', [4]]
+  ['Data Science', '08:30', '10:30', [0], 'Science des données'], ['Maths', '10:45', '12:15', [0], 'Maths'], ['Project', '14:00', '17:00', [0], 'Projet'],
+  ['English', '10:00', '12:00', [1], 'Anglais'], ['Machine Learning', '13:30', '16:30', [1], 'Apprentissage automatique'], ['Python lab', '08:30', '12:30', [2], 'TP Python'],
+  ['Statistics', '09:00', '11:00', [3], 'Statistiques'], ['Workshop', '14:00', '18:00', [3], 'Atelier'], ['Business', '08:30', '10:30', [4], 'Gestion']
 ];
 async function fetchICS(u) {
   const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 12000);
@@ -1560,10 +1638,12 @@ const ACT = {
   sleep: v => { draft.sleepH = Math.max(3, Math.min(12, draft.sleepH + (+v))); },
   seg: (v, b) => { draft[b.dataset.n] = +v; },
   saveci: () => { state.checkins[key(today())] = { sleepH: draft.sleepH, quality: draft.quality, energy: draft.energy }; save(); say(t('ci_saved')); },
-  example: () => { if (obOn) finishOb(); state.classes = EXAMPLE.map(x => ({ id: uid(), title: x[0], start: x[1], end: x[2], days: x[3] })); state.sample = true; save(); tab = 'plan'; curDate = firstClassDate(); },
+  example: () => { if (obOn) finishOb(); state.classes = EXAMPLE.map(x => ({ id: uid(), title: state.lang === 'fr' ? x[4] : x[0], start: x[1], end: x[2], days: x[3], origin: 'sample' })); state.cal = null; state.sample = true; save(); tab = 'plan'; curDate = firstClassDate(); },
   del: v => { state.classes = state.classes.filter(c => c.id !== v); save(); },
   deltask: v => { state.tasks = state.tasks.filter(k => k.id !== v); save(); },
-  clear: () => { state.classes = []; state.sample = false; save(); },
+  clear: () => { state.classes = []; state.cal = null; state.sample = false; save(); },
+  calclear: () => { state.cal = null; save(); say(t('imp_removed')); },
+  hintoff: () => { state.ui.reimportHintOff = true; save(); },
   hidesug: v => { state.hiddenSug = Object.assign({}, state.hiddenSug, { [v]: true }); save(); },
   showsug: () => { state.hiddenSug = {}; save(); },
   addtask: () => { tab = 'schedule'; msg = ''; scrollTask = true; },
@@ -1610,8 +1690,9 @@ $app.addEventListener('submit', e => {
     state.settings.commute = +document.getElementById('qs-com').value;
     const S0 = toMin(s), E0 = toMin(en);
     state.classes = (S0 < 720 && E0 > 810)
-      ? [{ id: uid(), title: t('qs_am'), start: s, end: '12:00', days }, { id: uid(), title: t('qs_pm'), start: '13:30', end: en, days }]
-      : [{ id: uid(), title: t('sc_default'), start: s, end: en, days }];
+      ? [{ id: uid(), title: t('qs_am'), start: s, end: '12:00', days, origin: 'manual' }, { id: uid(), title: t('qs_pm'), start: '13:30', end: en, days, origin: 'manual' }]
+      : [{ id: uid(), title: t('sc_default'), start: s, end: en, days, origin: 'manual' }];
+    state.cal = null;
     if (obOn) finishOb();
     state.sample = false; msg = ''; tab = 'plan'; curDate = firstClassDate(); save(); render(); return;
   }
@@ -1620,10 +1701,10 @@ $app.addEventListener('submit', e => {
     if (!urls.length || urls.some(x => !/^https?:\/\/\S+$/i.test(x))) { say(t('sc_url_bad'), true); render(); return; }
     busy = true; say(''); render();
     Promise.allSettled(urls.slice(0, 6).map(fetchICS)).then(rs => {
-      const res = rs.filter(r => r.status === 'fulfilled').flatMap(r => importICS(r.value));
-      if (!res.length) { say(t(rs.some(r => r.status === 'fulfilled') ? 'lk_empty' : 'lk_fail'), true); return; }
+      const r = applyImport(rs.filter(x => x.status === 'fulfilled').map(x => x.value));
+      if (!r.ok) { say(t(rs.some(x => x.status === 'fulfilled') ? 'lk_empty' : 'lk_fail'), true); return; }
       if (obOn) finishOb();
-      state.classes = res; state.sample = false; msg = ''; tab = 'plan'; curDate = firstClassDate(); save();
+      tab = 'plan'; curDate = firstClassDate(); save(); say(r.text);
     }).finally(() => { busy = false; render(); });
     return;
   }
@@ -1636,13 +1717,13 @@ $app.addEventListener('submit', e => {
   if (id === 'sheetf') {
     const it = sheetItem(); if (!it) { sheet = null; render(); return; }
     const dk = sheet.d, v = id2 => (document.getElementById(id2) || {}).value || '';
-    if (it.type === 'class') {
+    if (it.type === 'class' || it.type === 'appt') {
       const s0 = v('sh-s'), e0 = v('sh-e');
       if (!HHMM.test(s0) || !HHMM.test(e0) || toMin(e0) <= toMin(s0)) { say(t('sc_bad_time'), true); render(); return; }
       setOv(dk, o => {
         if (it.src === 'work') { o.work = Object.assign({}, o.work, { start: s0, end: e0 }); }
         else if (it.src === 'extra') o.add = (o.add || []).map(c => c.id === it.cid ? Object.assign({}, c, { start: s0, end: e0 }) : c);
-        else { o.remove = o.remove || {}; o.remove[it.cid] = true; o.add = (o.add || []).concat([{ id: uid(), title: it.title, start: s0, end: e0 }]); }
+        else { o.remove = o.remove || {}; o.remove[it.cid] = true; o.add = (o.add || []).concat([{ id: uid(), title: it.title, start: s0, end: e0, school: true }]); }
       });
     } else {
       const x = v('sh-t'); if (!HHMM.test(x)) { render(); return; }
@@ -1664,7 +1745,8 @@ $app.addEventListener('submit', e => {
     const title = document.getElementById('da-n').value.trim().slice(0, 40) || t('sc_default');
     const s0 = document.getElementById('da-s').value, e0 = document.getElementById('da-e').value;
     if (!HHMM.test(s0) || !HHMM.test(e0) || toMin(e0) <= toMin(s0)) { say(t('sc_bad_time'), true); render(); return; }
-    setOv(key(curDate), o => { o.add = (o.add || []).concat([{ id: uid(), title, start: s0, end: e0 }]); }); say(t('edited_day')); render(); return;
+    const school = !!(document.getElementById('da-school') || {}).checked;
+    setOv(key(curDate), o => { o.add = (o.add || []).concat([{ id: uid(), title, start: s0, end: e0, school }]); }); say(t('edited_day')); render(); return;
   }
   if (id === 'addf') {
     const title = document.getElementById('cn').value.trim().slice(0, 40) || t('sc_default');
@@ -1672,17 +1754,17 @@ $app.addEventListener('submit', e => {
     const days = Array.from(document.querySelectorAll('input[name=cd]:checked')).map(x => +x.value);
     if (!start || !end || toMin(end) <= toMin(start)) { say(t('sc_bad_time'), true); render(); return; }
     if (!days.length) { say(t('sc_need_day'), true); render(); return; }
-    if (state.sample) { state.classes = []; state.sample = false; }
-    state.classes.push({ id: uid(), title, start, end, days }); save(); say(t('sc_added')); render();
+    if (state.sample) { state.classes = state.classes.filter(c => c.origin !== 'sample'); state.sample = false; }
+    state.classes.push({ id: uid(), title, start, end, days, origin: 'manual' }); save(); say(t('sc_added')); render();
   }
 });
 $app.addEventListener('change', e => {
   const el = e.target;
   if (el.id === 'ics' && el.files && el.files[0]) {
     el.files[0].text().then(txt => {
-      const res = importICS(txt);
-      if (!res.length) say(t('sc_import_none'), true);
-      else { if (obOn) { finishOb(); curDate = firstClassDate(); } state.classes = res; state.sample = false; save(); say(t('sc_import_ok', { n: res.length })); if (tab === 'plan') curDate = firstClassDate(); }
+      const r = applyImport([txt]);
+      if (!r.ok) say(t('sc_import_none'), true);
+      else { if (obOn) finishOb(); save(); say(r.text); if (tab === 'plan') curDate = firstClassDate(); }
       render();
     }).catch(() => { say(t('sc_import_err'), true); render(); });
     return;
@@ -1717,7 +1799,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
 if (!readHash() && state.classes.length) curDate = firstClassDate();
 try { history.replaceState(null, '', '#' + routeHash()); } catch (e) {}
 /* Test/debug handle (read-only helpers, no data leaves the page). */
-window.Rythmo = { computeDay, classesOn, importICS, eventsFromICS, parseICS, key, parseKey, computeReminders, remindersICS, planICS, get state() { return state; } };
+window.Rythmo = { computeDay, classesOn, importICS, calFromICS, applyImport, eventsFromICS, parseICS, key, parseKey, computeReminders, remindersICS, planICS, get state() { return state; } };
 render();
 })();
 </script>
