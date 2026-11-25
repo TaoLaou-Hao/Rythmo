@@ -337,6 +337,11 @@ button.block:hover{border-color:var(--c)}
 .rm-box .btn.pri{background:var(--accent)}
 .ok-line{margin:0;font-weight:600;color:var(--ink)}
 .steps{margin:0;padding-left:1.3em;display:grid;gap:4px}
+
+.helps{display:grid;gap:6px}
+details.help{border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface)}
+details.help>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;padding:0 var(--s-3);font-weight:600}
+details.help .steps{padding:0 var(--s-3) var(--s-3) 2.2em}
 @media (prefers-reduced-motion: no-preference) {
   .btn,.chip,.tg .tr,.tg .tr::after,.glass{transition:background-color .18s ease,border-color .18s ease,left .18s ease,transform .12s ease}
   .btn:active{transform:translateY(1px)}
@@ -405,6 +410,11 @@ en: {
   sug_card:'Morning suggestions (remove any you do not want):', sug_restore:'Restore removed suggestions',
   tk_card:'Flexible tasks', tk_empty:'No tasks. That\'s perfectly fine.', tk_open:'+ Add a task',
   tk_add:'Add a flexible task', tk_hint:'Something without a fixed hour (study, project, errands). Rythmo finds a free slot on the days you pick.', tk_name:'Task name', tk_name_ph:'e.g. Group project', tk_dur:'How long', tk_btn:'Add task', tk_added:'Task added.', tk_list:'Your flexible tasks', tk_why:'Placed in a free slot ({m} min).', tk_none:'No room today for: {n}. Try another day or a shorter task.', tk_default:'Task',
+  hp_intro:'Where do I find my calendar link? Pick your calendar:',
+  hp_g_t:'Google Calendar', hp_g_1:'On a computer, open calendar.google.com (the phone app does not show the link).', hp_g_2:'Settings (gear) > Settings, then click your calendar under "Settings for my calendars".', hp_g_3:'Scroll to "Integrate calendar" and copy "Secret address in iCal format".', hp_g_4:'Paste it above. Keep it private: anyone with it can read the calendar.',
+  hp_a_t:'Apple Calendar (iCloud)', hp_a_1:'iPhone: open Calendar, tap Calendars, then the (i) next to your calendar.', hp_a_2:'Turn on "Public Calendar", then tap "Share Link…" > Copy.', hp_a_3:'Mac: right-click the calendar > Share Calendar > Public Calendar, then copy the link.', hp_a_4:'Paste it above (a webcal:// link works). Only iCloud calendars can be shared this way.',
+  hp_o_t:'Outlook / Microsoft 365', hp_o_1:'Open outlook.com (or Outlook on the web) on a computer.', hp_o_2:'Settings > Calendar > Shared calendars, then "Publish a calendar".', hp_o_3:'Pick your calendar and "Can view all details", then Publish.', hp_o_4:'Copy the ICS link and paste it above. School accounts may have publishing turned off: then download an .ics file instead.',
+  hp_e_t:'School ENT, Hyperplanning, ADE', hp_e_1:'Open your timetable in the school portal (ENT, Hyperplanning, ADE, Aurion…).', hp_e_2:'Look for an icon or link named iCal, ICS, Export, Subscribe or Synchronise (Hyperplanning: calendar icon "export"; ADE: "Export agenda" > generate URL).', hp_e_3:'Copy the link (https:// or webcal://) and paste it above.', hp_e_4:'If you only get a file, use "Import a calendar file" below. Names vary from school to school.',
   rm_title:'Reminders', rm_intro:'Rythmo can remind you to go to bed and to do your check-in. Never after midnight, never guilt-tripping. You can stop whenever you like.',
   rm_bed:'Bedtime', rm_bed_h:'A gentle nudge before lights out.', rm_checkin:'Evening check-in', rm_checkin_h:'30 seconds to look back at your day.',
   rm_water:'Water', rm_water_h:'Three light reminders during the day.', rm_screens:'Screens off before sleep', rm_screens_h:'A hint to put the phone down.',
@@ -492,6 +502,11 @@ fr: {
   sug_card:'Suggestions du matin (retire celles dont tu ne veux pas) :', sug_restore:'Remettre les suggestions retirées',
   tk_card:'Tâches flexibles', tk_empty:'Pas de tâche. C\'est très bien comme ça.', tk_open:'+ Ajouter une tâche',
   tk_add:'Ajouter une tâche flexible', tk_hint:"Quelque chose sans heure fixe (révisions, projet, courses). Rythmo trouve un créneau libre les jours choisis.", tk_name:'Nom de la tâche', tk_name_ph:'ex. Projet de groupe', tk_dur:'Durée', tk_btn:'Ajouter la tâche', tk_added:'Tâche ajoutée.', tk_list:'Tes tâches flexibles', tk_why:'Placée dans un créneau libre ({m} min).', tk_none:"Pas de place aujourd'hui pour : {n}. Essaie un autre jour ou une tâche plus courte.", tk_default:'Tâche',
+  hp_intro:'Où trouver le lien de ton agenda ? Choisis ton calendrier :',
+  hp_g_t:'Google Agenda', hp_g_1:'Sur un ordinateur, ouvre calendar.google.com (l\'appli mobile n\'affiche pas le lien).', hp_g_2:'Paramètres (roue dentée) > Paramètres, puis clique sur ton agenda sous « Paramètres de mes agendas ».', hp_g_3:'Descends à « Intégrer l\'agenda » et copie l\'« Adresse secrète au format iCal ».', hp_g_4:'Colle-la ci-dessus. Garde-la pour toi : elle donne accès à ton agenda.',
+  hp_a_t:'Calendrier Apple (iCloud)', hp_a_1:'iPhone : ouvre Calendrier, touche Calendriers, puis le (i) à côté de ton calendrier.', hp_a_2:'Active « Calendrier public », puis touche « Partager le lien… » > Copier.', hp_a_3:'Mac : clic droit sur le calendrier > Partager le calendrier > Calendrier public, puis copie le lien.', hp_a_4:'Colle-le ci-dessus (un lien webcal:// marche). Seuls les calendriers iCloud se partagent ainsi.',
+  hp_o_t:'Outlook / Microsoft 365', hp_o_1:'Ouvre outlook.com (ou Outlook sur le web) sur un ordinateur.', hp_o_2:'Paramètres > Calendrier > Calendriers partagés, puis « Publier un calendrier ».', hp_o_3:'Choisis ton calendrier et « Peut afficher tous les détails », puis Publier.', hp_o_4:'Copie le lien ICS et colle-le ci-dessus. Les comptes d\'école ont parfois la publication désactivée : télécharge alors un fichier .ics.',
+  hp_e_t:'ENT de l\'école, Hyperplanning, ADE', hp_e_1:'Ouvre ton emploi du temps sur le portail de l\'école (ENT, Hyperplanning, ADE, Aurion…).', hp_e_2:'Cherche une icône ou un lien iCal, ICS, Exporter, S\'abonner ou Synchroniser (Hyperplanning : icône calendrier « export » ; ADE : « Export agenda » > générer l\'URL).', hp_e_3:'Copie le lien (https:// ou webcal://) et colle-le ci-dessus.', hp_e_4:'Si tu n\'obtiens qu\'un fichier, utilise « Importer un fichier calendrier » ci-dessous. Les noms varient selon les écoles.',
   rm_title:'Rappels', rm_intro:'Rythmo peut te rappeler d\'aller te coucher et de faire ton bilan. Jamais après minuit, jamais culpabilisant. Tu peux arrêter quand tu veux.',
   rm_bed:'Coucher', rm_bed_h:'Un petit signal avant l\'extinction des feux.', rm_checkin:'Bilan du soir', rm_checkin_h:'30 secondes pour faire le point sur ta journée.',
   rm_water:'Eau', rm_water_h:'Trois petits rappels dans la journée.', rm_screens:'Écrans éteints avant de dormir', rm_screens_h:'Une idée pour poser le téléphone.',
@@ -848,7 +863,11 @@ function msgP() { return '<p class="msg' + (msgErr ? ' err' : '') + '" role="sta
 function linkForm() {
   if (!RELAY) return '';
   return '<form id="urlf" class="stack" style="margin:0"><label class="f" for="icsurl">' + esc(t('lk_title')) + '<span class="hint">' + esc(t('lk_note')) + '</span><textarea id="icsurl" rows="2" autocomplete="off" spellcheck="false" placeholder="' + esc(t('sc_url_ph')) + '"></textarea></label>' +
-    '<button class="btn pri full" type="submit"' + (busy ? ' disabled' : '') + '>' + esc(busy ? t('lk_busy') : t('lk_btn')) + '</button></form>';
+    '<button class="btn pri full" type="submit"' + (busy ? ' disabled' : '') + '>' + esc(busy ? t('lk_busy') : t('lk_btn')) + '</button></form>' + icsHelp();
+}
+function icsHelp() {
+  const p = (k, n) => '<details class="help"><summary>' + esc(t(k + '_t')) + '</summary><ol class="steps">' + Array.from({ length: n }, (_, i) => '<li>' + esc(t(k + '_' + (i + 1))) + '</li>').join('') + '</ol></details>';
+  return '<div class="helps"><p class="hint" style="margin:0">' + esc(t('hp_intro')) + '</p>' + p('hp_g', 4) + p('hp_a', 4) + p('hp_o', 4) + p('hp_e', 4) + '</div>';
 }
 function fileImport() {
   return '<div><label class="btn full" for="ics">' + esc(t('sc_import')) + '</label><input id="ics" class="sr" type="file" accept=".ics,text/calendar"><p class="hint" style="margin-top:6px">' + esc(t('sc_import_hint')) + '</p></div>';
@@ -1337,26 +1356,113 @@ function remindersCard() {
 }
 
 /* ===================== CALENDAR IMPORT ===================== */
-function icsDate(v) {
-  const m = v.match(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})?(Z)?$/);
+/* ---------- ICS parsing: unfolding, params, TZID, all-day skip, RRULE (WEEKLY/DAILY), EXDATE, RECURRENCE-ID ---------- */
+const WIN_TZ = { 'romance standard time': 'Europe/Paris', 'w. europe standard time': 'Europe/Berlin', 'central europe standard time': 'Europe/Budapest',
+  'central european standard time': 'Europe/Warsaw', 'gmt standard time': 'Europe/London', 'utc': 'UTC', 'coordinated universal time': 'UTC' };
+function tzName(raw) {
+  if (!raw) return null;
+  let z = String(raw).replace(/^"|"$/g, '').trim();
+  if (WIN_TZ[z.toLowerCase()]) z = WIN_TZ[z.toLowerCase()];
+  z = z.replace(/^\/+/, '').replace(/^.*?(?=(Europe|America|Africa|Asia|Australia|Pacific|Atlantic|Indian)\/)/, '');
+  try { new Intl.DateTimeFormat('en-US', { timeZone: z }); return z; } catch (e) { return null; } // unknown zone: treat as local time
+}
+const tzFmt = {};
+function tzOffset(ms, tz) { // minutes east of UTC for that zone at that instant
+  const f = tzFmt[tz] || (tzFmt[tz] = new Intl.DateTimeFormat('en-US', { timeZone: tz, hourCycle: 'h23', year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' }));
+  const p = {}; f.formatToParts(new Date(ms)).forEach(x => { p[x.type] = x.value; });
+  return (Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour % 24, +p.minute, +p.second) - ms) / 60000;
+}
+/* A wall-clock moment {y,mo,d,h,mi,s} in zone z ('Z' = UTC, IANA name, or null = floating/local) -> Date */
+function wallToDate(w, z) {
+  if (z === 'Z' || z === 'UTC') return new Date(Date.UTC(w.y, w.mo, w.d, w.h, w.mi, w.s));
+  if (!z) return new Date(w.y, w.mo, w.d, w.h, w.mi, w.s);
+  const guess = Date.UTC(w.y, w.mo, w.d, w.h, w.mi, w.s);
+  let off = tzOffset(guess, z), ms = guess - off * 60000;
+  const off2 = tzOffset(ms, z); if (off2 !== off) ms = guess - off2 * 60000;
+  return new Date(ms);
+}
+function parseDT(val, params) {
+  const m = String(val || '').trim().match(/^(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})?(Z)?)?$/);
   if (!m) return null;
-  if (m[7]) return new Date(Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +(m[6] || 0)));
-  return new Date(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +(m[6] || 0));
+  const w = { y: +m[1], mo: +m[2] - 1, d: +m[3], h: +(m[4] || 0), mi: +(m[5] || 0), s: +(m[6] || 0) };
+  const dateOnly = !m[4] || /VALUE=DATE(?!-)/i.test(params || '');
+  const tzm = String(params || '').match(/TZID=("[^"]*"|[^;:]*)/i);
+  const z = m[7] ? 'Z' : tzm ? tzName(tzm[1]) : null;
+  return { w, z, dateOnly };
+}
+function addWallDays(w, n) { const d = new Date(Date.UTC(w.y, w.mo, w.d + n)); return Object.assign({}, w, { y: d.getUTCFullYear(), mo: d.getUTCMonth(), d: d.getUTCDate() }); }
+function parseICS(text) {
+  const lines = String(text || '').replace(/\r\n?/g, '\n').replace(/\n[ \t]/g, '').split('\n');
+  const evs = []; let cur = null, depth = 0;
+  for (const raw of lines) {
+    const ln = raw.trim(); if (!ln) continue;
+    if (/^BEGIN:VEVENT$/i.test(ln)) { cur = {}; depth = 0; continue; }
+    if (!cur) continue;
+    if (/^END:VEVENT$/i.test(ln)) { evs.push(cur); cur = null; continue; }
+    if (/^BEGIN:/i.test(ln)) { depth++; continue; }         // VALARM etc.: ignored
+    if (/^END:/i.test(ln)) { depth = Math.max(0, depth - 1); continue; }
+    if (depth) continue;
+    const m = ln.match(/^([A-Za-z0-9-]+)((?:;[^:;]+=(?:"[^"]*"|[^:;]*))*):(.*)$/); if (!m) continue;
+    const name = m[1].toUpperCase(); (cur[name] = cur[name] || []).push({ params: m[2] || '', value: m[3] });
+  }
+  return evs;
+}
+function durMin(v) { const m = String(v || '').match(/^P(?:(\d+)W)?(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?)?$/); return m ? (+(m[1] || 0)) * 10080 + (+(m[2] || 0)) * 1440 + (+(m[3] || 0)) * 60 + (+(m[4] || 0)) + Math.floor((+(m[5] || 0)) / 60) : null; }
+const BYDAY = { MO: 0, TU: 1, WE: 2, TH: 3, FR: 4, SA: 5, SU: 6 };
+/* Expand every timed event into concrete instances [{s: Date, e: Date, title}] up to `horizon`. */
+function eventsFromICS(text, horizon) {
+  const raw = parseICS(text), out = [], moved = {};
+  const one = (ev, n) => ev[n] && ev[n][0];
+  raw.forEach(ev => { const r = one(ev, 'RECURRENCE-ID'), u = one(ev, 'UID'); if (r && u) { const d = parseDT(r.value, r.params); if (d) moved[u.value + '|' + wallToDate(d.w, d.z).getTime()] = true; } });
+  raw.forEach(ev => {
+    try {
+      if (one(ev, 'STATUS') && /CANCELLED/i.test(one(ev, 'STATUS').value)) return;
+      const ds = one(ev, 'DTSTART'); if (!ds) return;
+      const st = parseDT(ds.value, ds.params); if (!st || st.dateOnly) return; // all-day events are skipped
+      const s0 = wallToDate(st.w, st.z);
+      let len = null;
+      const de = one(ev, 'DTEND');
+      if (de) { const en = parseDT(de.value, de.params); if (en && !en.dateOnly) len = (wallToDate(en.w, en.z) - s0) / 60000; }
+      else if (one(ev, 'DURATION')) len = durMin(one(ev, 'DURATION').value);
+      if (!(len > 0) || len > 24 * 60) return;
+      const title = cleanTitle(one(ev, 'SUMMARY') ? one(ev, 'SUMMARY').value : '');
+      const uid = one(ev, 'UID') ? one(ev, 'UID').value : '';
+      const ex = {};
+      (ev.EXDATE || []).forEach(x => String(x.value).split(',').forEach(v => { const d = parseDT(v, x.params); if (d) { ex[d.dateOnly ? 'D' + d.w.y + '-' + d.w.mo + '-' + d.w.d : wallToDate(d.w, d.z || st.z).getTime()] = true; } }));
+      const push = (w) => {
+        const s = wallToDate(w, st.z);
+        if (ex[s.getTime()] || ex['D' + w.y + '-' + w.mo + '-' + w.d]) return;
+        if (!one(ev, 'RECURRENCE-ID') && moved[uid + '|' + s.getTime()]) return; // replaced by a modified instance
+        out.push({ s, e: new Date(s.getTime() + len * 60000), title });
+      };
+      const rr = one(ev, 'RRULE');
+      if (!rr || one(ev, 'RECURRENCE-ID')) { push(st.w); return; }
+      const R = {}; String(rr.value).split(';').forEach(p => { const i = p.indexOf('='); if (i > 0) R[p.slice(0, i).toUpperCase()] = p.slice(i + 1); });
+      const freq = (R.FREQ || '').toUpperCase(), interval = Math.max(1, +R.INTERVAL || 1), count = +R.COUNT || 0;
+      let until = null; if (R.UNTIL) { const u = parseDT(R.UNTIL, ''); if (u) until = u.dateOnly ? wallToDate(Object.assign({}, u.w, { h: 23, mi: 59, s: 59 }), st.z) : wallToDate(u.w, u.z || st.z); }
+      if (freq !== 'WEEKLY' && freq !== 'DAILY') { push(st.w); return; } // other frequencies: first instance only
+      const days = (R.BYDAY || '').split(',').map(x => BYDAY[x.trim().slice(-2).toUpperCase()]).filter(x => x !== undefined);
+      const startWd = (new Date(Date.UTC(st.w.y, st.w.mo, st.w.d)).getUTCDay() + 6) % 7;
+      let n = 0, guard = 0;
+      const emit = w => { const s = wallToDate(w, st.z); if (s < s0) return true; if (until && s > until) return false; if (s > horizon) return false; n++; if (count && n > count) return false; push(w); return true; };
+      if (freq === 'DAILY') {
+        for (let k = 0; guard++ < 800; k += interval) { const w = addWallDays(st.w, k); if (days.length && !days.includes((startWd + k) % 7)) continue; if (!emit(w)) break; }
+      } else {
+        const wd = days.length ? days.slice().sort((a, b) => a - b) : [startWd];
+        const mon = addWallDays(st.w, -startWd);
+        outer: for (let wk = 0; guard++ < 400; wk += interval) for (const d of wd) { if (!emit(addWallDays(mon, wk * 7 + d))) break outer; }
+      }
+    } catch (e) { /* odd event: skip it, never crash the import */ }
+  });
+  return out;
 }
 function cleanTitle(raw) {
   const parts = String(raw || '').replace(/\\[,;]/g, m => m[1]).split(/\\[nN]|\n|\|/).map(x => x.trim()).filter(Boolean);
   return (parts[0] || t('sc_default')).slice(0, 40);
 }
+/* Turn a calendar into the weekly pattern: the week containing the next event (or the last week if all are past). */
 function importICS(text) {
-  const evs = [];
-  text.replace(/\r?\n[ \t]/g, '').split('BEGIN:VEVENT').slice(1).forEach(b => {
-    const body = b.split('END:VEVENT')[0];
-    const get = n => { const m = body.match(new RegExp('^' + n + '[^:\\r\\n]*:(.*)$', 'm')); return m ? m[1].replace(/\r/g, '').trim() : null; };
-    const ds = get('DTSTART'), de = get('DTEND');
-    const s = ds && icsDate(ds), e = de && icsDate(de);
-    if (!s || !e || s.toDateString() !== e.toDateString()) return;
-    evs.push({ s, e, title: cleanTitle(get('SUMMARY')) });
-  });
+  const evs = eventsFromICS(text, addDays(today(), 400)).filter(x => x.s.toDateString() === new Date(x.e.getTime() - 1).toDateString());
   if (!evs.length) return [];
   evs.sort((a, b) => a.s - b.s);
   const t0 = today().getTime();
@@ -1369,7 +1475,7 @@ function importICS(text) {
     if (!map[k]) map[k] = { title: x.title, start: st, end: en, days: [] };
     const d = wdOf(x.s); if (!map[k].days.includes(d)) map[k].days.push(d);
   });
-  return Object.values(map).slice(0, 40).map(c => Object.assign({ id: uid() }, c));
+  return Object.values(map).filter(c => toMin(c.end) > toMin(c.start)).slice(0, 40).map(c => Object.assign({ id: uid() }, c));
 }
 const EXAMPLE = [
   ['Data Science', '08:30', '10:30', [0]], ['Maths', '10:45', '12:15', [0]], ['Project', '14:00', '17:00', [0]],
@@ -1568,7 +1674,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
 if (!readHash() && state.classes.length) curDate = firstClassDate();
 try { history.replaceState(null, '', '#' + routeHash()); } catch (e) {}
 /* Test/debug handle (read-only helpers, no data leaves the page). */
-window.Rythmo = { computeDay, classesOn, importICS, key, parseKey, computeReminders, remindersICS, planICS, get state() { return state; } };
+window.Rythmo = { computeDay, classesOn, importICS, eventsFromICS, parseICS, key, parseKey, computeReminders, remindersICS, planICS, get state() { return state; } };
 render();
 })();
 </script>
