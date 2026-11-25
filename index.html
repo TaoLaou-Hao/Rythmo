@@ -382,6 +382,50 @@ details.help .steps{padding:0 var(--s-3) var(--s-3) 2.2em}
 .wr-x{list-style:none;margin:0;padding:0 12px 10px 84px;display:grid;gap:2px;font-size:var(--fs-small)}
 .wr-x .time{color:var(--muted);font-variant-numeric:tabular-nums;margin-right:4px}
 .wr-x li.sport{color:var(--muted)}
+
+.hero{background:linear-gradient(var(--sky-top),var(--sky-bottom));border-radius:var(--r-lg);padding:var(--s-3) var(--s-3) var(--s-3);margin:0 -4px var(--s-3)}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:var(--s-2)}
+.hero-d{min-width:0}
+.hero h1{font-size:1.625rem;line-height:1.15;margin:0}
+[data-theme="doux"] .hero h1{font-size:2rem}
+.hero .eyebrow{margin:0;font-size:var(--fs-small)}
+.strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.strip>div{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:6px 8px;min-width:0}
+.strip span{display:block;color:var(--muted);font-size:.8125rem}
+.strip b{display:block;font-weight:700;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.strip small{display:block;color:var(--muted);font-size:.8125rem;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dh-nav{display:flex;gap:6px;flex:0 0 auto}
+.banner{display:flex;align-items:center;gap:10px;width:100%;min-height:48px;margin-bottom:var(--s-3);padding:0 var(--s-3);border:1px solid var(--accent);border-radius:var(--r-md);background:var(--accent-soft);color:var(--ink);font:600 1rem var(--f-body);text-align:left}
+.banner span:first-of-type{flex:1}
+.banner svg{color:var(--accent)}
+.acts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:var(--s-3)}
+.act{display:flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 6px;border:1px solid var(--line-strong);border-radius:var(--btn-radius);background:var(--surface);color:var(--ink);font:600 .875rem var(--f-body)}
+.act svg{width:18px;height:18px;flex:0 0 18px;color:var(--accent)}
+.act span{line-height:1.15;text-align:center;overflow-wrap:anywhere}
+.tl2{list-style:none;margin:0 0 var(--s-3);padding:0;display:grid;gap:4px}
+.row{display:grid;grid-template-columns:52px 22px minmax(0,1fr) 16px;align-items:center;gap:8px;width:100%;min-height:44px;padding:4px 10px 4px 8px;text-align:left;border-radius:var(--r-sm);font:inherit}
+div.row{grid-template-columns:52px 22px minmax(0,1fr)}
+.row.tall{min-height:52px}
+.row .tm{color:var(--ink);font-weight:600;font-size:.9375rem;font-variant-numeric:tabular-nums}
+.row .ic{color:var(--c);display:grid;place-items:center}
+.row .ic svg{width:20px;height:20px}
+.row .tt{min-width:0;display:flex;flex-wrap:wrap;align-items:baseline;column-gap:8px}
+.row .ttl{font-weight:600;overflow-wrap:anywhere}
+.row small{color:var(--muted);font-size:var(--fs-small)}
+.row .chev{color:var(--muted);font-size:1.25rem;line-height:1}
+.row.t-travel,.row.t-wind{background:none;border-color:transparent;border-left-color:var(--c)}
+.row.t-travel .ttl,.row.t-wind .ttl{font-weight:500}
+.row.t-sport .ttl{font-weight:500}
+.tl2 li.past .row{background:var(--sunk);border-color:transparent;border-left-color:var(--line-strong)}
+.tl2 li.past .row .ic{color:var(--muted)}
+.tl2 li.past .row .tm{text-decoration:line-through;text-decoration-thickness:1px}
+.pastbtn{width:100%;min-height:44px;border:1px dashed var(--line-strong);border-radius:var(--r-sm);background:none;color:var(--ink);font:600 .9375rem var(--f-body);text-align:left;padding:0 12px}
+.tl2 .nowrow{display:grid;grid-template-columns:52px 1fr;align-items:center;gap:8px;min-height:20px}
+.wline{margin-bottom:var(--s-2)}
+.wl-top{margin:0 0 2px}
+.wline .glasses{gap:0}
+.tipline{margin:var(--s-2) 0 0;color:var(--ink);font-size:.9375rem}
+.tipline b{color:var(--muted);font-weight:600}
 @media (prefers-reduced-motion: no-preference) {
   .btn,.chip,.tg .tr,.tg .tr::after,.glass{transition:background-color .18s ease,border-color .18s ease,left .18s ease,transform .12s ease}
   .btn:active{transform:translateY(1px)}
@@ -450,6 +494,10 @@ en: {
   sug_card:'Morning suggestions (remove any you do not want):', sug_restore:'Restore removed suggestions',
   tk_card:'Flexible tasks', tk_empty:'No tasks. That\'s perfectly fine.', tk_open:'+ Add a task',
   tk_add:'Add a flexible task', tk_hint:'Something without a fixed hour (study, project, errands). Rythmo finds a free slot on the days you pick.', tk_name:'Task name', tk_name_ph:'e.g. Group project', tk_dur:'How long', tk_btn:'Add task', tk_added:'Task added.', tk_list:'Your flexible tasks', tk_why:'Placed in a free slot ({m} min).', tk_none:'No room today for: {n}. Try another day or a shorter task.', tk_default:'Task',
+  st_now:'Now', st_next:'Next', st_until:'until {t}', st_free:'Free time', st_sleep_time:'Sleep time', st_first:'First class', wake_tmr:'wake-up {t}',
+  tl_label:'Your day', past_n:'{n} past blocks', past_n_one:'1 past block', sug_short:'suggestion', sug_never:'Stop suggesting this',
+  w_count:'{w} / {g} glasses', w_hint_short:'tap a glass when you drink one', act_notes:'Notes', act_todos:'To-do', act_todos_n:'To-do ({n})', act_day:'Edit this day',
+  eve_banner:'Time for your evening check-in', tip_label:'Idea of the day:',
   wr_wake:'wake-up {t}', wr_bed:'bed {t}', my_classes:'My classes', edit_my_classes:'Edit my classes', add_classes_cta:'Add my classes or import my calendar', wk_free_short:'No class', n_classes:'{n} classes', n_classes_one:'1 class',
   past:'past', chal_week_one:'1 of the last 7 days', rm_chosen:'Chosen: active once exported to your calendar or notifications are allowed', imp_sec:'Import my calendar (Google, Apple, Outlook, school)',
   sport_fb_morning:'No free morning slot that day: here is the first free one.', sport_fb_evening:'No free evening slot that day: here is the first free one.',
@@ -551,6 +599,10 @@ fr: {
   sug_card:'Suggestions du matin (retire celles dont tu ne veux pas) :', sug_restore:'Remettre les suggestions retirées',
   tk_card:'Tâches flexibles', tk_empty:'Pas de tâche. C\'est très bien comme ça.', tk_open:'+ Ajouter une tâche',
   tk_add:'Ajouter une tâche flexible', tk_hint:"Quelque chose sans heure fixe (révisions, projet, courses). Rythmo trouve un créneau libre les jours choisis.", tk_name:'Nom de la tâche', tk_name_ph:'ex. Projet de groupe', tk_dur:'Durée', tk_btn:'Ajouter la tâche', tk_added:'Tâche ajoutée.', tk_list:'Tes tâches flexibles', tk_why:'Placée dans un créneau libre ({m} min).', tk_none:"Pas de place aujourd'hui pour : {n}. Essaie un autre jour ou une tâche plus courte.", tk_default:'Tâche',
+  st_now:'Maintenant', st_next:'Ensuite', st_until:'jusqu\'à {t}', st_free:'Temps libre', st_sleep_time:'Heure de dormir', st_first:'Premier cours', wake_tmr:'réveil {t}',
+  tl_label:'Ta journée', past_n:'{n} blocs passés', past_n_one:'1 bloc passé', sug_short:'suggestion', sug_never:'Ne plus me le proposer',
+  w_count:'{w} / {g} verres', w_hint_short:'touche un verre quand tu en bois un', act_notes:'Notes', act_todos:'À faire', act_todos_n:'À faire ({n})', act_day:'Modifier ce jour',
+  eve_banner:'Fais ton bilan du soir', tip_label:'Idée du jour :',
   wr_wake:'réveil {t}', wr_bed:'au lit {t}', my_classes:'Mes cours', edit_my_classes:'Modifier mes cours', add_classes_cta:'Ajouter mes cours ou importer mon agenda', wk_free_short:'Pas de cours', n_classes:'{n} cours', n_classes_one:'1 cours',
   past:'passé', chal_week_one:'1 jour sur les 7 derniers', rm_chosen:'Choisi : actif après l\'export vers l\'agenda ou avec les notifications', imp_sec:'Importer mon agenda (Google, Apple, Outlook, école)',
   sport_fb_morning:'Pas de créneau libre le matin ce jour-là : voici le premier créneau libre.', sport_fb_evening:'Pas de créneau libre le soir ce jour-là : voici le premier créneau libre.',
@@ -987,24 +1039,6 @@ const parseKey = s => { const p = String(s).split('-'); const d = new Date(+p[0]
 const bid = (dk, k) => 'b-' + dk + '-' + String(k).replace(/[^a-zA-Z0-9]/g, '_');
 const PEN = SVG('<path d="M4 20h4L19 9l-4-4L4 16zM14 6l4 4"/>');
 const durOf = it => it.end ? it.end - it.t : (it.dur || (it.type === 'wake' ? 15 : 0));
-function blockHtml(it, dk) {
-  const kind = KIND[it.type] || 'free', sug = SUGGEST[it.type];
-  const hint = (it.soft ? '<span class="tag">' + esc(t('meal_soft', { t: fmtL(it.t) })) + '</span>' : '') + (it.why ? '<span class="hint">' + esc(it.why) + '</span>' : '');
-  const inner = '<span class="ic">' + SVG(BI[ICK[it.type]] || BI.free) + '</span><span class="bd"><span class="ttl">' + esc(it.title) + (it.end ? ' <span class="time muted">· ' + fmt(it.t) + '–' + fmt(it.end) + '</span>' : '') + '</span>' + hint + '</span>';
-  const cls = 'block ' + kind + (sug ? ' suggestion' : '') + (it.moved ? ' moved' : '');
-  if (it.type === 'travel') return '<div class="' + cls + '">' + inner + '</div>';
-  return '<button class="' + cls + '" id="' + esc(bid(dk, it.k)) + '" data-act="edit" data-d="' + esc(dk) + '" data-k="' + esc(it.k) + '" aria-haspopup="dialog" aria-label="' + esc(t('edit_block', { b: it.title, t: fmt(it.t) })) + '">' + inner + '<span class="pen" aria-hidden="true">' + PEN + '</span></button>';
-}
-function timeline(P, dk, isToday) {
-  const now = new Date(), nm = now.getHours() * 60 + now.getMinutes();
-  let nowDone = !isToday, h = '<ul class="tl">';
-  P.items.forEach(it => {
-    if (!nowDone && it.t > nm) { nowDone = true; h += '<li class="nowrow" aria-label="' + esc(t('now') + ' ' + fmt(nm)) + '"><span class="g"><span class="nowpill">' + fmt(nm) + '</span></span><span class="now-line"></span></li>'; }
-    const past = isToday && it.t + durOf(it) < nm;
-    h += '<li class="' + (past ? 'past' : '') + '"><span class="g">' + (it.soft ? '~' : '') + fmt(it.t) + (past ? '<span class="sr"> (' + esc(t('past')) + ')</span>' : '') + '</span>' + blockHtml(it, dk) + '</li>';
-  });
-  return h + '</ul>';
-}
 const ovEmpty = o => !Object.keys(o).some(k => { const v = o[k]; return Array.isArray(v) ? v.length : isObj(v) ? Object.keys(v).length : v != null && v !== false && v !== ''; });
 function setOv(dk, fn) {
   const o = JSON.parse(JSON.stringify(state.overrides[dk] || {}));
@@ -1025,7 +1059,7 @@ function dayBadge(P) {
 function dayEditCard(P, dk) {
   const o = P.ov, kind = o.kind || 'normal', S = state.settings;
   const removed = state.classes.filter(c => o.remove && o.remove[c.id]);
-  let h = '<section class="card stack" id="dayedit"><h2>' + esc(t('de_title')) + '</h2><p class="hint" style="margin:0">' + esc(t('de_hint')) + '</p>';
+  let h = '<div class="stack" id="dayedit"><p class="hint" style="margin:0">' + esc(t('de_hint')) + '</p>';
   h += chipRow(t('de_kind'), 'daykind', ['normal', 'work', 'off'], kind, v => t('de_' + v));
   if (kind === 'work') {
     const w = o.work || {};
@@ -1041,76 +1075,120 @@ function dayEditCard(P, dk) {
     '<label class="cbx"><input type="checkbox" id="da-school"> ' + esc(t('de_school')) + '</label>' +
     '<button class="btn pri full" type="submit">' + esc(t('de_add_btn')) + '</button></form></details>';
   if (!ovEmpty(o)) h += '<button class="btn full" data-act="dayreset" data-d="' + esc(dk) + '">' + esc(t('de_reset')) + '</button>';
-  return h + '</section>';
+  return h + '</div>';
+}
+/* ---------- Water: "6 / 8 glasses", tap a glass to fill up to it, tap the last filled one to remove one ---------- */
+const GLASS = '<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M6 3h12l-1.6 17.2a1 1 0 0 1-1 .8H8.6a1 1 0 0 1-1-.8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path class="fill" d="M7.2 9h9.6l-1.2 11H8.4z"/></svg>';
+/* ---------- Aujourd'hui: hero strip, compact timeline (past folded), one-line water, action row -> sheets ---------- */
+let showPast = false;
+const nowMin = () => { const n = new Date(); return n.getHours() * 60 + n.getMinutes(); };
+function dayTypeLabel(P) { const o = P.ov; return o.kind === 'work' ? t('badge_work') : o.kind === 'off' ? t('badge_off') : ovEmpty(o) ? t('de_normal') : t('badge_edited'); }
+function heroStrip(P, isToday) {
+  const cell = (lab, big, small) => '<div><span>' + esc(lab) + '</span><b>' + esc(big) + '</b>' + (small ? '<small>' + esc(small) + '</small>' : '') + '</div>';
+  const bedCell = cell(t('bed_around'), fmt(P.bed), t('wake_tmr', { t: fmt(P.wakeNext) }));
+  const L = P.items.filter(it => it.type !== 'wind');
+  if (!isToday) {
+    const first = P.items.find(it => it.type === 'class' || it.type === 'appt');
+    return cell(t('wake'), fmt(P.wake), '') + cell(t('st_first'), first ? fmt(first.t) : '–', first ? first.title : t('wk_free_short')) + bedCell;
+  }
+  const nm = nowMin();
+  const cur = L.filter(it => it.type !== 'bed' && it.t <= nm && nm < it.t + Math.max(durOf(it), 1)).pop();
+  const nxt = L.find(it => it.t > nm);
+  const nowCell = nm >= P.bed ? cell(t('st_now'), t('st_sleep_time'), '') : cur ? cell(t('st_now'), cur.title, (cur.end || cur.dur) ? t('st_until', { t: fmt(cur.t + durOf(cur)) }) : '') : cell(t('st_now'), t('st_free'), nxt ? t('st_until', { t: fmt(nxt.t) }) : '');
+  const nextCell = nxt ? cell(t('st_next'), nxt.title, fmt(nxt.t)) : cell(t('st_next'), '–', '');
+  return nowCell + nextCell + bedCell;
 }
 function dayHeader(P, date, isToday) {
-  const t0 = today(), k = key(date), b = dayBadge(P);
-  let h = '<header class="day-header"><div class="dh-top"><p class="eyebrow">' + esc(isToday ? t('today') : '') + (b ? ' <span class="badge">' + esc(b) + '</span>' : '') + '</p>' +
-    '<div class="dh-nav"><button class="rb" data-act="openday" data-v="' + esc(key(addDays(date, -1))) + '" aria-label="' + esc(t('prev_day')) + '">‹</button><button class="rb" data-act="openday" data-v="' + esc(key(addDays(date, 1))) + '" aria-label="' + esc(t('next_day')) + '">›</button></div></div>' +
-    '<h1>' + esc(longDate(date)) + '</h1>';
-  h += '<div class="pills" role="group" aria-label="' + esc(t('pick_day')) + '">' + [0, 1, 2, 3, 4, 5, 6].map(i => { const d = addDays(t0, i), dk = key(d); return '<button class="chip" data-act="openday" data-v="' + esc(dk) + '"' + (dk === k ? ' aria-current="date"' : '') + '>' + esc(i === 0 ? t('today') : dayName(d, 'short') + ' ' + d.getDate()) + '</button>'; }).join('') + '</div>';
-  return h + '<div class="sum"><div><span>' + esc(t('bed_around')) + '</span><b>' + fmt(P.bed) + '</b></div><div><span>' + esc(t('wake_next')) + '</span><b>' + fmt(P.wakeNext) + '</b></div><div><span>' + esc(t('sleep_h')) + '</span><b>' + esc(fmtH(P.hours)) + ' h</b></div></div></header>';
+  const k = key(date);
+  return '<header class="hero"><div class="hero-top"><div class="hero-d"><p class="eyebrow">' + esc(isToday ? t('today') : dayName(date, 'long')) + '</p><h1>' + esc(longDate(date)) + '</h1></div>' +
+    '<div class="dh-nav"><button class="rb" data-act="openday" data-v="' + esc(key(addDays(date, -1))) + '" aria-label="' + esc(t('prev_day')) + '">‹</button><button class="rb" data-act="openday" data-v="' + esc(key(addDays(date, 1))) + '" aria-label="' + esc(t('next_day')) + '">›</button>' +
+    (isToday ? '' : '<button class="chip" data-act="openday" data-v="' + esc(key(today())) + '">' + esc(t('today')) + '</button>') + '</div></div>' +
+    '<div class="strip">' + heroStrip(P, isToday) + '</div></header>';
+}
+function rowHtml(it, dk, past) {
+  const kind = KIND[it.type] || 'free', sug = SUGGEST[it.type];
+  const time = (it.soft ? '~' : '') + fmt(it.t);
+  const extra = it.end ? '<small class="time">' + fmt(it.t) + '–' + fmt(it.end) + '</small>' : it.soft ? '<small>' + esc(t('sug_short')) + '</small>' : '';
+  const inner = '<span class="tm time">' + time + (past ? '<span class="sr"> (' + esc(t('past')) + ')</span>' : '') + '</span><span class="ic">' + SVG(BI[ICK[it.type]] || BI.free) + '</span><span class="tt"><span class="ttl">' + esc(it.title) + '</span>' + extra + '</span>';
+  const cls = 'row block ' + kind + ' t-' + it.type + (sug ? ' suggestion' : '') + (it.moved ? ' moved' : '') + (it.type === 'class' || it.type === 'appt' ? ' tall' : '');
+  if (it.type === 'travel') return '<div class="' + cls + '">' + inner + '</div>';
+  return '<button class="' + cls + '" id="' + esc(bid(dk, it.k)) + '" data-act="edit" data-d="' + esc(dk) + '" data-k="' + esc(it.k) + '" aria-haspopup="dialog" aria-label="' + esc(t('edit_block', { b: it.title, t: fmt(it.t) })) + '">' + inner + '<span class="chev" aria-hidden="true">›</span></button>';
+}
+function timeline(P, dk, isToday) {
+  const nm = nowMin(), L = P.items;
+  const isPast = it => isToday && it.type !== 'bed' && it.t + durOf(it) <= nm;
+  const past = L.filter(isPast), rest = L.filter(it => !isPast(it));
+  let h = '<ul class="tl2" aria-label="' + esc(t('tl_label')) + '">';
+  if (past.length) {
+    h += '<li><button class="pastbtn" data-act="showpast" aria-expanded="' + showPast + '">' + esc(tp('past_n', past.length, { n: past.length })) + ' <span aria-hidden="true">' + (showPast ? '▾' : '▸') + '</span></button></li>';
+    if (showPast) h += past.map(it => '<li class="past">' + rowHtml(it, dk, true) + '</li>').join('');
+  }
+  let nowDone = !isToday;
+  rest.forEach(it => {
+    if (!nowDone && it.t > nm) { nowDone = true; h += '<li class="nowrow" aria-label="' + esc(t('now') + ' ' + fmt(nm)) + '"><span class="nowpill">' + fmt(nm) + '</span><span class="now-line"></span></li>'; }
+    h += '<li>' + rowHtml(it, dk, false) + '</li>';
+  });
+  return h + '</ul>';
+}
+function waterLine(k) {
+  const g = state.settings.waterGoal, w = state.water[k] || 0;
+  let h = '<section class="wline" aria-labelledby="w-t"><p class="wl-top"><b id="w-t">' + esc(t('water')) + '</b> <span aria-live="polite">' + esc(t('w_count', { w, g })) + '</span> <span class="hint">· ' + esc(t('w_hint_short')) + '</span></p><div class="glasses" role="group" aria-labelledby="w-t">';
+  for (let i = 1; i <= g; i++) h += '<button class="glass' + (i <= w ? ' on' : '') + '" data-act="glass" data-v="' + i + '" aria-pressed="' + (i <= w) + '" aria-label="' + esc(t('w_glass', { i, n: g, s: i <= w ? t('w_full') : t('w_empty') })) + '">' + GLASS + '</button>';
+  return h + '</div></section>';
+}
+function actionRow(P) {
+  const open = state.todos.filter(x => !x.done).length;
+  const b = (v, ic, lab) => '<button class="act" id="act-' + v + '" data-act="panel" data-v="' + v + '" aria-haspopup="dialog">' + SVG(ic) + '<span>' + esc(lab) + '</span></button>';
+  return '<div class="acts">' + b('notes', '<path d="M5 4h10l4 4v12H5zM15 4v4h4M8 13h8M8 17h5"/>', t('act_notes')) +
+    b('todos', '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12l3 3 5-6"/>', open ? t('act_todos_n', { n: open }) : t('act_todos')) +
+    b('day', '<path d="M4 20h4L19 9l-4-4L4 16zM14 6l4 4"/>', t('act_day')) + '</div>';
 }
 function screenPlan() {
   if (!state.classes.length && !state.cal && !Object.keys(state.overrides).length) return emptyPlan();
-  const date = curDate, P = computeDay(date), k = key(date), isToday = k === key(today());
-  let h = dayHeader(P, date, isToday) + msgP();
-  if (state.sample) h += '<p class="sub">' + esc(t('example_note')) + '</p>';
+  const date = curDate, P = computeDay(date), k = key(date), isToday = k === key(today()), nm = nowMin();
+  let h = dayHeader(P, date, isToday);
+  if (isToday && nm >= 1200 && nm < P.bed && !state.checkins[k]) h += '<button class="banner" data-act="tab" data-v="checkin">' + SVG(BI.sleep) + '<span>' + esc(t('eve_banner')) + '</span><span aria-hidden="true">›</span></button>';
+  h += actionRow(P) + msgP();
+  if (!storageOk) h += '<div class="warn">' + esc(t('nostore')) + '</div>';
+  if (state.sample) h += '<p class="hint">' + esc(t('example_note')) + '</p>';
   if (P.unplaced.length) h += '<div class="warn">' + esc(t('tk_none', { n: P.unplaced.join(', ') })) + '</div>';
   if (P.short) h += '<div class="warn">' + esc(t('short_night', { h: fmtH(P.hours) })) + '</div>';
-  if (!P.cl.length && P.items.length <= 5) h += '<p class="sub">' + esc(t('today_empty')) + '</p>';
-  h += '<p class="hint">' + esc(t('tap_hint')) + '</p>' + timeline(P, k, isToday);
-  if (P.noSport) h += '<div class="tip">' + esc(t('sport_none')) + '</div>';
-  h += waterCard(k, isToday);
-  h += notesCard();
-  h += dayEditCard(P, k);
-  const dayTasks = state.tasks.filter(x => x.days.includes(wdOf(date)));
-  const morning = P.items.filter(x => x.type === 'morning');
-  h += '<section class="card stack"><h2>' + esc(t('tk_card')) + '</h2>' +
-    (dayTasks.length ? '<ul class="cl">' + dayTasks.map(x => '<li><div class="m"><b>' + esc(x.title) + '</b><small>' + esc(t('min', { n: x.dur })) + '</small></div><button class="x" data-act="deltask" data-v="' + esc(x.id) + '">' + esc(t('sc_remove')) + '</button></li>').join('') + '</ul>' : '<p class="hint" style="margin:0">' + esc(t('tk_empty')) + '</p>') +
-    (morning.length ? '<p class="hint" style="margin:0">' + esc(t('sug_card')) + '</p><ul class="cl">' + morning.map(x => '<li><div class="m"><b>' + esc(x.title) + '</b></div><button class="x" data-act="hidesug" data-v="' + esc(x.sug) + '">' + esc(t('sc_remove')) + '</button></li>').join('') + '</ul>' : '') +
-    (Object.keys(state.hiddenSug).length ? '<button class="tbtn" data-act="showsug">' + esc(t('sug_restore')) + '</button>' : '') +
-    '<button class="btn full" data-act="addtask">' + esc(t('tk_open')) + '</button></section>';
-  const ch = challengeFor(date, P), done = !!state.challenges[k];
-  h += '<section class="card stack"><h2>' + esc(t('chal_title')) + '</h2><p style="margin:0">' + esc(ch.text) + '</p>' +
-    '<button class="btn' + (done ? '' : ' pri') + ' full" data-act="chal" data-v="' + esc(k) + '" aria-pressed="' + done + '">' + esc(done ? t('chal_done') : t('chal_mark')) + '</button>' +
-    '<p class="hint" style="margin:0">' + esc(tp('chal_week', weekDone(), { n: weekDone() })) + '</p></section>';
-  return h + fbCard() + footer();
+  if (!P.cl.length && P.items.length <= 5) h += '<p class="hint">' + esc(t('today_empty')) + '</p>';
+  h += timeline(P, k, isToday);
+  if (P.noSport) h += '<p class="hint">' + esc(t('sport_none')) + '</p>';
+  if (isToday) h += waterLine(k);
+  h += '<p class="tipline"><b>' + esc(t('tip_label')) + '</b> ' + esc(challengeFor(date, P).text) + '</p>';
+  return h;
 }
-
-/* ---------- Water: "6 / 8 glasses", tap a glass to fill up to it, tap the last filled one to remove one ---------- */
-const GLASS = '<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M6 3h12l-1.6 17.2a1 1 0 0 1-1 .8H8.6a1 1 0 0 1-1-.8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path class="fill" d="M7.2 9h9.6l-1.2 11H8.4z"/></svg>';
-function waterCard(k, isToday) {
-  const g = state.settings.waterGoal, w = state.water[k] || 0;
-  let h = '<section class="card stack water"><div class="w-head"><h2 style="margin:0">' + esc(t('water')) + '</h2><button class="tbtn" data-act="tab" data-v="settings">' + esc(t('w_edit')) + '</button></div>';
-  if (!isToday) return h + '<p style="margin:0">' + esc(t('water_goal_day', { n: g })) + '</p></section>';
-  h += '<p class="w-big" aria-live="polite"><b>' + w + ' / ' + g + '</b> ' + esc(t('w_glasses')) + '</p>';
-  h += '<div class="glasses" role="group" aria-label="' + esc(t('water')) + '">';
-  for (let i = 1; i <= g; i++) h += '<button class="glass' + (i <= w ? ' on' : '') + '" data-act="glass" data-v="' + i + '" aria-pressed="' + (i <= w) + '" aria-label="' + esc(t('w_glass', { i, n: g, s: i <= w ? t('w_full') : t('w_empty') })) + '">' + GLASS + '</button>';
-  h += '</div><div class="w-row"><button class="rb" data-act="water" data-v="-1" aria-label="' + esc(t('w_less')) + '">−</button><button class="rb" data-act="water" data-v="1" aria-label="' + esc(t('w_more')) + '">+</button>' +
-    (w > g ? '<span class="hint">' + esc(t('w_extra', { n: w - g })) + '</span>' : '') + '</div>';
-  return h + '<p class="hint" style="margin:0">' + esc(t('w_hint')) + '</p></section>';
-}
-
-/* ---------- Light notes + to-do (not a notes app) ---------- */
-function notesCard() {
+function todosPanel() {
   const L = state.todos;
-  let h = '<section class="card stack" id="notes"><h2>' + esc(t('nt_title')) + '</h2>';
-  h += L.length ? '<ul class="todo">' + L.map(x => '<li class="' + (x.done ? 'on' : '') + '"><button class="tick" data-act="todotoggle" data-v="' + esc(x.id) + '" role="checkbox" aria-checked="' + x.done + '"><span class="box" aria-hidden="true">' + (x.done ? '✓' : '') + '</span><span class="tx">' + esc(x.text) + '</span></button><button class="x" data-act="tododel" data-v="' + esc(x.id) + '" aria-label="' + esc(t('sc_remove') + ' : ' + x.text) + '">✕</button></li>').join('') + '</ul>' : '<p class="hint" style="margin:0">' + esc(t('nt_empty')) + '</p>';
+  let h = L.length ? '<ul class="todo">' + L.map(x => '<li class="' + (x.done ? 'on' : '') + '"><button class="tick" data-act="todotoggle" data-v="' + esc(x.id) + '" role="checkbox" aria-checked="' + x.done + '"><span class="box" aria-hidden="true">' + (x.done ? '✓' : '') + '</span><span class="tx">' + esc(x.text) + '</span></button><button class="x" data-act="tododel" data-v="' + esc(x.id) + '" aria-label="' + esc(t('sc_remove') + ' : ' + x.text) + '">✕</button></li>').join('') + '</ul>' : '<p class="hint" style="margin:0">' + esc(t('nt_empty')) + '</p>';
   h += '<form id="todof" class="todo-add"><label class="sr" for="todo-in">' + esc(t('nt_add_label')) + '</label><input id="todo-in" type="text" maxlength="80" placeholder="' + esc(t('nt_add_ph')) + '" autocomplete="off"><button class="btn" type="submit">' + esc(t('nt_add')) + '</button></form>';
   if (L.some(x => x.done)) h += '<button class="tbtn" data-act="todoclear">' + esc(t('nt_clear')) + '</button>';
-  h += '<label class="f" for="note">' + esc(t('nt_note')) + '<textarea id="note" rows="3" maxlength="2000" placeholder="' + esc(t('nt_note_ph')) + '">' + esc(state.note) + '</textarea><span class="hint">' + esc(t('nt_note_hint')) + '</span></label>';
-  return h + '</section>';
+  return h;
+}
+function notesPanel() {
+  return '<label class="f" for="note">' + esc(t('nt_note')) + '<textarea id="note" rows="6" maxlength="2000" placeholder="' + esc(t('nt_note_ph')) + '">' + esc(state.note) + '</textarea><span class="hint">' + esc(t('nt_note_hint')) + '</span></label>';
 }
 
 /* ---------- Block editor (bottom sheet) ---------- */
-let sheet = null; // { d: 'YYYY-MM-DD', k: blockKey }
+let sheet = null; // { d: 'YYYY-MM-DD', k: blockKey } for a block, or { panel: 'notes'|'todos'|'day', ret: id }
 function sheetItem() {
-  if (!sheet) return null;
+  if (!sheet || sheet.panel) return null;
   const P = computeDay(parseKey(sheet.d));
   return P.items.find(x => x.k === sheet.k) || null;
 }
+function sheetWrap(eyebrow, title, body) {
+  return '<div class="sheet-bg" data-act="sheetclose"></div><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-title"><div class="stack">' +
+    '<div class="sh-head"><div><p class="eyebrow" style="margin:0">' + esc(eyebrow) + '</p><h2 id="sh-title" style="margin:0">' + esc(title) + '</h2></div><button class="rb" data-act="sheetclose" id="sh-close" aria-label="' + esc(t('close')) + '">✕</button></div>' + body + '</div></div>';
+}
 function sheetHtml() {
+  if (sheet && sheet.panel) {
+    const P = computeDay(curDate);
+    if (sheet.panel === 'notes') return sheetWrap('', t('act_notes'), notesPanel());
+    if (sheet.panel === 'todos') return sheetWrap('', t('act_todos'), todosPanel());
+    return sheetWrap(longDate(curDate) + ' · ' + dayTypeLabel(P), t('de_title'), msgP() + dayEditCard(P, key(curDate)));
+  }
   const it = sheetItem(); if (!it) { sheet = null; return ''; }
   const d = parseKey(sheet.d), dk = sheet.d, o = state.overrides[dk] || {};
   const timeIn = (id, lab, v) => '<label class="f" for="' + id + '">' + esc(lab) + '<input id="' + id + '" type="time" required value="' + esc(v) + '"></label>';
@@ -1133,9 +1211,10 @@ function sheetHtml() {
       '<button class="btn warnb full" data-act="sheetskip">' + esc(t('sh_skip')) + '</button>' +
       (it.type === 'sport' ? '<button class="tbtn" data-act="tab" data-v="settings">' + esc(t('sh_sport_settings')) + '</button>' : '');
   }
-  return '<div class="sheet-bg" data-act="sheetclose"></div><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-title"><div class="stack">' +
-    '<div class="sh-head"><div><p class="eyebrow" style="margin:0">' + esc(longDate(d)) + '</p><h2 id="sh-title" style="margin:0">' + esc(it.title) + '</h2></div><button class="rb" data-act="sheetclose" id="sh-close" aria-label="' + esc(t('close')) + '">✕</button></div>' +
-    '<p class="hint" style="margin:0">' + esc(t('sh_only_day')) + '</p>' + body + '</div></div>';
+  const info = (it.soft ? '<p class="tag" style="margin:0">' + esc(t('meal_soft', { t: fmtL(it.t) })) + '</p>' : '') + (it.why ? '<p style="margin:0">' + esc(it.why) + '</p>' : '');
+  if (it.type === 'travel') body = '<button class="tbtn" data-act="tab" data-v="settings">' + esc(t('set_commute')) + '</button>';
+  if (it.type === 'morning') body += '<button class="tbtn" data-act="hidesug" data-v="' + esc(it.sug) + '">' + esc(t('sug_never')) + '</button>';
+  return sheetWrap(longDate(d) + ' · ' + fmt(it.t) + (it.end ? '–' + fmt(it.end) : ''), it.title, info + '<p class="hint" style="margin:0">' + esc(t('sh_only_day')) + '</p>' + body);
 }
 
 /* ---------- Week view ---------- */
@@ -1676,14 +1755,16 @@ function formError(form, text, fieldId) {
   if (f) { f.setAttribute('aria-invalid', 'true'); f.setAttribute('aria-describedby', 'ferr-' + form.id); p.id = 'ferr-' + form.id; f.focus(); }
   p.scrollIntoView({ block: 'nearest' });
 }
-function closeSheet() { if (!sheet) return; const back = bid(sheet.d, sheet.k); sheet = null; setTimeout(() => { const el = document.getElementById(back); if (el) el.focus(); }, 0); }
+function closeSheet() { if (!sheet) return; const back = sheet.panel ? sheet.ret : bid(sheet.d, sheet.k); sheet = null; setTimeout(() => { const el = document.getElementById(back); if (el) el.focus(); }, 0); }
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && sheet) { closeSheet(); render(); } });
 const ACT = {
   tab: v => { if (v === 'schedule' || v === 'courses') { v = 'week'; weekSub = 'courses'; } else if (v === 'week') weekSub = 'week'; tab = v; msg = ''; sheet = null; if (v === 'checkin') draft = null; if (v === 'week') weekJump = key(curDate); window.scrollTo(0, 0); },
   wksub: v => { weekSub = v === 'courses' ? 'courses' : 'week'; msg = ''; window.scrollTo(0, 0); },
   lang: v => { state.lang = v === 'en' ? 'en' : 'fr'; save(); },
-  openday: v => { curDate = parseKey(v); tab = 'plan'; msg = ''; sheet = null; },
+  openday: v => { curDate = parseKey(v); tab = 'plan'; msg = ''; sheet = null; showPast = false; window.scrollTo(0, 0); },
   edit: (v, b) => { sheet = { d: b.dataset.d, k: b.dataset.k }; msg = ''; },
+  panel: (v, b) => { sheet = { panel: v, ret: b.id || '' }; msg = ''; },
+  showpast: () => { showPast = !showPast; },
   sheetclose: () => { closeSheet(); },
   sheetskip: () => { const it = sheetItem(); if (!it) return; setOv(sheet.d, o => { if (it.k === 'sport') o.noSport = true; else { o.skip = o.skip || {}; o.skip[it.k] = true; } if (o.at) delete o.at[it.k]; }); say(t('edited_day')); closeSheet(); },
   sheetreset: () => { const it = sheetItem(); if (!it) return; setOv(sheet.d, o => { if (it.k === 'wake') delete o.wake; else if (it.k === 'bed') delete o.bed; else if (o.at) delete o.at[it.k]; }); say(t('edited_day')); },
@@ -1713,7 +1794,7 @@ const ACT = {
   clear: () => { state.classes = []; state.cal = null; state.sample = false; save(); },
   calclear: () => { state.cal = null; save(); say(t('imp_removed')); },
   hintoff: () => { state.ui.reimportHintOff = true; save(); },
-  hidesug: v => { state.hiddenSug = Object.assign({}, state.hiddenSug, { [v]: true }); save(); },
+  hidesug: v => { state.hiddenSug = Object.assign({}, state.hiddenSug, { [v]: true }); save(); if (sheet && !sheet.panel) closeSheet(); },
   showsug: () => { state.hiddenSug = {}; save(); },
   addtask: () => { tab = 'week'; weekSub = 'courses'; msg = ''; scrollTask = true; },
   sporton: () => { state.settings.sportOn = !state.settings.sportOn; save(); },
