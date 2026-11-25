@@ -2,6 +2,10 @@
 <html lang="fr" data-theme="horizon">
 <head>
 <meta charset="utf-8">
+<!-- CSP: only this site, GoatCounter (gc.zgo.at script, rythmo.goatcounter.com count), Google Fonts and the calendar relay.
+     'unsafe-inline' is needed because the whole app is one inline script with no build step (a hash would break on every edit). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://gc.zgo.at; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://rythmo.goatcounter.com; connect-src 'self' https://rythmo.tao-laou-hao.workers.dev https://rythmo.goatcounter.com; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Rythmo</title>
 <meta name="description" content="Rythmo : un planning calme qui suit ta vraie journée d'étudiant (sommeil, repas, cours).">
@@ -361,7 +365,7 @@ details.help .steps{padding:0 var(--s-3) var(--s-3) 2.2em}
   *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
 </style>
-<script data-goatcounter="https://rythmo.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script data-goatcounter="https://rythmo.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </head>
 <body>
 <div id="app"></div>
@@ -602,6 +606,11 @@ function sanitize(s) {
   out.settings = Object.assign({}, b.settings, isObj(s.settings) ? s.settings : {});
   ['checkins', 'challenges', 'water', 'done', 'hiddenSug', 'overrides', 'ui'].forEach(k => { if (!isObj(out[k])) out[k] = {}; });
   out.overrides = cleanOverrides(out.overrides);
+  // Values that end up in style attributes or numbers on screen: force numbers (storage is user-editable).
+  const num = (v, lo, hi, d) => { v = +v; return isFinite(v) ? Math.max(lo, Math.min(hi, v)) : d; };
+  const ci = {}; Object.keys(out.checkins).forEach(k => { const c = out.checkins[k]; if (DATEK.test(k) && isObj(c)) ci[k] = { sleepH: num(c.sleepH, 0, 16, 8), quality: Math.round(num(c.quality, 1, 5, 3)), energy: Math.round(num(c.energy, 1, 5, 3)) }; }); out.checkins = ci;
+  const wa = {}; Object.keys(out.water).forEach(k => { if (DATEK.test(k)) wa[k] = Math.round(num(out.water[k], 0, 20, 0)); }); out.water = wa;
+  ['sleep', 'commute'].forEach(k => { out.settings[k] = num(out.settings[k], k === 'sleep' ? 5 : 0, k === 'sleep' ? 11 : 180, b.settings[k]); });
   out.note = String(typeof out.note === 'string' ? out.note : '').slice(0, 2000);
   out.todos = (Array.isArray(out.todos) ? out.todos : []).filter(x => isObj(x) && x.text).slice(0, 30).map(x => ({ id: String(x.id || uid()).slice(0, 20), text: String(x.text).slice(0, 80), done: !!x.done }));
   const R0 = b.reminders, R = isObj(s.reminders) ? s.reminders : {}, sub = k => Object.assign({}, R0[k], isObj(R[k]) ? R[k] : {});
