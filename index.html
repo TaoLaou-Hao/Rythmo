@@ -239,26 +239,25 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.4}
 .empty p{color:var(--muted);margin:0}
 
 /* Settings: theme picker */
-.tiles{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-3)}
-@media (min-width:700px){.tiles{grid-template-columns:repeat(4,1fr)}}
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--s-2)}
 .tile{position:relative;display:block;cursor:pointer;border-radius:var(--r-md)}
 .tile input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
-.tile .pv{display:grid;gap:5px;height:96px;padding:10px;border-radius:var(--r-md);background:var(--bg);color:var(--ink);border:2px solid var(--line);font-family:var(--f-body);overflow:hidden}
-.tile .pv b{font:var(--h-weight) 1.25rem/1 var(--f-display);font-style:var(--h-style)}
+.tile .pv{display:grid;gap:4px;height:64px;padding:6px;border-radius:var(--r-md);background:var(--bg);color:var(--ink);border:2px solid var(--line);font-family:var(--f-body);overflow:hidden}
+.tile .pv b{font:var(--h-weight) 1rem/1 var(--f-display);font-style:var(--h-style)}
 .tile .pv .strip{background:var(--surface);border-radius:6px;padding:5px;display:flex;gap:4px;align-items:center}
 .tile .pv .strip i{display:block;height:8px;border-radius:3px;flex:1}
 .tile .pv .dot{width:12px;height:12px;border-radius:50%;background:var(--accent);flex:0 0 12px!important}
-.tile .nm{display:flex;justify-content:space-between;align-items:center;font-weight:600;padding:6px 2px 0;min-height:32px}
+.tile .nm{display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:.875rem;padding:4px 2px 0;min-height:28px}
 .tile input:checked~.pv{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
 .tile input:checked~.nm::after{content:"✓";color:var(--accent);font-weight:800}
 .tile input:focus-visible~.pv{outline:3px solid var(--focus);outline-offset:2px}
 /* Toggle */
 .tg{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;width:100%;background:none;border:0;padding:4px 0;text-align:left;color:var(--ink)}
 .tg .lb{display:grid;gap:2px;font-weight:600}
-.tg .tr{flex:0 0 52px;width:52px;height:32px;border-radius:var(--r-pill);border:1px solid var(--line-strong);background:var(--sunk);position:relative}
-.tg .tr::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:var(--surface);border:1px solid var(--line-strong);display:grid;place-items:center;font-size:14px;line-height:22px;text-align:center}
-.tg[aria-checked="true"] .tr{background:var(--accent);border-color:var(--accent)}
-.tg[aria-checked="true"] .tr::after{left:23px;content:"✓";color:var(--accent);border-color:var(--surface)}
+.tg .tr,.sw .tr{flex:0 0 52px;display:block;width:52px;height:32px;border-radius:var(--r-pill);border:1px solid var(--line-strong);background:var(--sunk);position:relative}
+.tg .tr::after,.sw .tr::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:var(--surface);border:1px solid var(--line-strong);display:grid;place-items:center;font-size:14px;line-height:22px;text-align:center}
+.tg[aria-checked="true"] .tr,.sw[aria-checked="true"] .tr{background:var(--accent);border-color:var(--accent)}
+.tg[aria-checked="true"] .tr::after,.sw[aria-checked="true"] .tr::after{left:23px;content:"✓";color:var(--accent);border-color:var(--surface)}
 .tg .st{font-size:var(--fs-small);color:var(--muted);font-weight:500}
 
 
@@ -426,6 +425,31 @@ div.row{grid-template-columns:52px 22px minmax(0,1fr)}
 .wline .glasses{gap:0}
 .tipline{margin:var(--s-2) 0 0;color:var(--ink);font-size:.9375rem}
 .tipline b{color:var(--muted);font-weight:600}
+
+details.acc{border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface);margin-bottom:var(--s-2)}
+details.acc>summary{cursor:pointer;list-style:none;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;min-height:56px;padding:0 var(--s-3)}
+details.acc>summary::-webkit-details-marker{display:none}
+details.acc>summary::after{content:"›";font-size:1.4rem;color:var(--muted);transition:transform .15s ease}
+details.acc[open]>summary::after{transform:rotate(90deg)}
+.acc-t{font-weight:700}
+.acc-s{color:var(--muted);font-size:var(--fs-small);text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.acc-b{padding:0 var(--s-3) var(--s-3);gap:10px}
+.acc-b label.f{font-size:.9375rem}
+.rm-box{gap:6px!important;padding:10px 12px!important}
+.rm-row{display:grid;grid-template-columns:minmax(0,1fr) auto 52px;align-items:center;gap:8px;border-top:1px solid var(--line);padding-top:2px;min-height:48px}
+.rm-l{font-weight:600;line-height:1.25;min-width:0}
+.rm-l small{font-weight:500;color:var(--muted);font-size:var(--fs-small);margin-left:6px}
+.rm-ctl select,.rm-ctl input{min-height:44px;width:auto;max-width:9.5em;padding:6px 8px}
+.sw{background:none;border:0;padding:6px 0;min-height:44px;display:grid;place-items:center;grid-column:3}
+
+.chiprow{display:grid;grid-template-columns:4.5em 1fr;align-items:center;gap:8px}
+.chiprow .hint{margin:0}
+.chiprow .chips{gap:6px}
+.chiprow.quiet{display:block}
+.acc-b .grid2 .btn{padding:0 8px;font-size:.9375rem}
+details.acc>summary{min-height:52px}
+.fb{gap:var(--s-2)}
+.note{font-size:.8125rem;line-height:1.4}
 @media (prefers-reduced-motion: no-preference) {
   .btn,.chip,.tg .tr,.tg .tr::after,.glass{transition:background-color .18s ease,border-color .18s ease,left .18s ease,transform .12s ease}
   .btn:active{transform:translateY(1px)}
@@ -494,6 +518,10 @@ en: {
   sug_card:'Morning suggestions (remove any you do not want):', sug_restore:'Restore removed suggestions',
   tk_card:'Flexible tasks', tk_empty:'No tasks. That\'s perfectly fine.', tk_open:'+ Add a task',
   tk_add:'Add a flexible task', tk_hint:'Something without a fixed hour (study, project, errands). Rythmo finds a free slot on the days you pick.', tk_name:'Task name', tk_name_ph:'e.g. Group project', tk_dur:'How long', tk_btn:'Add task', tk_added:'Task added.', tk_list:'Your flexible tasks', tk_why:'Placed in a free slot ({m} min).', tk_none:'No room today for: {n}. Try another day or a shorter task.', tk_default:'Task',
+  rm_before_short:'{n} min before', set_sleep_short:'Sleep need', set_bedcap_short:'Bed at the latest', set_free_short:'Wake-up, free days', set_auto_hint_short:'21:00 to 6:00, your choice is kept.',
+  rm_s_bed:'bedtime', rm_s_checkin:'check-in', rm_s_water:'water', rm_s_screens:'screens off', rm_s_none:'none', rm_s_live:'notifications on', rm_chosen_short:'Chosen', rm_chosen_note:'Chosen reminders work once added to your calendar or with notifications (below).',
+  sum_bed:'bed by {t}', sum_trv:'commute {n} min', sum_water:'{n} glasses a day', sum_water_one:'1 glass a day', sum_auto:'auto night', sum_data:'export, tutorial, erase', set_data_help:'Data and help', set_export_short:'Export data', set_commute_short:'Commute (one way)',
+  ci_remind:'Remind me every evening',
   st_now:'Now', st_next:'Next', st_until:'until {t}', st_free:'Free time', st_sleep_time:'Sleep time', st_first:'First class', wake_tmr:'wake-up {t}',
   tl_label:'Your day', past_n:'{n} past blocks', past_n_one:'1 past block', sug_short:'suggestion', sug_never:'Stop suggesting this',
   w_count:'{w} / {g} glasses', w_hint_short:'tap a glass when you drink one', act_notes:'Notes', act_todos:'To-do', act_todos_n:'To-do ({n})', act_day:'Edit this day',
@@ -512,20 +540,20 @@ en: {
   hp_a_t:'Apple Calendar (iCloud)', hp_a_1:'iPhone: open Calendar, tap Calendars, then the (i) next to your calendar.', hp_a_2:'Turn on "Public Calendar", then tap "Share Link…" > Copy.', hp_a_3:'Mac: right-click the calendar > Share Calendar > Public Calendar, then copy the link.', hp_a_4:'Paste it above (a webcal:// link works). Only iCloud calendars can be shared this way.',
   hp_o_t:'Outlook / Microsoft 365', hp_o_1:'Open outlook.com (or Outlook on the web) on a computer.', hp_o_2:'Settings > Calendar > Shared calendars, then "Publish a calendar".', hp_o_3:'Pick your calendar and "Can view all details", then Publish.', hp_o_4:'Copy the ICS link and paste it above. School accounts may have publishing turned off: then download an .ics file instead.',
   hp_e_t:'School ENT, Hyperplanning, ADE', hp_e_1:'Open your timetable in the school portal (ENT, Hyperplanning, ADE, Aurion…).', hp_e_2:'Look for an icon or link named iCal, ICS, Export, Subscribe or Synchronise (Hyperplanning: calendar icon "export"; ADE: "Export agenda" > generate URL).', hp_e_3:'Copy the link (https:// or webcal://) and paste it above.', hp_e_4:'If you only get a file, use "Import a calendar file" below. Names vary from school to school.',
-  rm_title:'Reminders', rm_intro:'Rythmo can remind you to go to bed and to do your check-in. Never after midnight, never guilt-tripping. You can stop whenever you like.',
+  rm_title:'Reminders', rm_intro:'Gentle reminders, never guilt-tripping, never after midnight.',
   rm_bed:'Bedtime', rm_bed_h:'A gentle nudge before lights out.', rm_checkin:'Evening check-in', rm_checkin_h:'30 seconds to look back at your day.',
   rm_water:'Water', rm_water_h:'Three light reminders during the day.', rm_screens:'Screens off before sleep', rm_screens_h:'A hint to put the phone down.',
   rm_when:'When', rm_at:'At', rm_before:'{n} min before lights out', rm_never:'Never after midnight. You can switch everything off here.',
-  rm_cal_t:'Most reliable: your calendar', rm_cal_h:'Adds the next 7 days of reminders to your phone calendar. It reminds you even when Rythmo is closed. Export again if your plan changes.',
-  rm_cal_btn:'Add my reminders to my calendar (.ics)', rm_plan_btn:'Export my whole plan for 7 days (.ics)', rm_cal_done:'{n} reminders exported. Open the file to add them to your calendar.', rm_plan_done:'Plan exported. Open the file to add it to your calendar.', rm_none:'No reminder is switched on.',
-  rm_app_t:'Notifications while the app is open', rm_app_h:'Only works while Rythmo is open (or installed and running). For reminders when it is closed, use the calendar above.',
+  rm_cal_t:'Most reliable: your calendar', rm_cal_h:'Next 7 days in your phone calendar, even when Rythmo is closed. Export again if your plan changes.',
+  rm_cal_btn:'Add my reminders to my calendar (.ics)', rm_plan_btn:'Export my 7-day plan (.ics)', rm_cal_done:'{n} reminders exported. Open the file to add them to your calendar.', rm_plan_done:'Plan exported. Open the file to add it to your calendar.', rm_none:'No reminder is switched on.',
+  rm_app_t:'Notifications (app open)', rm_app_h:'Only while Rythmo is open. Closed app: use the calendar above.',
   rm_app_btn:'Allow notifications', rm_app_on:'Notifications are on while the app is open.', rm_app_off_btn:'Turn notifications off', rm_on_msg:'Done. You will get notifications while Rythmo is open.', rm_off_msg:'Notifications are off.',
-  rm_denied:'Notifications are blocked for this site. You can allow them again in your browser or phone settings, or use the calendar option.',
+  rm_denied:'Blocked for this site: allow them in your browser or phone settings, or use the calendar.',
   rm_unsupported:'This browser cannot show notifications. The calendar option works everywhere.',
   rm_ios_first:'On iPhone, notifications only work once Rythmo is on your Home Screen (see below). Meanwhile, the calendar option works.',
   in_title:'Install Rythmo', in_why:'Opens like an app, and can show notifications.', in_btn:'Install the app',
   in_ios1:'In Safari, tap the Share button (square with an arrow).', in_ios2:'Choose "Add to Home Screen", then "Add".', in_ios3:'Open Rythmo from your Home Screen.',
-  in_other:'In your browser menu, look for "Install app" or "Add to Home screen".',
+  in_other:'Browser menu > "Install app" or "Add to Home screen".',
   n_bed:'Easing into the evening. Bed around {t}?', n_bed_b:'Rythmo', n_checkin:'A quick look back at your day? 30 seconds.', n_water:'A glass of water, if you feel like it.', n_screens:'Maybe put the screens down? Your bed\'s waiting.', n_ignore:'Ignore',
   ics_rem_name:'Rythmo - reminders', ics_plan_name:'Rythmo - plan',
   w_glasses:'glasses', w_hint:'Tap a glass when you drink one.', w_edit:'Change goal', w_glass:'Glass {i} of {n}, {s}', w_full:'full', w_empty:'empty', w_less:'One less', w_more:'One more', w_extra:'+{n} over your goal', w_goal_label:'Water goal (glasses a day)',
@@ -599,6 +627,10 @@ fr: {
   sug_card:'Suggestions du matin (retire celles dont tu ne veux pas) :', sug_restore:'Remettre les suggestions retirées',
   tk_card:'Tâches flexibles', tk_empty:'Pas de tâche. C\'est très bien comme ça.', tk_open:'+ Ajouter une tâche',
   tk_add:'Ajouter une tâche flexible', tk_hint:"Quelque chose sans heure fixe (révisions, projet, courses). Rythmo trouve un créneau libre les jours choisis.", tk_name:'Nom de la tâche', tk_name_ph:'ex. Projet de groupe', tk_dur:'Durée', tk_btn:'Ajouter la tâche', tk_added:'Tâche ajoutée.', tk_list:'Tes tâches flexibles', tk_why:'Placée dans un créneau libre ({m} min).', tk_none:"Pas de place aujourd'hui pour : {n}. Essaie un autre jour ou une tâche plus courte.", tk_default:'Tâche',
+  rm_before_short:'{n} min avant', set_sleep_short:'Sommeil', set_bedcap_short:'Coucher au plus tard', set_free_short:'Réveil sans cours', set_auto_hint_short:'De 21 h à 6 h, ton choix est gardé.',
+  rm_s_bed:'coucher', rm_s_checkin:'bilan', rm_s_water:'eau', rm_s_screens:'écrans', rm_s_none:'aucun', rm_s_live:'notifications', rm_chosen_short:'Choisi', rm_chosen_note:'Les rappels choisis marchent une fois ajoutés à ton agenda ou avec les notifications (ci-dessous).',
+  sum_bed:'coucher ≤ {t}', sum_trv:'trajet {n} min', sum_water:'{n} verres par jour', sum_water_one:'1 verre par jour', sum_auto:'nuit auto', sum_data:'export, tutoriel, effacer', set_data_help:'Données et aide', set_export_short:'Exporter', set_commute_short:'Trajet (aller)',
+  ci_remind:'Me le rappeler chaque soir',
   st_now:'Maintenant', st_next:'Ensuite', st_until:'jusqu\'à {t}', st_free:'Temps libre', st_sleep_time:'Heure de dormir', st_first:'Premier cours', wake_tmr:'réveil {t}',
   tl_label:'Ta journée', past_n:'{n} blocs passés', past_n_one:'1 bloc passé', sug_short:'suggestion', sug_never:'Ne plus me le proposer',
   w_count:'{w} / {g} verres', w_hint_short:'touche un verre quand tu en bois un', act_notes:'Notes', act_todos:'À faire', act_todos_n:'À faire ({n})', act_day:'Modifier ce jour',
@@ -617,20 +649,20 @@ fr: {
   hp_a_t:'Calendrier Apple (iCloud)', hp_a_1:'iPhone : ouvre Calendrier, touche Calendriers, puis le (i) à côté de ton calendrier.', hp_a_2:'Active « Calendrier public », puis touche « Partager le lien… » > Copier.', hp_a_3:'Mac : clic droit sur le calendrier > Partager le calendrier > Calendrier public, puis copie le lien.', hp_a_4:'Colle-le ci-dessus (un lien webcal:// marche). Seuls les calendriers iCloud se partagent ainsi.',
   hp_o_t:'Outlook / Microsoft 365', hp_o_1:'Ouvre outlook.com (ou Outlook sur le web) sur un ordinateur.', hp_o_2:'Paramètres > Calendrier > Calendriers partagés, puis « Publier un calendrier ».', hp_o_3:'Choisis ton calendrier et « Peut afficher tous les détails », puis Publier.', hp_o_4:'Copie le lien ICS et colle-le ci-dessus. Les comptes d\'école ont parfois la publication désactivée : télécharge alors un fichier .ics.',
   hp_e_t:'ENT de l\'école, Hyperplanning, ADE', hp_e_1:'Ouvre ton emploi du temps sur le portail de l\'école (ENT, Hyperplanning, ADE, Aurion…).', hp_e_2:'Cherche une icône ou un lien iCal, ICS, Exporter, S\'abonner ou Synchroniser (Hyperplanning : icône calendrier « export » ; ADE : « Export agenda » > générer l\'URL).', hp_e_3:'Copie le lien (https:// ou webcal://) et colle-le ci-dessus.', hp_e_4:'Si tu n\'obtiens qu\'un fichier, utilise « Importer un fichier calendrier » ci-dessous. Les noms varient selon les écoles.',
-  rm_title:'Rappels', rm_intro:'Rythmo peut te rappeler d\'aller te coucher et de faire ton bilan. Jamais après minuit, jamais culpabilisant. Tu peux arrêter quand tu veux.',
+  rm_title:'Rappels', rm_intro:'Des rappels doux, jamais culpabilisants, jamais après minuit.',
   rm_bed:'Coucher', rm_bed_h:'Un petit signal avant l\'extinction des feux.', rm_checkin:'Bilan du soir', rm_checkin_h:'30 secondes pour faire le point sur ta journée.',
   rm_water:'Eau', rm_water_h:'Trois petits rappels dans la journée.', rm_screens:'Écrans éteints avant de dormir', rm_screens_h:'Une idée pour poser le téléphone.',
   rm_when:'Quand', rm_at:'À', rm_before:'{n} min avant l\'extinction', rm_never:'Jamais après minuit. Tu peux tout couper ici.',
-  rm_cal_t:'Le plus fiable : ton agenda', rm_cal_h:'Ajoute les rappels des 7 prochains jours à l\'agenda de ton téléphone. Il te prévient même quand Rythmo est fermé. Ré-exporte si ton planning change.',
-  rm_cal_btn:'Ajouter mes rappels à mon calendrier (.ics)', rm_plan_btn:'Exporter tout mon planning sur 7 jours (.ics)', rm_cal_done:'{n} rappels exportés. Ouvre le fichier pour les ajouter à ton agenda.', rm_plan_done:'Planning exporté. Ouvre le fichier pour l\'ajouter à ton agenda.', rm_none:'Aucun rappel n\'est activé.',
-  rm_app_t:'Notifications pendant que l\'app est ouverte', rm_app_h:'Ne fonctionne que si Rythmo est ouvert (ou installé et actif). Pour des rappels app fermée, utilise l\'agenda ci-dessus.',
+  rm_cal_t:'Le plus fiable : ton agenda', rm_cal_h:'Les 7 prochains jours dans l\'agenda du téléphone, même app fermée. Ré-exporte si ton planning change.',
+  rm_cal_btn:'Ajouter mes rappels à mon calendrier (.ics)', rm_plan_btn:'Exporter mon planning, 7 jours (.ics)', rm_cal_done:'{n} rappels exportés. Ouvre le fichier pour les ajouter à ton agenda.', rm_plan_done:'Planning exporté. Ouvre le fichier pour l\'ajouter à ton agenda.', rm_none:'Aucun rappel n\'est activé.',
+  rm_app_t:'Notifications (app ouverte)', rm_app_h:'Seulement quand Rythmo est ouvert. App fermée : utilise l\'agenda ci-dessus.',
   rm_app_btn:'Autoriser les notifications', rm_app_on:'Notifications activées pendant que l\'app est ouverte.', rm_app_off_btn:'Couper les notifications', rm_on_msg:'C\'est fait. Tu recevras des notifications pendant que Rythmo est ouvert.', rm_off_msg:'Notifications coupées.',
-  rm_denied:'Les notifications sont bloquées pour ce site. Tu peux les réautoriser dans les réglages du navigateur ou du téléphone, ou utiliser l\'option agenda.',
+  rm_denied:'Bloquées pour ce site : réautorise-les dans les réglages du navigateur ou du téléphone, ou utilise l\'agenda.',
   rm_unsupported:'Ce navigateur ne peut pas afficher de notifications. L\'option agenda marche partout.',
   rm_ios_first:'Sur iPhone, les notifications ne marchent qu\'une fois Rythmo sur l\'écran d\'accueil (voir ci-dessous). En attendant, l\'option agenda fonctionne.',
   in_title:'Installer Rythmo', in_why:'S\'ouvre comme une app et peut afficher des notifications.', in_btn:'Installer l\'app',
   in_ios1:'Dans Safari, touche le bouton Partager (carré avec une flèche).', in_ios2:'Choisis « Sur l\'écran d\'accueil », puis « Ajouter ».', in_ios3:'Ouvre Rythmo depuis ton écran d\'accueil.',
-  in_other:'Dans le menu du navigateur, cherche « Installer l\'application » ou « Ajouter à l\'écran d\'accueil ».',
+  in_other:'Menu du navigateur > « Installer l\'application » ou « Ajouter à l\'écran d\'accueil ».',
   n_bed:'Doucement vers le soir. Dodo vers {t} ?', n_bed_b:'Rythmo', n_checkin:'Un petit bilan de ta journée ? Ça prend 30 secondes.', n_water:'Un verre d\'eau, si ça te dit.', n_screens:'Et si on posait les écrans ? Ton lit t\'attend.', n_ignore:'Ignorer',
   ics_rem_name:'Rythmo - rappels', ics_plan_name:'Rythmo - planning',
   w_glasses:'verres', w_hint:'Touche un verre quand tu en bois un.', w_edit:'Modifier l\'objectif', w_glass:'Verre {i} sur {n}, {s}', w_full:'rempli', w_empty:'vide', w_less:'Un de moins', w_more:'Un de plus', w_extra:'+{n} au-delà de ton objectif', w_goal_label:'Objectif d\'eau (verres par jour)',
@@ -1000,7 +1032,7 @@ function nav() {
   return '<nav class="tabs" aria-label="' + esc(t('nav_main')) + '"><div style="--n:' + TABS.length + '">' + TABS.map(id => '<button data-act="tab" data-v="' + esc(id) + '"' + (tab === id ? ' aria-current="page"' : '') + '>' + ICON[id] + '<span>' + esc(lab[id]) + '</span></button>').join('') + '</div></nav>';
 }
 function fbCard() {
-  return '<section class="card"><h2>' + esc(t('fb_title')) + '</h2><p class="sub">' + esc(t('fb_text')) + '</p><a class="btn pri full" href="' + esc(FORM_URL) + '" target="_blank" rel="noopener">' + esc(t('fb_cta')) + '</a></section>';
+  return '<section class="fb"><a class="btn full" href="' + esc(FORM_URL) + '" target="_blank" rel="noopener">' + esc(t('fb_title')) + ' <span aria-hidden="true">↗</span></a><p class="hint" style="margin:4px 0 0">' + esc(t('fb_text')) + '</p></section>';
 }
 function footer() { return '<p class="note">' + esc(t('footer')) + (storageOk ? '' : '<br>' + esc(t('nostore'))) + '</p>'; }
 function opts(arr, cur, label) { return arr.map(v => '<option value="' + esc(v) + '"' + (String(v) === String(cur) ? ' selected' : '') + '>' + esc(label(v)) + '</option>').join(''); }
@@ -1218,7 +1250,7 @@ function sheetHtml() {
 }
 
 /* ---------- Week view ---------- */
-let weekJump = null;
+let weekJump = null, jumpTo = null;
 // Phones get the list (44 px rows) unless the user picked the grid; desktops get the grid.
 const weekMode = () => window.innerWidth < 900 ? 'list' : (state.ui.weekMode === 'list' ? 'list' : 'grid'); // phones: compact day rows
 const weekStartOf = d => addDays(d, -wdOf(d));
@@ -1290,7 +1322,8 @@ function initDraft() {
   const k = key(today()), c = state.checkins[k];
   if (c) { draft = { sleepH: c.sleepH, quality: c.quality, energy: c.energy }; return; }
   let last = null; for (let i = 1; i < 8 && last === null; i++) { const p = state.checkins[key(addDays(today(), -i))]; if (p) last = p.sleepH; }
-  draft = { sleepH: last !== null ? last : state.settings.sleep, quality: 3, energy: 3 };
+  // nothing saved yet: start from the sleep last night's plan allowed (rounded to 0.5 h)
+  draft = { sleepH: last !== null ? last : Math.max(3, Math.min(12, Math.round(computeDay(addDays(today(), -1)).hours * 2) / 2)), quality: 3, energy: 3 };
 }
 function seg(name, val, label) {
   return '<div class="seg" role="group" aria-label="' + esc(label) + '">' + [1, 2, 3, 4, 5].map(n => '<button data-act="seg" data-n="' + esc(name) + '" data-v="' + n + '" aria-pressed="' + (val === n) + '">' + n + '</button>').join('') + '</div><div class="ends"><span>' + esc(t('low')) + '</span><span>' + esc(t('high')) + '</span></div>';
@@ -1308,6 +1341,8 @@ function screenCheckin() {
   const sl = vals.filter(Boolean).map(c => c.sleepH), en = vals.filter(Boolean).map(c => c.energy);
   const avg = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : null;
   const aS = avg(sl), aE = avg(en), scale = 12;
+  h += '<button class="tbtn" data-act="gorem">' + esc(t('ci_remind')) + '</button>';
+  if (!sl.length) return h + '<p class="hint">' + esc(t('in_none')) + '</p>';
   h += '<section class="card"><h2>' + esc(t('ci_week')) + '</h2><div class="chart">' +
     '<div class="goal" style="bottom:' + (need / scale * 85) + '%"></div>' +
     vals.map(c => '<div class="b">' + (c ? '<em style="bottom:calc(' + (c.sleepH / scale * 85) + '% + 4px)">' + esc(fmtH(c.sleepH)) + '</em><i style="height:' + (c.sleepH / scale * 85) + '%"></i>' : '<i class="none" style="height:3px"></i>') + '</div>').join('') +
@@ -1315,7 +1350,7 @@ function screenCheckin() {
     '<p class="hint" style="margin-top:10px">' + esc(t('ci_goal', { h: fmtH(need) })) + '</p>' +
     '<div class="stats"><div><b>' + (aS === null ? '–' : esc(fmtH(aS))) + '</b><span>' + esc(t('st_sleep')) + '</span></div><div><b>' + (aE === null ? '–' : esc(fmtH(aE))) + '</b><span>' + esc(t('st_energy')) + '</span></div><div><b>' + sl.length + '</b><span>' + esc(t('st_count')) + '</span></div></div>';
   h += '<p class="sub" style="margin:0">' + esc(sl.length < 2 ? t('in_none') : (need - aS >= 0.5 ? t('in_short', { d: fmtH(need - aS) }) : t('in_ok'))) + '</p></section>';
-  return h + fbCard() + footer();
+  return h;
 }
 
 function screenCourses() {
@@ -1359,14 +1394,14 @@ function themeTiles() {
     '<span class="pv" aria-hidden="true"><b>Rythmo</b><span class="strip"><i style="background:var(--b-class)"></i><i style="background:var(--b-meal)"></i><i style="background:var(--b-sleep)"></i><i class="dot"></i></span><span class="strip"><i style="background:var(--b-sport)"></i><i style="background:var(--b-free)"></i></span></span>' +
     '<span class="nm">' + esc(t('th_' + th)) + '</span></label>').join('') + '</div></fieldset>';
 }
-function chipRow(label, act, values, cur, lab) {
-  return '<div role="group" aria-label="' + esc(label) + '"><p class="hint" style="margin:0 0 6px">' + esc(label) + '</p><div class="chips">' + values.map(v => '<button class="chip" data-act="' + esc(act) + '" data-v="' + esc(v) + '" aria-pressed="' + (String(cur) === String(v)) + '">' + esc(lab(v)) + '</button>').join('') + '</div></div>';
+function chipRow(label, act, values, cur, lab, quiet) {
+  return '<div class="chiprow' + (quiet ? ' quiet' : '') + '" role="group" aria-label="' + esc(label) + '">' + (quiet ? '' : '<p class="hint">' + esc(label) + '</p>') + '<div class="chips">' + values.map(v => '<button class="chip" data-act="' + esc(act) + '" data-v="' + esc(v) + '" aria-pressed="' + (String(cur) === String(v)) + '">' + esc(lab(v)) + '</button>').join('') + '</div></div>';
 }
 function sportControls() {
   const S = state.settings;
-  return '<p class="hint" style="margin:0">' + esc(t('sp_intro')) + '</p>' + toggle('sporton', S.sportOn, t('sp_toggle')) +
-    (S.sportOn ? chipRow(t('sp_dur'), 'sportmin', [30, 45, 60], S.sportMin, v => v === 60 ? t('hrs', { n: 1 }) : t('min', { n: v })) +
-      chipRow(t('sp_when'), 'sportwhen', ['morning', 'evening', 'any'], S.sportWhen, v => t('sp_' + v)) : '');
+  return (obOn ? '<p class="hint" style="margin:0">' + esc(t('sp_intro')) + '</p>' : '') + toggle('sporton', S.sportOn, t('sp_toggle')) +
+    (S.sportOn ? chipRow(t('sp_dur'), 'sportmin', [30, 45, 60], S.sportMin, v => v === 60 ? t('hrs', { n: 1 }) : t('min', { n: v }), !obOn) +
+      chipRow(t('sp_when'), 'sportwhen', ['morning', 'evening', 'any'], S.sportWhen, v => t('sp_' + v), !obOn) : '');
 }
 function bedCapSel(id) {
   return '<label class="f" for="' + esc(id) + '">' + esc(t('set_bedcap')) + '<select id="' + esc(id) + '" data-set="bedCap">' + opts(BEDCAPS, state.settings.bedCap, v => v) + '</select><span class="hint">' + esc(t('set_bedcap_hint')) + '</span></label>';
@@ -1394,23 +1429,28 @@ function screenOnboarding() {
     '<button class="btn pri" data-act="' + (last ? 'obdone' : 'obnext') + '" id="ob-next">' + esc(last ? t('ob_done') : t('ob_next')) + '</button></div></div>';
 }
 function finishOb() { obOn = false; ob = 0; state.onboarded = true; save(); tab = 'plan'; }
+function acc(id, title, summary, body) {
+  const open = id in openSec ? openSec[id] : false;
+  return '<details class="acc" id="' + esc(id) + '"' + (open ? ' open' : '') + '><summary><span class="acc-t">' + esc(title) + '</span><span class="acc-s">' + esc(summary) + '</span></summary><div class="stack acc-b">' + body + '</div></details>';
+}
 function screenSettings() {
-  const S = state.settings;
+  const S = state.settings, R = state.reminders;
+  const remOn = ['bed', 'checkin', 'water', 'screens'].filter(k => R[k].on).map(k => t('rm_s_' + k));
   let h = '<h1>' + esc(t('set_title')) + '</h1>';
-  h += '<section class="card stack"><h2>' + esc(t('set_planning')) + '</h2>' +
-    '<label class="f" for="s-sleep">' + esc(t('set_sleep')) + '<select id="s-sleep" data-set="sleep">' + opts([7, 7.5, 8, 8.5, 9], S.sleep, v => t('hrs', { n: fmtH(v) })) + '</select></label>' +
-    '<label class="f" for="s-fw">' + esc(t('set_free')) + '<input id="s-fw" type="time" data-set="freeWake" value="' + esc(S.freeWake) + '"></label>' +
-    bedCapSel('s-bc') +
-    '<label class="f" for="s-com">' + esc(t('set_commute')) + '<select id="s-com" data-set="commute">' + opts([0, 10, 15, 20, 30, 45, 60, 75, 90, 120], S.commute, v => t('min', { n: v })) + '</select></label></section>';
-  h += '<section class="card stack"><h2>' + esc(t('sp_title')) + '</h2>' + sportControls() + '</section>';
-  h += remindersCard();
-  h += '<section class="card stack"><h2>' + esc(t('water')) + '</h2><div class="stepper" role="group" aria-label="' + esc(t('w_goal_label')) + '"><button class="rb" data-act="wgoal" data-v="-1" aria-label="' + esc(t('w_less')) + '"' + (S.waterGoal <= 4 ? ' disabled' : '') + '>−</button><span class="v" aria-live="polite">' + S.waterGoal + '</span><button class="rb" data-act="wgoal" data-v="1" aria-label="' + esc(t('w_more')) + '"' + (S.waterGoal >= 12 ? ' disabled' : '') + '>+</button></div><p class="hint" style="margin:0">' + esc(t('water_goal', { n: S.waterGoal })) + '</p></section>';
-  h += '<section class="card stack"><h2>' + esc(t('set_theme')) + '</h2><p class="hint" style="margin:0">' + esc(t('set_theme_hint')) + '</p>' + themeTiles() +
-    toggle('autonight', S.autoNight, t('set_auto'), t('set_auto_hint')) + '</section>';
-  h += '<section class="card stack"><h2>' + esc(t('set_lang')) + '</h2><div>' + langToggle() + '</div></section>';
-  h += '<section class="card stack"><h2>' + esc(t('set_data')) + '</h2><button class="btn full" data-act="export">' + esc(t('set_export')) + '</button>' +
-    '<button class="btn warnb full" data-act="reset">' + esc(resetArm ? t('set_reset_confirm') : t('set_reset')) + '</button></section>';
-  h += '<section class="card stack"><h2>' + esc(t('set_help')) + '</h2><button class="btn full" data-act="obreplay">' + esc(t('ob_replay')) + '</button></section>';
+  h += acc('set-rem', t('rm_title'), (remOn.length ? remOn.join(', ') : t('rm_s_none')) + (R.enabled && notifPerm() === 'granted' ? ' · ' + t('rm_s_live') : ''), remindersBody());
+  h += acc('set-plan', t('set_planning'), t('hrs', { n: fmtH(S.sleep) }) + ' · ' + t('sum_bed', { t: S.bedCap }) + ' · ' + t('sum_trv', { n: S.commute }),
+    '<div class="grid2"><label class="f" for="s-sleep">' + esc(t('set_sleep_short')) + '<select id="s-sleep" data-set="sleep">' + opts([7, 7.5, 8, 8.5, 9], S.sleep, v => t('hrs', { n: fmtH(v) })) + '</select></label>' +
+    '<label class="f" for="s-bc">' + esc(t('set_bedcap_short')) + '<select id="s-bc" data-set="bedCap">' + opts(BEDCAPS, S.bedCap, v => v) + '</select></label>' +
+    '<label class="f" for="s-fw">' + esc(t('set_free_short')) + '<input id="s-fw" type="time" data-set="freeWake" value="' + esc(S.freeWake) + '"></label>' +
+    '<label class="f" for="s-com">' + esc(t('set_commute_short')) + '<select id="s-com" data-set="commute">' + opts([0, 10, 15, 20, 30, 45, 60, 75, 90, 120], S.commute, v => t('min', { n: v })) + '</select></label></div>' +
+    (Object.keys(state.hiddenSug).length ? '<button class="tbtn" data-act="showsug">' + esc(t('sug_restore')) + '</button>' : ''));
+  h += acc('set-sport', t('sp_title'), S.sportOn ? (S.sportMin === 60 ? t('hrs', { n: 1 }) : t('min', { n: S.sportMin })) + ' · ' + t('sp_' + S.sportWhen).toLowerCase() : t('off').toLowerCase(), sportControls());
+  h += acc('set-water', t('water'), tp('sum_water', S.waterGoal, { n: S.waterGoal }),
+    '<div class="stepper" role="group" aria-label="' + esc(t('w_goal_label')) + '"><button class="rb" data-act="wgoal" data-v="-1" aria-label="' + esc(t('w_less')) + '"' + (S.waterGoal <= 4 ? ' disabled' : '') + '>−</button><span class="v" aria-live="polite">' + S.waterGoal + '</span><button class="rb" data-act="wgoal" data-v="1" aria-label="' + esc(t('w_more')) + '"' + (S.waterGoal >= 12 ? ' disabled' : '') + '>+</button><span class="hint">' + esc(t('w_goal_label')) + '</span></div>');
+  h += acc('set-theme', t('set_theme'), t('th_' + S.theme) + (S.autoNight ? ' · ' + t('sum_auto') : ''), themeTiles() + toggle('autonight', S.autoNight, t('set_auto') + ' (' + t('set_auto_hint_short') + ')'));
+  h += acc('set-data', t('set_data_help'), t('sum_data'),
+    '<div class="grid2"><button class="btn" data-act="export">' + esc(t('set_export_short')) + '</button><button class="btn" data-act="obreplay">' + esc(t('ob_replay')) + '</button></div>' +
+    '<button class="btn warnb full" data-act="reset">' + esc(resetArm ? t('set_reset_confirm') : t('set_reset')) + '</button>');
   return h + fbCard() + footer();
 }
 
@@ -1436,6 +1476,7 @@ function render() {
   window.scrollTo(0, y);
   if (scrollTask) { scrollTask = false; const d = document.getElementById('s-task'); if (d) { d.open = true; d.scrollIntoView({ block: 'center' }); } }
   if (wk && weekJump) { const c = document.getElementById('col-' + weekJump); weekJump = null; const wkEl = c && c.parentElement; if (wkEl) wkEl.scrollLeft = c.offsetLeft - wkEl.offsetLeft; }
+  if (jumpTo) { const el = document.getElementById(jumpTo); jumpTo = null; if (el) { el.scrollIntoView({ block: 'start' }); const s0 = el.querySelector('summary'); if (s0) s0.focus({ preventScroll: true }); } }
   syncHash();
 }
 /* Routing: #plan, #week, #courses (old #schedule), #checkin, #settings, #day=YYYY-MM-DD (back button works). */
@@ -1544,38 +1585,39 @@ function planICS() {
   }
   return buildICS(t('ics_plan_name'), evs);
 }
-function remindersCard() {
+function remindersBody() {
   const R = state.reminders, perm = notifPerm();
   const live = R.enabled && perm === 'granted';
-  const row = (k, label, hint, ctl) => '<div class="rm-row">' + toggle('rmtoggle', R[k].on, label, hint, k, live ? t('on') : t('rm_chosen')) + (R[k].on && ctl ? ctl : '') + '</div>';
-  const sel = (id, k, vals, cur, lab) => '<label class="f" for="' + id + '"><span class="hint">' + esc(lab) + '</span><select id="' + id + '" data-rm="' + k + '">' + opts(vals, cur, v => t('rm_before', { n: v })) + '</select></label>';
-  let h = '<section class="card stack" id="reminders"><h2>' + esc(t('rm_title')) + '</h2><p style="margin:0">' + esc(t('rm_intro')) + '</p>';
-  h += row('bed', t('rm_bed'), t('rm_bed_h'), sel('rm-bed', 'bed', [0, 15, 30, 45], R.bed.before, t('rm_when')));
-  h += row('checkin', t('rm_checkin'), t('rm_checkin_h'), '<label class="f" for="rm-ci"><span class="hint">' + esc(t('rm_at')) + '</span><input id="rm-ci" type="time" data-rm="checkin" min="18:00" max="23:45" value="' + esc(R.checkin.time) + '"></label>');
-  h += row('water', t('rm_water'), t('rm_water_h'), '');
-  h += row('screens', t('rm_screens'), t('rm_screens_h'), sel('rm-sc', 'screens', [30, 45, 60], R.screens.before, t('rm_when')));
-  h += '<p class="hint" style="margin:0">' + esc(t('rm_never')) + '</p>' + msgP();
+  // one row per reminder: label (+ state word), its time control when on, and the switch
+  const row = (k, label, ctl) => '<div class="rm-row"><span class="rm-l" id="rml-' + k + '">' + esc(label) + '<small>' + esc(R[k].on ? (live ? t('on') : t('rm_chosen_short')) : t('off')) + '</small></span>' + (R[k].on && ctl ? ctl : '<span></span>') +
+    '<button class="sw" role="switch" aria-checked="' + !!R[k].on + '" aria-labelledby="rml-' + k + '" data-act="rmtoggle" data-v="' + k + '"><span class="tr" aria-hidden="true"></span></button></div>';
+  const sel = (id, k, vals, cur) => '<label class="rm-ctl" for="' + id + '"><span class="sr">' + esc(t('rm_when')) + '</span><select id="' + id + '" data-rm="' + k + '">' + opts(vals, cur, v => t('rm_before_short', { n: v })) + '</select></label>';
+  let h = '<p class="hint" style="margin:0">' + esc(t('rm_intro')) + '</p>';
+  h += row('bed', t('rm_bed'), sel('rm-bed', 'bed', [0, 15, 30, 45], R.bed.before));
+  h += row('checkin', t('rm_checkin'), '<label class="rm-ctl" for="rm-ci"><span class="sr">' + esc(t('rm_at')) + '</span><input id="rm-ci" type="time" data-rm="checkin" min="18:00" max="23:45" value="' + esc(R.checkin.time) + '"></label>');
+  h += row('water', t('rm_water'), '');
+  h += row('screens', t('rm_screens'), sel('rm-sc', 'screens', [30, 45, 60], R.screens.before));
+  if (!live) h += '<p class="hint" style="margin:0">' + esc(t('rm_chosen_note')) + '</p>';
+  h += msgP();
   // Reliable option first: the phone's calendar app
   h += '<div class="rm-box"><h3>' + esc(t('rm_cal_t')) + '</h3><p class="hint">' + esc(t('rm_cal_h')) + '</p><button class="btn pri full" data-act="icsrem">' + esc(t('rm_cal_btn')) + '</button>' +
     '<button class="tbtn" data-act="icsplan">' + esc(t('rm_plan_btn')) + '</button></div>';
   // In-app notifications, honestly labelled
-  h += '<div class="rm-box"><h3>' + esc(t('rm_app_t')) + '</h3><p class="hint">' + esc(t('rm_app_h')) + '</p>';
-  if (R.enabled && perm === 'granted') h += '<p class="ok-line">' + esc(t('rm_app_on')) + '</p><button class="btn full" data-act="rmoff">' + esc(t('rm_app_off_btn')) + '</button>';
+  h += '<div class="rm-box"><h3>' + esc(t('rm_app_t')) + '</h3>' + (live || perm === 'default' ? '<p class="hint">' + esc(t('rm_app_h')) + '</p>' : '');
+  if (live) h += '<p class="ok-line">' + esc(t('rm_app_on')) + '</p><button class="btn full" data-act="rmoff">' + esc(t('rm_app_off_btn')) + '</button>';
   else if (perm === 'denied') h += '<p class="hint">' + esc(t('rm_denied')) + '</p>';
   else if (perm === 'unsupported') h += '<p class="hint">' + esc(t('rm_unsupported')) + '</p>';
   else if (isIOS() && !isStandalone()) h += '<p class="hint">' + esc(t('rm_ios_first')) + '</p>';
   else h += '<button class="btn full" data-act="rmon">' + esc(t('rm_app_btn')) + '</button>';
-  h += '</div>';
+  // Install help: one line. Desktop browsers without an install prompt get nothing (installing matters on phones).
+  const coarse = (() => { try { return matchMedia('(pointer: coarse)').matches; } catch (e) { return false; } })();
   if (!isStandalone()) {
-    h += '<div class="rm-box"><h3>' + esc(t('in_title')) + '</h3>';
-    if (isIOS()) h += '<ol class="steps"><li>' + esc(t('in_ios1')) + '</li><li>' + esc(t('in_ios2')) + '</li><li>' + esc(t('in_ios3')) + '</li></ol>';
-    else if (installEvt) h += '<p class="hint">' + esc(t('in_why')) + '</p><button class="btn full" data-act="install">' + esc(t('in_btn')) + '</button>';
-    else h += '<p class="hint">' + esc(t('in_other')) + '</p>';
-    h += '</div>';
+    if (isIOS()) h += '<p class="hint"><b>' + esc(t('in_title')) + (state.lang === 'fr' ? ' :' : ':') + '</b> ' + esc(t('in_ios1') + ' ' + t('in_ios2') + ' ' + t('in_ios3')) + '</p>';
+    else if (installEvt) h += '<button class="btn full" data-act="install">' + esc(t('in_btn')) + '</button>';
+    else if (coarse) h += '<p class="hint"><b>' + esc(t('in_title')) + (state.lang === 'fr' ? ' :' : ':') + '</b> ' + esc(t('in_other')) + '</p>';
   }
-  return h + '</section>';
+  return h + '</div>';
 }
-
 /* ===================== CALENDAR IMPORT ===================== */
 /* ---------- ICS parsing: unfolding, params, TZID, all-day skip, RRULE (WEEKLY/DAILY), EXDATE, RECURRENCE-ID ---------- */
 const WIN_TZ = { 'romance standard time': 'Europe/Paris', 'w. europe standard time': 'Europe/Berlin', 'central europe standard time': 'Europe/Budapest',
@@ -1765,6 +1807,7 @@ const ACT = {
   edit: (v, b) => { sheet = { d: b.dataset.d, k: b.dataset.k }; msg = ''; },
   panel: (v, b) => { sheet = { panel: v, ret: b.id || '' }; msg = ''; },
   showpast: () => { showPast = !showPast; },
+  gorem: () => { tab = 'settings'; openSec['set-rem'] = true; jumpTo = 'set-rem'; },
   sheetclose: () => { closeSheet(); },
   sheetskip: () => { const it = sheetItem(); if (!it) return; setOv(sheet.d, o => { if (it.k === 'sport') o.noSport = true; else { o.skip = o.skip || {}; o.skip[it.k] = true; } if (o.at) delete o.at[it.k]; }); say(t('edited_day')); closeSheet(); },
   sheetreset: () => { const it = sheetItem(); if (!it) return; setOv(sheet.d, o => { if (it.k === 'wake') delete o.wake; else if (it.k === 'bed') delete o.bed; else if (o.at) delete o.at[it.k]; }); say(t('edited_day')); },
