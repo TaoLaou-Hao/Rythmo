@@ -158,7 +158,9 @@ label.f{display:grid;gap:6px;font-weight:600}
 label.f .hint,.hint{color:var(--muted);font-size:var(--fs-small);font-weight:400}
 input[type=text],input[type=time],input[type=url],select,textarea{width:100%;min-height:44px;padding:8px 12px;border:1px solid var(--line-strong);border-radius:var(--r-sm);background:var(--surface);color:var(--ink);font-size:1rem}
 textarea{resize:vertical;line-height:1.4}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-3)}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--s-3)}
+.grid2>*{min-width:0}
+input[type=time]{min-width:0}
 .msg{min-height:1.5em;font-weight:600;color:var(--b-sport);margin:0 0 var(--s-2)}
 .msg.err{color:var(--warn)}
 .msg:empty{min-height:0;margin:0}
@@ -201,7 +203,9 @@ details.imp>.stack{padding:0 var(--s-4) var(--s-4)}
 .block .hint{display:block}
 .block .tag{display:inline-block;font-size:var(--fs-small);color:var(--muted);font-style:italic}
 .block.travel,.block.class{padding-block:6px}
-.tl>li.past .block{opacity:.7}
+.tl>li.past .block{background:var(--sunk);border-left-color:var(--line-strong);border-color:transparent;border-left-color:var(--line-strong)}
+.tl>li.past .block .ic{color:var(--muted)}
+.tl>li.past .g{text-decoration:line-through;text-decoration-thickness:1px}
 .cbx{display:flex;align-items:center;gap:10px;min-height:44px;font-weight:600}
 .cbx input{width:22px;height:22px;accent-color:var(--accent)}
 
@@ -386,7 +390,7 @@ const BEDCAPS = ['21:30', '22:00', '22:30', '23:00', '23:30', '00:00'];
 const T = {
 en: {
   nav_plan:'Today', nav_checkin:'Check-in', nav_schedule:'Classes', nav_settings:'Settings', nav_main:'Main', lang_label:'Language',
-  today:'Today', bed_around:'Bed around', wake_next:'Wake-up', sleep_h:'Sleep',
+  today:'Today', bed_around:'Bed around', wake_next:'Wake-up tomorrow', sleep_h:'Sleep',
   short_night:'Your timetable only leaves {h} h of sleep that night. Go to bed as early as you can, or plan a short nap.',
   wake:'Wake up', wake_class:'First class at {c}. Time to get ready and travel: {m} min.', wake_free:'No class. Your usual free-day wake-up.',
   breakfast:'Breakfast', breakfast_why:'Eat something before the day starts.',
@@ -410,8 +414,8 @@ en: {
   sc_import:'Import a calendar file (.ics)', sc_import_hint:'Export it from your school calendar or calendar app. It replaces the classes below.',
   sc_import_ok:'{n} classes imported.', sc_import_none:'No timed events found in that file.', sc_import_err:'Could not read that file.',
   qs_title:'Your usual school day (30 seconds)', qs_start:'First class starts', qs_end:'Last class ends', qs_btn:'Build my plan', qs_or:'or', qs_detail:'Enter my exact timetable instead', qs_am:'Morning classes', qs_pm:'Afternoon classes',
-  lk_title:'Import from a calendar link', lk_btn:'Import my classes', lk_busy:'Reading your calendar…', lk_fail:'Could not read that link. Check it is the iCal (.ics) link of your calendar, or add your classes by hand.', lk_empty:'No classes found in that calendar.', lk_note:'The link is read through the Rythmo relay and is never stored.',
-  sc_url_ph:'https://… or webcal://… (one link per line if you have several calendars)', sc_url_bad:'That does not look like a calendar link. It should start with https:// or webcal://.',
+  lk_title:'Import from a calendar link', lk_btn:'Import my classes', lk_busy:'Reading your calendar…', lk_fail:'Could not read that link. Check it is the iCal (.ics) link of your calendar, or add your classes by hand.', lk_empty:'No classes found in that calendar.', lk_note:'One link per line if you have several calendars. The link is read through the Rythmo relay and is never stored.',
+  sc_url_ph:'https://… or webcal://…', sc_url_bad:'That does not look like a calendar link. It should start with https:// or webcal://.',
   sc_add:'Add a class', sc_name:'Class name', sc_name_ph:'e.g. Statistics', sc_start:'Starts', sc_end:'Ends', sc_days:'Days', sc_add_btn:'Add class',
   sc_added:'Class added.', sc_list:'Your classes', sc_none:'No classes yet.', sc_remove:'Remove', sc_clear:'Remove all classes', sc_default:'Class',
   sc_bad_time:'The end time must be after the start time.', sc_need_day:'Pick at least one day.',
@@ -425,6 +429,8 @@ en: {
   sug_card:'Morning suggestions (remove any you do not want):', sug_restore:'Restore removed suggestions',
   tk_card:'Flexible tasks', tk_empty:'No tasks. That\'s perfectly fine.', tk_open:'+ Add a task',
   tk_add:'Add a flexible task', tk_hint:'Something without a fixed hour (study, project, errands). Rythmo finds a free slot on the days you pick.', tk_name:'Task name', tk_name_ph:'e.g. Group project', tk_dur:'How long', tk_btn:'Add task', tk_added:'Task added.', tk_list:'Your flexible tasks', tk_why:'Placed in a free slot ({m} min).', tk_none:'No room today for: {n}. Try another day or a shorter task.', tk_default:'Task',
+  past:'past', chal_week_one:'1 of the last 7 days', rm_chosen:'Chosen: active once exported to your calendar or notifications are allowed', imp_sec:'Import my calendar (Google, Apple, Outlook, school)',
+  sport_fb_morning:'No free morning slot that day: here is the first free one.', sport_fb_evening:'No free evening slot that day: here is the first free one.',
   imp_ok:'{n} classes imported over {w}.', imp_ok_one:'1 class imported over {w}.', weeks:'{n} weeks', weeks_one:'1 week', imp_past:'This calendar only has past events: {n} classes copied as a weekly timetable.',
   imp_card:'Imported calendar', imp_until:'Until {d}.', imp_exact:'Each date shows its real classes: cancelled sessions, one-off events and alternate weeks stay exact. Import again to refresh.', imp_remove:'Remove the imported calendar', imp_removed:'Imported calendar removed.',
   imp_legacy:'Did these classes come from an older import? Import your calendar again so each week follows the real dates (cancelled sessions, alternate weeks).', imp_hint_ok:'Got it',
@@ -458,7 +464,7 @@ en: {
   ob1_a:'Your evening bedtime, based on tomorrow.', ob1_b:'Meals and breaks around your classes.', ob1_c:'Edit any day: internship, day off, late night.',
   ob2_t:'When do you wake up, and when would you like to sleep?', ob2_p:'On class days, Rythmo adapts the wake-up to your first class.',
   ob3_t:'Your commute', ob3_p:'Rythmo adds it before your first class and after your last one.',
-  ob4_t:'Sport is optional. We\'ll only suggest a small one if you want.',
+  ob4_t:'What about sport?',
   ob5_t:'Classes first, everything else fits around them.', ob5_p:'Import your calendar, or describe a usual day in 30 seconds.', ob5_later:'You can also add your classes later in the Classes tab.',
   set_bedcap:'Latest bedtime', set_bedcap_hint:'Rythmo never suggests going to bed later than this, to keep a steady rhythm.',
   nav_week:'Week', now:'Now', prev_day:'Previous day', next_day:'Next day', pick_day:'Pick a day', close:'Close',
@@ -484,7 +490,7 @@ en: {
 },
 fr: {
   nav_plan:'Aujourd\'hui', nav_checkin:'Bilan', nav_schedule:'Cours', nav_settings:'Réglages', nav_main:'Navigation principale', lang_label:'Langue',
-  today:"Aujourd'hui", bed_around:'Au lit vers', wake_next:'Réveil', sleep_h:'Sommeil',
+  today:"Aujourd'hui", bed_around:'Au lit vers', wake_next:'Réveil demain', sleep_h:'Sommeil',
   short_night:"Ton emploi du temps ne laisse que {h} h de sommeil cette nuit-là. Couche-toi dès que tu peux, ou prévois une petite sieste.",
   wake:'Réveil', wake_class:'Premier cours à {c}. Préparation et trajet : {m} min.', wake_free:'Pas de cours. Ton réveil habituel des jours libres.',
   breakfast:'Petit-déjeuner', breakfast_why:'Mange quelque chose avant que la journée commence.',
@@ -508,8 +514,8 @@ fr: {
   sc_import:'Importer un fichier calendrier (.ics)', sc_import_hint:"Exporte-le depuis l'agenda de ton école ou ton appli d'agenda. Il remplace les cours ci-dessous.",
   sc_import_ok:'{n} cours importés.', sc_import_none:'Aucun événement horaire trouvé dans ce fichier.', sc_import_err:'Impossible de lire ce fichier.',
   qs_title:'Ta journée de cours type (30 secondes)', qs_start:'Début du premier cours', qs_end:'Fin du dernier cours', qs_btn:'Créer mon plan', qs_or:'ou', qs_detail:'Entrer mon emploi du temps exact', qs_am:'Cours du matin', qs_pm:'Cours de l\'après-midi',
-  lk_title:'Importer depuis un lien d\'agenda', lk_btn:'Importer mes cours', lk_busy:'Lecture de ton agenda…', lk_fail:'Impossible de lire ce lien. Vérifie que c\'est le lien iCal (.ics) de ton agenda, ou ajoute tes cours à la main.', lk_empty:'Aucun cours trouvé dans cet agenda.', lk_note:'Le lien est lu via le relais de Rythmo et n\'est jamais enregistré.',
-  sc_url_ph:'https://… ou webcal://… (un lien par ligne si tu as plusieurs agendas)', sc_url_bad:'Ce lien ne ressemble pas à un lien d\'agenda. Il doit commencer par https:// ou webcal://.',
+  lk_title:'Importer depuis un lien d\'agenda', lk_btn:'Importer mes cours', lk_busy:'Lecture de ton agenda…', lk_fail:'Impossible de lire ce lien. Vérifie que c\'est le lien iCal (.ics) de ton agenda, ou ajoute tes cours à la main.', lk_empty:'Aucun cours trouvé dans cet agenda.', lk_note:'Un lien par ligne si tu as plusieurs agendas. Le lien est lu via le relais de Rythmo et n\'est jamais enregistré.',
+  sc_url_ph:'https://… ou webcal://…', sc_url_bad:'Ce lien ne ressemble pas à un lien d\'agenda. Il doit commencer par https:// ou webcal://.',
   sc_add:'Ajouter un cours', sc_name:'Nom du cours', sc_name_ph:'ex. Statistiques', sc_start:'Début', sc_end:'Fin', sc_days:'Jours', sc_add_btn:'Ajouter le cours',
   sc_added:'Cours ajouté.', sc_list:'Tes cours', sc_none:'Aucun cours pour le moment.', sc_remove:'Retirer', sc_clear:'Retirer tous les cours', sc_default:'Cours',
   sc_bad_time:"L'heure de fin doit être après l'heure de début.", sc_need_day:'Choisis au moins un jour.',
@@ -523,6 +529,8 @@ fr: {
   sug_card:'Suggestions du matin (retire celles dont tu ne veux pas) :', sug_restore:'Remettre les suggestions retirées',
   tk_card:'Tâches flexibles', tk_empty:'Pas de tâche. C\'est très bien comme ça.', tk_open:'+ Ajouter une tâche',
   tk_add:'Ajouter une tâche flexible', tk_hint:"Quelque chose sans heure fixe (révisions, projet, courses). Rythmo trouve un créneau libre les jours choisis.", tk_name:'Nom de la tâche', tk_name_ph:'ex. Projet de groupe', tk_dur:'Durée', tk_btn:'Ajouter la tâche', tk_added:'Tâche ajoutée.', tk_list:'Tes tâches flexibles', tk_why:'Placée dans un créneau libre ({m} min).', tk_none:"Pas de place aujourd'hui pour : {n}. Essaie un autre jour ou une tâche plus courte.", tk_default:'Tâche',
+  past:'passé', chal_week_one:'1 jour sur les 7 derniers', rm_chosen:'Choisi : actif après l\'export vers l\'agenda ou avec les notifications', imp_sec:'Importer mon agenda (Google, Apple, Outlook, école)',
+  sport_fb_morning:'Pas de créneau libre le matin ce jour-là : voici le premier créneau libre.', sport_fb_evening:'Pas de créneau libre le soir ce jour-là : voici le premier créneau libre.',
   imp_ok:'{n} cours importés sur {w}.', imp_ok_one:'1 cours importé sur {w}.', weeks:'{n} semaines', weeks_one:'1 semaine', imp_past:'Cet agenda ne contient que des événements passés : {n} cours copiés comme emploi du temps hebdomadaire.',
   imp_card:'Agenda importé', imp_until:'Jusqu\'au {d}.', imp_exact:'Chaque date affiche ses vrais cours : séances annulées, événements ponctuels et semaines alternées restent exacts. Réimporte pour mettre à jour.', imp_remove:'Retirer l\'agenda importé', imp_removed:'Agenda importé retiré.',
   imp_legacy:'Ces cours viennent d\'un ancien import ? Réimporte ton agenda pour que chaque semaine suive les vraies dates (séances annulées, semaines alternées).', imp_hint_ok:'Compris',
@@ -556,7 +564,7 @@ fr: {
   ob1_a:'Ton heure de coucher, calculée sur demain.', ob1_b:'Repas et pauses autour de tes cours.', ob1_c:'Chaque jour se modifie : stage, jour off, soirée tardive.',
   ob2_t:'À quelle heure te lèves-tu, et quand aimerais-tu dormir ?', ob2_p:'Les jours de cours, Rythmo adapte le réveil à ton premier cours.',
   ob3_t:'Tes trajets', ob3_p:'Rythmo les ajoute avant ton premier cours et après le dernier.',
-  ob4_t:'Le sport, c\'est facultatif. On t\'en propose juste un petit si tu veux.',
+  ob4_t:'Et le sport ?',
   ob5_t:'Tes cours d\'abord, le reste s\'organise autour.', ob5_p:'Importe ton agenda, ou décris une journée type en 30 secondes.', ob5_later:'Tu peux aussi ajouter tes cours plus tard dans l\'onglet Cours.',
   set_bedcap:'Coucher au plus tard', set_bedcap_hint:'Rythmo ne te propose jamais de te coucher plus tard, pour garder un rythme régulier.',
   nav_week:'Semaine', now:'Maintenant', prev_day:'Jour précédent', next_day:'Jour suivant', pick_day:'Choisir un jour', close:'Fermer',
@@ -593,7 +601,7 @@ function freshState() {
   return { v: SCHEMA, onboarded: false, lang: (navigator.language || 'en').toLowerCase().startsWith('fr') ? 'fr' : 'en', sample: false,
     settings: { sleep: 8, commute: 30, sport: 30, freeWake: '08:00', bedCap: '23:30', theme: 'horizon', themePicked: false, autoNight: false,
       sportOn: false, sportMin: 30, sportWhen: 'any', waterGoal: 8 }, // new users: no sport until they opt in
-    classes: [], tasks: [], checkins: {}, challenges: {}, water: {}, done: {}, hiddenSug: {}, cal: null, overrides: {}, ui: { weekMode: 'grid' }, note: '', todos: [],
+    classes: [], tasks: [], checkins: {}, challenges: {}, water: {}, done: {}, hiddenSug: {}, cal: null, overrides: {}, ui: {}, note: '', todos: [],
     reminders: { enabled: false, bed: { on: true, before: 15 }, checkin: { on: true, time: '21:30' }, water: { on: false }, screens: { on: false, before: 45 } } };
 }
 /* One-time upgrades. Never delete old keys: an older build reading the same storage keeps working. */
@@ -697,7 +705,7 @@ const pad = n => String(n).padStart(2, '0');
 const toMin = s => { const p = String(s).split(':'); return (+p[0]) * 60 + (+p[1] || 0); };
 const fmt = m => { m = ((Math.round(m) % 1440) + 1440) % 1440; return pad(Math.floor(m / 60)) + ':' + pad(m % 60); };
 const fmtL = m => state.lang === 'fr' ? fmt(m).replace(':', 'h') : fmt(m); // 12h30 in French
-const fmtH = n => String(Math.round(n * 10) / 10);
+const fmtH = n => { const s = String(Math.round(n * 10) / 10); return state.lang === 'fr' ? s.replace('.', ',') : s; }; // 7,5 in French
 const key = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
 const today = () => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), d.getDate()); };
 const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
@@ -827,22 +835,22 @@ function computeDay(date) {
   if (!skip.dinner) { meals.push([dinner, dinner + 45]); items.push({ k: 'dinner', t: dinner, dur: 45, type: 'meal', soft: true, moved: !!at.dinner, title: late ? t('dinner_late') : t('dinner'), why: late ? t('dinner_late_why') : t('dinner_why') }); }
   // Sport (optional). Fix: the old code kept the slot closest to 17:30, so a day ending at 10:30 still got
   // 17:30. Now: the FIRST free slot after classes + travel home, in the moment the user prefers.
-  let sportT = null;
+  let sportT = null, sportFb = false;
   const sportWanted = S.sportOn && !ov.noSport && !skip.sport;
   if (sportWanted) {
     const dur = S.sportMin, to = Math.min(1260, bed - 120);
     const anchor = cl.length ? lastEnd + S.commute + 15 : w.wake + 60;
     const free = x => !cl.some(c => overlaps(x, x + dur, c.s - 15, c.e + 15)) &&
       !trips.some(r => overlaps(x, x + dur, r[0] - 10, r[1] + 10)) &&
-      !meals.some(m => overlaps(x, x + dur, m[0] - 30, m[1] + 30));
+      !meals.some(m => overlaps(x, x + dur, m[0] - 15, m[1] + 30)); // fine to eat soon after sport, not to train right after eating
     const first = (a, b) => { for (let x = Math.ceil(a / 15) * 15; x + dur <= b; x += 15) if (free(x)) return x; return null; };
     if (at.sport) sportT = mv('sport', 0);
     else {
-      if (S.sportWhen === 'morning') sportT = first(Math.max(w.wake + 45, 360), Math.min(720, to));
+      if (S.sportWhen === 'morning') sportT = first(Math.max(w.wake + 45, 360), Math.min(750, to));
       else if (S.sportWhen === 'evening') sportT = first(Math.max(anchor, 1020), to);
-      if (sportT === null) sportT = first(Math.max(anchor, w.wake + 45), to);
+      if (sportT === null) { sportT = first(Math.max(anchor, w.wake + 45), to); if (sportT !== null && S.sportWhen !== 'any') sportFb = true; }
     }
-    if (sportT !== null) items.push({ k: 'sport', t: sportT, dur, type: 'sport', moved: !!at.sport, title: t('sport', { m: dur }), why: t('sport_why') });
+    if (sportT !== null) items.push({ k: 'sport', t: sportT, dur, type: 'sport', moved: !!at.sport, title: t('sport', { m: dur }), why: sportFb ? t('sport_fb_' + S.sportWhen) : t('sport_why') });
   }
   // Flexible tasks (no fixed hour): drop each one into a free slot on its days
   const unplaced = [];
@@ -970,7 +978,7 @@ function timeline(P, dk, isToday) {
   P.items.forEach(it => {
     if (!nowDone && it.t > nm) { nowDone = true; h += '<li class="nowrow" aria-label="' + esc(t('now') + ' ' + fmt(nm)) + '"><span class="g"><span class="nowpill">' + fmt(nm) + '</span></span><span class="now-line"></span></li>'; }
     const past = isToday && it.t + durOf(it) < nm;
-    h += '<li class="' + (past ? 'past' : '') + '"><span class="g">' + (it.soft ? '~' : '') + fmt(it.t) + '</span>' + blockHtml(it, dk) + '</li>';
+    h += '<li class="' + (past ? 'past' : '') + '"><span class="g">' + (it.soft ? '~' : '') + fmt(it.t) + (past ? '<span class="sr"> (' + esc(t('past')) + ')</span>' : '') + '</span>' + blockHtml(it, dk) + '</li>';
   });
   return h + '</ul>';
 }
@@ -1043,7 +1051,7 @@ function screenPlan() {
   const ch = challengeFor(date, P), done = !!state.challenges[k];
   h += '<section class="card stack"><h2>' + esc(t('chal_title')) + '</h2><p style="margin:0">' + esc(ch.text) + '</p>' +
     '<button class="btn' + (done ? '' : ' pri') + ' full" data-act="chal" data-v="' + esc(k) + '" aria-pressed="' + done + '">' + esc(done ? t('chal_done') : t('chal_mark')) + '</button>' +
-    '<p class="hint" style="margin:0">' + esc(t('chal_week', { n: weekDone() })) + '</p></section>';
+    '<p class="hint" style="margin:0">' + esc(tp('chal_week', weekDone(), { n: weekDone() })) + '</p></section>';
   return h + fbCard() + footer();
 }
 
@@ -1109,10 +1117,12 @@ function sheetHtml() {
 
 /* ---------- Week view ---------- */
 let weekJump = null;
+// Phones get the list (44 px rows) unless the user picked the grid; desktops get the grid.
+const weekMode = () => state.ui.weekMode === 'list' || state.ui.weekMode === 'grid' ? state.ui.weekMode : (window.innerWidth < 900 ? 'list' : 'grid');
 const weekStartOf = d => addDays(d, -wdOf(d));
 function screenWeek() {
   const ws = weekStartOf(curDate), days = [0, 1, 2, 3, 4, 5, 6].map(i => addDays(ws, i)), Ps = days.map(computeDay), tk = key(today());
-  const mode = state.ui.weekMode === 'list' ? 'list' : 'grid';
+  const mode = weekMode();
   const rng = new Intl.DateTimeFormat(state.lang, { day: 'numeric', month: 'short' });
   let h = '<h1>' + esc(t('wk_title')) + '</h1><p class="sub">' + esc(rng.format(days[0]) + ' – ' + rng.format(days[6])) + '</p>';
   h += '<div class="wk-bar"><div class="chips"><button class="chip" data-act="wkmove" data-v="-7">‹ ' + esc(t('wk_prev')) + '</button><button class="chip" data-act="wkmove" data-v="0">' + esc(t('wk_this')) + '</button><button class="chip" data-act="wkmove" data-v="7">' + esc(t('wk_next')) + ' ›</button></div>' +
@@ -1206,7 +1216,7 @@ function screenSchedule() {
       '<div style="margin:10px 0 14px"><button class="btn warnb" data-act="clear">' + esc(t('sc_clear')) + '</button></div>';
   }
   if (state.tasks.length) h += '<h2>' + esc(t('tk_list')) + '</h2><ul class="cl" style="margin-bottom:14px">' + state.tasks.map(k => '<li><div class="m"><b>' + esc(k.title) + '</b><small>' + esc(t('min', { n: k.dur })) + ' · ' + k.days.slice().sort().map(d => esc(dayName(WEEK[d], 'short'))).join(', ') + '</small></div><button class="x" data-act="deltask" data-v="' + esc(k.id) + '">' + esc(t('sc_remove')) + '</button></li>').join('') + '</ul>';
-  h += sec('s-link', t('lk_title'), linkForm() + fileImport(), noCl && !!RELAY);
+  h += sec('s-link', t('imp_sec'), linkForm() + fileImport(), noCl && !state.cal && !!RELAY);
   h += sec('s-class', '+ ' + t('sc_add'), '<form id="addf" class="stack" style="margin:0"><label class="f" for="cn">' + esc(t('sc_name')) + '<input id="cn" type="text" maxlength="40" placeholder="' + esc(t('sc_name_ph')) + '"></label>' +
     '<div class="grid2"><label class="f" for="cs">' + esc(t('sc_start')) + '<input id="cs" type="time" value="08:30" required></label><label class="f" for="ce">' + esc(t('sc_end')) + '<input id="ce" type="time" value="10:30" required></label></div>' +
     dayChips('cd', i => i === wdOf(curDate)) + '<button class="btn pri full" type="submit">' + esc(t('sc_add_btn')) + '</button>' + msgP('addf') + '</form>', !!(msgAt === 'addf'));
@@ -1216,8 +1226,8 @@ function screenSchedule() {
   return h + footer();
 }
 
-function toggle(act, on, label, hint, v) {
-  return '<button class="tg" role="switch" aria-checked="' + !!on + '" data-act="' + esc(act) + '"' + (v ? ' data-v="' + esc(v) + '"' : '') + '><span class="lb">' + esc(label) + (hint ? '<span class="hint">' + esc(hint) + '</span>' : '') + '<span class="st">' + esc(on ? t('on') : t('off')) + '</span></span><span class="tr" aria-hidden="true"></span></button>';
+function toggle(act, on, label, hint, v, onWord) {
+  return '<button class="tg" role="switch" aria-checked="' + !!on + '" data-act="' + esc(act) + '"' + (v ? ' data-v="' + esc(v) + '"' : '') + '><span class="lb">' + esc(label) + (hint ? '<span class="hint">' + esc(hint) + '</span>' : '') + '<span class="st">' + esc(on ? (onWord || t('on')) : t('off')) + '</span></span><span class="tr" aria-hidden="true"></span></button>';
 }
 function themeTiles() {
   return '<fieldset style="border:0;padding:0;margin:0"><legend class="sr">' + esc(t('set_theme')) + '</legend><div class="tiles">' + THEMES.map(th =>
@@ -1243,10 +1253,10 @@ const OB_N = 5;
 function screenOnboarding() {
   const S = state.settings;
   const steps = [
-    () => '<h1>' + esc(t('ob1_t')) + '</h1><p class="sub">' + esc(t('ob1_p')) + '</p><ul class="ob-list"><li>' + esc(t('ob1_a')) + '</li><li>' + esc(t('ob1_b')) + '</li><li>' + esc(t('ob1_c')) + '</li></ul><div class="stack"><p class="hint" style="margin:0">' + esc(t('set_lang')) + '</p>' + langToggle() + '</div>',
+    () => '<h1>' + esc(t('ob1_t')) + '</h1><p class="sub">' + esc(t('ob1_p')) + '</p><ul class="ob-list"><li>' + esc(t('ob1_a')) + '</li><li>' + esc(t('ob1_b')) + '</li><li>' + esc(t('ob1_c')) + '</li></ul><div class="stack"><p class="hint" style="margin:0">' + esc(t('set_lang')) + '</p>' + langToggle() + '<p class="hint" style="margin:0">' + esc(t('set_theme')) + '</p>' + themeTiles() + '</div>',
     () => '<h1>' + esc(t('ob2_t')) + '</h1><p class="sub">' + esc(t('ob2_p')) + '</p><div class="stack">' +
       '<label class="f" for="ob-fw">' + esc(t('set_free')) + '<input id="ob-fw" type="time" data-set="freeWake" value="' + esc(S.freeWake) + '"></label>' + bedCapSel('ob-bc') +
-      '<label class="f" for="ob-sl">' + esc(t('set_sleep')) + '<select id="ob-sl" data-set="sleep">' + opts([7, 7.5, 8, 8.5, 9], S.sleep, v => t('hrs', { n: v })) + '</select></label></div>',
+      '<label class="f" for="ob-sl">' + esc(t('set_sleep')) + '<select id="ob-sl" data-set="sleep">' + opts([7, 7.5, 8, 8.5, 9], S.sleep, v => t('hrs', { n: fmtH(v) })) + '</select></label></div>',
     () => '<h1>' + esc(t('ob3_t')) + '</h1><p class="sub">' + esc(t('ob3_p')) + '</p><label class="f" for="ob-com">' + esc(t('trv_label')) + '<select id="ob-com" data-set="commute">' + opts([0, 10, 15, 20, 30, 45, 60, 75, 90, 120], S.commute, v => t('min', { n: v })) + '</select><span class="hint">' + esc(t('trv_hint')) + '</span></label>',
     () => '<h1>' + esc(t('ob4_t')) + '</h1><div class="stack">' + sportControls() + '</div>',
     () => '<h1>' + esc(t('ob5_t')) + '</h1><p class="sub">' + esc(t('ob5_p')) + '</p>' + msgP() + '<section class="card stack">' + linkForm() + fileImport() + '</section>' + quickForm() +
@@ -1264,7 +1274,7 @@ function screenSettings() {
   const S = state.settings;
   let h = '<h1>' + esc(t('set_title')) + '</h1>';
   h += '<section class="card stack"><h2>' + esc(t('set_planning')) + '</h2>' +
-    '<label class="f" for="s-sleep">' + esc(t('set_sleep')) + '<select id="s-sleep" data-set="sleep">' + opts([7, 7.5, 8, 8.5, 9], S.sleep, v => t('hrs', { n: v })) + '</select></label>' +
+    '<label class="f" for="s-sleep">' + esc(t('set_sleep')) + '<select id="s-sleep" data-set="sleep">' + opts([7, 7.5, 8, 8.5, 9], S.sleep, v => t('hrs', { n: fmtH(v) })) + '</select></label>' +
     '<label class="f" for="s-fw">' + esc(t('set_free')) + '<input id="s-fw" type="time" data-set="freeWake" value="' + esc(S.freeWake) + '"></label>' +
     bedCapSel('s-bc') +
     '<label class="f" for="s-com">' + esc(t('set_commute')) + '<select id="s-com" data-set="commute">' + opts([0, 10, 15, 20, 30, 45, 60, 75, 90, 120], S.commute, v => t('min', { n: v })) + '</select></label></section>';
@@ -1291,7 +1301,7 @@ function render() {
   }
   const scr = tab === 'plan' ? screenPlan() : tab === 'week' ? screenWeek() : tab === 'checkin' ? screenCheckin() : tab === 'schedule' ? screenSchedule() : screenSettings();
   const fid = document.activeElement && document.activeElement.id, y = window.scrollY;
-  const wk = tab === 'week' && state.ui.weekMode !== 'list';
+  const wk = tab === 'week' && weekMode() === 'grid';
   $app.innerHTML = '<div class="shell' + (tab === 'week' ? ' wide' : '') + '"' + (sheet ? ' inert' : '') + '>' + header() + '<main id="main">' + scr + '</main></div>' + '<div' + (sheet ? ' inert' : '') + '>' + nav() + '</div>' + sheetHtml();
   document.documentElement.setAttribute('data-theme', effTheme());
   document.documentElement.lang = state.lang;
@@ -1301,7 +1311,7 @@ function render() {
   else if (fid) { const el = document.getElementById(fid); if (el) el.focus({ preventScroll: true }); }
   window.scrollTo(0, y);
   if (scrollTask) { scrollTask = false; const d = document.getElementById('s-task'); if (d) { d.open = true; d.scrollIntoView({ block: 'center' }); } }
-  if (wk && weekJump) { const c = document.getElementById('col-' + weekJump); weekJump = null; if (c) c.scrollIntoView({ inline: 'start', block: 'nearest' }); }
+  if (wk && weekJump) { const c = document.getElementById('col-' + weekJump); weekJump = null; const wkEl = c && c.parentElement; if (wkEl) wkEl.scrollLeft = c.offsetLeft - wkEl.offsetLeft; }
   syncHash();
 }
 /* Routing: #plan, #week, #checkin, #schedule, #settings, #day=YYYY-MM-DD (back button works). */
@@ -1359,7 +1369,7 @@ async function scheduleInApp() {
     const ms = r.at - now; if (ms <= 0 || ms > 36 * 3600000) return;
     timers.push(setTimeout(() => {
       const o = { body: r.body, tag: r.kind, icon: 'icons/icon-192.png', badge: 'icons/icon-192.png', data: { url: r.url } };
-      try { if (reg) reg.showNotification(r.title, Object.assign(o, { actions: [{ action: 'dismiss', title: t('n_ignore') }] })); else new Notification(r.title, o); } catch (e) {}
+      try { if (reg) Promise.resolve(reg.showNotification(r.title, Object.assign(o, { actions: [{ action: 'dismiss', title: t('n_ignore') }] }))).catch(() => {}); else new Notification(r.title, o); } catch (e) {}
     }, ms));
   });
 }
@@ -1374,7 +1384,7 @@ async function enableReminders() { // called ONLY from a tap
   // Phase 2 would subscribe to Web Push here, inside this same tap handler (iOS requirement).
 }
 /* ---------- .ics export (UTC times, so no VTIMEZONE needed and DST is handled) ---------- */
-const icsEsc = s => String(s).replace(/\\/g, '\\\\').replace(/;/g, '\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
+const icsEsc = s => String(s).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
 const fmtUTC = d => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
 function fold(line) { // RFC 5545: lines of at most 75 octets (UTF-8 aware)
   const out = []; let cur = '', n = 0;
@@ -1411,7 +1421,8 @@ function planICS() {
 }
 function remindersCard() {
   const R = state.reminders, perm = notifPerm();
-  const row = (k, label, hint, ctl) => '<div class="rm-row">' + toggle('rmtoggle', R[k].on, label, hint, k) + (R[k].on && ctl ? ctl : '') + '</div>';
+  const live = R.enabled && perm === 'granted';
+  const row = (k, label, hint, ctl) => '<div class="rm-row">' + toggle('rmtoggle', R[k].on, label, hint, k, live ? t('on') : t('rm_chosen')) + (R[k].on && ctl ? ctl : '') + '</div>';
   const sel = (id, k, vals, cur, lab) => '<label class="f" for="' + id + '"><span class="hint">' + esc(lab) + '</span><select id="' + id + '" data-rm="' + k + '">' + opts(vals, cur, v => t('rm_before', { n: v })) + '</select></label>';
   let h = '<section class="card stack" id="reminders"><h2>' + esc(t('rm_title')) + '</h2><p style="margin:0">' + esc(t('rm_intro')) + '</p>';
   h += row('bed', t('rm_bed'), t('rm_bed_h'), sel('rm-bed', 'bed', [0, 15, 30, 45], R.bed.before, t('rm_when')));
@@ -1681,7 +1692,7 @@ const ACT = {
     if (!resetArm) { resetArm = true; return; }
     const lg = state.lang, th = state.settings.theme;
     state = freshState(); state.lang = lg; state.settings.theme = th;
-    resetArm = false; tab = 'plan'; curDate = today(); draft = null; save(); say(t('set_reset_done'));
+    resetArm = false; tab = 'plan'; curDate = today(); draft = null; save(); obOn = true; ob = 0; // start again with the tutorial
   }
 };
 $app.addEventListener('click', e => {
