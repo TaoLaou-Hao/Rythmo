@@ -310,6 +310,17 @@ button.block:hover{border-color:var(--c)}
 .ob-card .card{box-shadow:none;margin:0}
 .ob-list{margin:0;padding-left:1.2em;display:grid;gap:6px}
 .ob-nav{display:grid;grid-template-columns:1fr 1.4fr;gap:var(--s-3);position:sticky;bottom:0;background:var(--bg);padding:var(--s-3) 0 calc(var(--s-3) + env(safe-area-inset-bottom,0px))}
+
+.w-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.w-big{margin:0;color:var(--muted)}
+.w-big b{font:600 1.75rem/1 var(--f-body);color:var(--ink);font-variant-numeric:tabular-nums}
+.glasses{display:flex;flex-wrap:wrap;gap:4px}
+.glass{width:44px;height:48px;border:0;background:none;padding:0;display:grid;place-items:center;color:var(--line-strong);border-radius:var(--r-sm)}
+.glass .fill{fill:transparent}
+.glass.on{color:var(--b-free)}
+.glass.on .fill{fill:var(--b-free)}
+.w-row{display:flex;align-items:center;gap:12px}
+.rb[disabled]{opacity:.45;cursor:default}
 @media (prefers-reduced-motion: no-preference) {
   .btn,.chip,.tg .tr,.tg .tr::after,.glass{transition:background-color .18s ease,border-color .18s ease,left .18s ease,transform .12s ease}
   .btn:active{transform:translateY(1px)}
@@ -378,6 +389,7 @@ en: {
   sug_card:'Morning suggestions (remove any you do not want):', sug_restore:'Restore removed suggestions',
   tk_card:'Flexible tasks', tk_empty:'No tasks. That\'s perfectly fine.', tk_open:'+ Add a task',
   tk_add:'Add a flexible task', tk_hint:'Something without a fixed hour (study, project, errands). Rythmo finds a free slot on the days you pick.', tk_name:'Task name', tk_name_ph:'e.g. Group project', tk_dur:'How long', tk_btn:'Add task', tk_added:'Task added.', tk_list:'Your flexible tasks', tk_why:'Placed in a free slot ({m} min).', tk_none:'No room today for: {n}. Try another day or a shorter task.', tk_default:'Task',
+  w_glasses:'glasses', w_hint:'Tap a glass when you drink one.', w_edit:'Change goal', w_glass:'Glass {i} of {n}, {s}', w_full:'full', w_empty:'empty', w_less:'One less', w_more:'One more', w_extra:'+{n} over your goal', w_goal_label:'Water goal (glasses a day)',
   ob_step:'Step {a} of {b}', ob_skip:'Skip for now', ob_back:'Back', ob_next:'Continue', ob_done:'Finish', ob_replay:'Replay the tutorial', set_help:'Help',
   ob1_t:'A calm plan that follows your real day.', ob1_p:'Rythmo reads your classes and suggests when to sleep, eat and take a break. Suggestions, never orders.',
   ob1_a:'Your evening bedtime, based on tomorrow.', ob1_b:'Meals and breaks around your classes.', ob1_c:'Edit any day: internship, day off, late night.',
@@ -448,6 +460,7 @@ fr: {
   sug_card:'Suggestions du matin (retire celles dont tu ne veux pas) :', sug_restore:'Remettre les suggestions retirées',
   tk_card:'Tâches flexibles', tk_empty:'Pas de tâche. C\'est très bien comme ça.', tk_open:'+ Ajouter une tâche',
   tk_add:'Ajouter une tâche flexible', tk_hint:"Quelque chose sans heure fixe (révisions, projet, courses). Rythmo trouve un créneau libre les jours choisis.", tk_name:'Nom de la tâche', tk_name_ph:'ex. Projet de groupe', tk_dur:'Durée', tk_btn:'Ajouter la tâche', tk_added:'Tâche ajoutée.', tk_list:'Tes tâches flexibles', tk_why:'Placée dans un créneau libre ({m} min).', tk_none:"Pas de place aujourd'hui pour : {n}. Essaie un autre jour ou une tâche plus courte.", tk_default:'Tâche',
+  w_glasses:'verres', w_hint:'Touche un verre quand tu en bois un.', w_edit:'Modifier l\'objectif', w_glass:'Verre {i} sur {n}, {s}', w_full:'rempli', w_empty:'vide', w_less:'Un de moins', w_more:'Un de plus', w_extra:'+{n} au-delà de ton objectif', w_goal_label:'Objectif d\'eau (verres par jour)',
   ob_step:'Étape {a} sur {b}', ob_skip:'Passer pour l\'instant', ob_back:'Retour', ob_next:'Continuer', ob_done:'Terminer', ob_replay:'Revoir le tutoriel', set_help:'Aide',
   ob1_t:'Un planning calme, qui suit ta vraie journée.', ob1_p:'Rythmo lit tes cours et te suggère quand dormir, manger et souffler. Des suggestions, jamais des ordres.',
   ob1_a:'Ton heure de coucher, calculée sur demain.', ob1_b:'Repas et pauses autour de tes cours.', ob1_c:'Chaque jour se modifie : stage, jour off, soirée tardive.',
@@ -489,7 +502,7 @@ const HHMM = /^([01]\d|2[0-3]):[0-5]\d$/;
 function freshState() {
   return { v: SCHEMA, onboarded: false, lang: (navigator.language || 'en').toLowerCase().startsWith('fr') ? 'fr' : 'en', sample: false,
     settings: { sleep: 8, commute: 30, sport: 30, freeWake: '08:00', bedCap: '23:30', theme: 'horizon', themePicked: false, autoNight: false,
-      sportOn: false, sportMin: 30, sportWhen: 'any' }, // new users: no sport until they opt in
+      sportOn: false, sportMin: 30, sportWhen: 'any', waterGoal: 8 }, // new users: no sport until they opt in
     classes: [], tasks: [], checkins: {}, challenges: {}, water: {}, done: {}, hiddenSug: {}, overrides: {}, ui: { weekMode: 'grid' } };
 }
 /* One-time upgrades. Never delete old keys: an older build reading the same storage keeps working. */
@@ -501,6 +514,7 @@ function migrate(s) {
     // Existing testers always had sport: keep it on (no silent change), snap old 20 min to 30.
     if (s.settings.sportOn === undefined) { s.settings.sportOn = true; s.settings.sportMin = snapSport(s.settings.sport); }
     // Testers who already have classes skip the tutorial (they can replay it from Settings).
+    if (s.settings.waterGoal === undefined) s.settings.waterGoal = 6; // the old fixed goal, kept for existing testers
     if (s.onboarded === undefined) s.onboarded = Array.isArray(s.classes) && s.classes.length > 0;
   }
   s.v = SCHEMA;
@@ -522,6 +536,7 @@ function sanitize(s) {
   if (!HHMM.test(out.settings.freeWake)) out.settings.freeWake = '08:00';
   if (!BEDCAPS.includes(out.settings.bedCap)) out.settings.bedCap = '23:30';
   out.onboarded = !!out.onboarded;
+  out.settings.waterGoal = Math.max(4, Math.min(12, Math.round(+out.settings.waterGoal) || 8));
   out.settings.sportOn = !!out.settings.sportOn; out.settings.sportMin = snapSport(out.settings.sportMin);
   if (!['morning', 'evening', 'any'].includes(out.settings.sportWhen)) out.settings.sportWhen = 'any';
   ['sleep', 'commute', 'sport'].forEach(k => { out.settings[k] = +out.settings[k]; if (!isFinite(out.settings[k])) out.settings[k] = b.settings[k]; });
@@ -723,7 +738,7 @@ function challengeFor(date, P) {
   if (ci && ci.sleepH < state.settings.sleep - 1) id = 'ch_bed';
   else if (ci && ci.energy <= 2) id = 'ch_walk';
   else { const L = ['ch_bed', 'ch_water', 'ch_walk', 'ch_breakfast', 'ch_screens', 'ch_stretch']; id = L[Math.floor(date.getTime() / 86400000) % L.length]; }
-  return { id, text: t(id, { t: fmt(P.bed), n: 6 }) };
+  return { id, text: t(id, { t: fmt(P.bed), n: state.settings.waterGoal }) };
 }
 function weekDone() { let n = 0; for (let i = 0; i < 7; i++) if (state.challenges[key(addDays(today(), -i))]) n++; return n; }
 
@@ -874,8 +889,7 @@ function screenPlan() {
   if (!P.cl.length && P.items.length <= 5) h += '<p class="sub">' + esc(t('today_empty')) + '</p>';
   h += '<p class="hint">' + esc(t('tap_hint')) + '</p>' + timeline(P, k, isToday);
   if (P.noSport) h += '<div class="tip">' + esc(t('sport_none')) + '</div>';
-  const w = state.water[k] || 0;
-  h += '<section class="card"><h2>' + esc(t('water')) + '</h2>' + (isToday ? '<div class="stepper"><button class="rb" data-act="water" data-v="-1" aria-label="-1">−</button><span class="v">' + w + '</span><button class="rb" data-act="water" data-v="1" aria-label="+1">+</button></div><p class="hint">' + esc(t('water_goal', { n: 6 })) + '</p>' : '<p>' + esc(t('water_goal_day', { n: 6 })) + '</p>') + '</section>';
+  h += waterCard(k, isToday);
   h += dayEditCard(P, k);
   const dayTasks = state.tasks.filter(x => x.days.includes(wdOf(date)));
   const morning = P.items.filter(x => x.type === 'morning');
@@ -889,6 +903,20 @@ function screenPlan() {
     '<button class="btn' + (done ? '' : ' pri') + ' full" data-act="chal" data-v="' + esc(k) + '" aria-pressed="' + done + '">' + esc(done ? t('chal_done') : t('chal_mark')) + '</button>' +
     '<p class="hint" style="margin:0">' + esc(t('chal_week', { n: weekDone() })) + '</p></section>';
   return h + fbCard() + footer();
+}
+
+/* ---------- Water: "6 / 8 glasses", tap a glass to fill up to it, tap the last filled one to remove one ---------- */
+const GLASS = '<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M6 3h12l-1.6 17.2a1 1 0 0 1-1 .8H8.6a1 1 0 0 1-1-.8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path class="fill" d="M7.2 9h9.6l-1.2 11H8.4z"/></svg>';
+function waterCard(k, isToday) {
+  const g = state.settings.waterGoal, w = state.water[k] || 0;
+  let h = '<section class="card stack water"><div class="w-head"><h2 style="margin:0">' + esc(t('water')) + '</h2><button class="tbtn" data-act="tab" data-v="settings">' + esc(t('w_edit')) + '</button></div>';
+  if (!isToday) return h + '<p style="margin:0">' + esc(t('water_goal_day', { n: g })) + '</p></section>';
+  h += '<p class="w-big" aria-live="polite"><b>' + w + ' / ' + g + '</b> ' + esc(t('w_glasses')) + '</p>';
+  h += '<div class="glasses" role="group" aria-label="' + esc(t('water')) + '">';
+  for (let i = 1; i <= g; i++) h += '<button class="glass' + (i <= w ? ' on' : '') + '" data-act="glass" data-v="' + i + '" aria-pressed="' + (i <= w) + '" aria-label="' + esc(t('w_glass', { i, n: g, s: i <= w ? t('w_full') : t('w_empty') })) + '">' + GLASS + '</button>';
+  h += '</div><div class="w-row"><button class="rb" data-act="water" data-v="-1" aria-label="' + esc(t('w_less')) + '">−</button><button class="rb" data-act="water" data-v="1" aria-label="' + esc(t('w_more')) + '">+</button>' +
+    (w > g ? '<span class="hint">' + esc(t('w_extra', { n: w - g })) + '</span>' : '') + '</div>';
+  return h + '<p class="hint" style="margin:0">' + esc(t('w_hint')) + '</p></section>';
 }
 
 /* ---------- Block editor (bottom sheet) ---------- */
@@ -1078,6 +1106,7 @@ function screenSettings() {
     bedCapSel('s-bc') +
     '<label class="f" for="s-com">' + esc(t('set_commute')) + '<select id="s-com" data-set="commute">' + opts([0, 10, 15, 20, 30, 45, 60, 75, 90, 120], S.commute, v => t('min', { n: v })) + '</select></label></section>';
   h += '<section class="card stack"><h2>' + esc(t('sp_title')) + '</h2>' + sportControls() + '</section>';
+  h += '<section class="card stack"><h2>' + esc(t('water')) + '</h2><div class="stepper" role="group" aria-label="' + esc(t('w_goal_label')) + '"><button class="rb" data-act="wgoal" data-v="-1" aria-label="' + esc(t('w_less')) + '"' + (S.waterGoal <= 4 ? ' disabled' : '') + '>−</button><span class="v" aria-live="polite">' + S.waterGoal + '</span><button class="rb" data-act="wgoal" data-v="1" aria-label="' + esc(t('w_more')) + '"' + (S.waterGoal >= 12 ? ' disabled' : '') + '>+</button></div><p class="hint" style="margin:0">' + esc(t('water_goal', { n: S.waterGoal })) + '</p></section>';
   h += '<section class="card stack"><h2>' + esc(t('set_theme')) + '</h2><p class="hint" style="margin:0">' + esc(t('set_theme_hint')) + '</p>' + themeTiles() +
     toggle('autonight', S.autoNight, t('set_auto'), t('set_auto_hint')) + '</section>';
   h += '<section class="card stack"><h2>' + esc(t('set_lang')) + '</h2><div>' + langToggle() + '</div></section>';
@@ -1198,6 +1227,8 @@ const ACT = {
   wkmove: v => { curDate = +v === 0 ? today() : addDays(weekStartOf(curDate), +v); weekJump = key(+v === 0 ? today() : weekStartOf(curDate)); },
   wkmode: v => { state.ui.weekMode = v === 'list' ? 'list' : 'grid'; save(); },
   wkjump: v => { weekJump = v; },
+  glass: v => { const k = key(today()), n = +v, cur = state.water[k] || 0; state.water[k] = cur === n ? n - 1 : n; save(); },
+  wgoal: v => { state.settings.waterGoal = Math.max(4, Math.min(12, state.settings.waterGoal + (+v))); save(); },
   water: v => { const k = key(today()); state.water[k] = Math.max(0, Math.min(20, (state.water[k] || 0) + (+v))); save(); },
   chal: v => { state.challenges[v] = !state.challenges[v]; save(); },
   sleep: v => { draft.sleepH = Math.max(3, Math.min(12, draft.sleepH + (+v))); },
