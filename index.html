@@ -20,6 +20,14 @@
   document.documentElement.setAttribute('data-theme', T.indexOf(th) >= 0 ? th : 'horizon');
 })();
 </script>
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<meta name="theme-color" content="#f4f3fb">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Rythmo">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Figtree:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=Nunito:wght@400;600;700&display=swap">
@@ -321,6 +329,14 @@ button.block:hover{border-color:var(--c)}
 .glass.on .fill{fill:var(--b-free)}
 .w-row{display:flex;align-items:center;gap:12px}
 .rb[disabled]{opacity:.45;cursor:default}
+
+.rm-row{display:grid;gap:6px;border-top:1px solid var(--line);padding-top:var(--s-2)}
+.rm-box{background:var(--sunk);border-radius:var(--r-md);padding:var(--s-3);display:grid;gap:var(--s-2)}
+.rm-box .hint{margin:0}
+.rm-box .btn{background:var(--surface)}
+.rm-box .btn.pri{background:var(--accent)}
+.ok-line{margin:0;font-weight:600;color:var(--ink)}
+.steps{margin:0;padding-left:1.3em;display:grid;gap:4px}
 @media (prefers-reduced-motion: no-preference) {
   .btn,.chip,.tg .tr,.tg .tr::after,.glass{transition:background-color .18s ease,border-color .18s ease,left .18s ease,transform .12s ease}
   .btn:active{transform:translateY(1px)}
@@ -389,6 +405,22 @@ en: {
   sug_card:'Morning suggestions (remove any you do not want):', sug_restore:'Restore removed suggestions',
   tk_card:'Flexible tasks', tk_empty:'No tasks. That\'s perfectly fine.', tk_open:'+ Add a task',
   tk_add:'Add a flexible task', tk_hint:'Something without a fixed hour (study, project, errands). Rythmo finds a free slot on the days you pick.', tk_name:'Task name', tk_name_ph:'e.g. Group project', tk_dur:'How long', tk_btn:'Add task', tk_added:'Task added.', tk_list:'Your flexible tasks', tk_why:'Placed in a free slot ({m} min).', tk_none:'No room today for: {n}. Try another day or a shorter task.', tk_default:'Task',
+  rm_title:'Reminders', rm_intro:'Rythmo can remind you to go to bed and to do your check-in. Never after midnight, never guilt-tripping. You can stop whenever you like.',
+  rm_bed:'Bedtime', rm_bed_h:'A gentle nudge before lights out.', rm_checkin:'Evening check-in', rm_checkin_h:'30 seconds to look back at your day.',
+  rm_water:'Water', rm_water_h:'Three light reminders during the day.', rm_screens:'Screens off before sleep', rm_screens_h:'A hint to put the phone down.',
+  rm_when:'When', rm_at:'At', rm_before:'{n} min before lights out', rm_never:'Never after midnight. You can switch everything off here.',
+  rm_cal_t:'Most reliable: your calendar', rm_cal_h:'Adds the next 7 days of reminders to your phone calendar. It reminds you even when Rythmo is closed. Export again if your plan changes.',
+  rm_cal_btn:'Add my reminders to my calendar (.ics)', rm_plan_btn:'Export my whole plan for 7 days (.ics)', rm_cal_done:'{n} reminders exported. Open the file to add them to your calendar.', rm_plan_done:'Plan exported. Open the file to add it to your calendar.', rm_none:'No reminder is switched on.',
+  rm_app_t:'Notifications while the app is open', rm_app_h:'Only works while Rythmo is open (or installed and running). For reminders when it is closed, use the calendar above.',
+  rm_app_btn:'Allow notifications', rm_app_on:'Notifications are on while the app is open.', rm_app_off_btn:'Turn notifications off', rm_on_msg:'Done. You will get notifications while Rythmo is open.', rm_off_msg:'Notifications are off.',
+  rm_denied:'Notifications are blocked for this site. You can allow them again in your browser or phone settings, or use the calendar option.',
+  rm_unsupported:'This browser cannot show notifications. The calendar option works everywhere.',
+  rm_ios_first:'On iPhone, notifications only work once Rythmo is on your Home Screen (see below). Meanwhile, the calendar option works.',
+  in_title:'Install Rythmo', in_why:'Opens like an app, and can show notifications.', in_btn:'Install the app',
+  in_ios1:'In Safari, tap the Share button (square with an arrow).', in_ios2:'Choose "Add to Home Screen", then "Add".', in_ios3:'Open Rythmo from your Home Screen.',
+  in_other:'In your browser menu, look for "Install app" or "Add to Home screen".',
+  n_bed:'Easing into the evening. Bed around {t}?', n_bed_b:'Rythmo', n_checkin:'A quick look back at your day? 30 seconds.', n_water:'A glass of water, if you feel like it.', n_screens:'Maybe put the screens down? Your bed\'s waiting.', n_ignore:'Ignore',
+  ics_rem_name:'Rythmo - reminders', ics_plan_name:'Rythmo - plan',
   w_glasses:'glasses', w_hint:'Tap a glass when you drink one.', w_edit:'Change goal', w_glass:'Glass {i} of {n}, {s}', w_full:'full', w_empty:'empty', w_less:'One less', w_more:'One more', w_extra:'+{n} over your goal', w_goal_label:'Water goal (glasses a day)',
   ob_step:'Step {a} of {b}', ob_skip:'Skip for now', ob_back:'Back', ob_next:'Continue', ob_done:'Finish', ob_replay:'Replay the tutorial', set_help:'Help',
   ob1_t:'A calm plan that follows your real day.', ob1_p:'Rythmo reads your classes and suggests when to sleep, eat and take a break. Suggestions, never orders.',
@@ -460,6 +492,22 @@ fr: {
   sug_card:'Suggestions du matin (retire celles dont tu ne veux pas) :', sug_restore:'Remettre les suggestions retirées',
   tk_card:'Tâches flexibles', tk_empty:'Pas de tâche. C\'est très bien comme ça.', tk_open:'+ Ajouter une tâche',
   tk_add:'Ajouter une tâche flexible', tk_hint:"Quelque chose sans heure fixe (révisions, projet, courses). Rythmo trouve un créneau libre les jours choisis.", tk_name:'Nom de la tâche', tk_name_ph:'ex. Projet de groupe', tk_dur:'Durée', tk_btn:'Ajouter la tâche', tk_added:'Tâche ajoutée.', tk_list:'Tes tâches flexibles', tk_why:'Placée dans un créneau libre ({m} min).', tk_none:"Pas de place aujourd'hui pour : {n}. Essaie un autre jour ou une tâche plus courte.", tk_default:'Tâche',
+  rm_title:'Rappels', rm_intro:'Rythmo peut te rappeler d\'aller te coucher et de faire ton bilan. Jamais après minuit, jamais culpabilisant. Tu peux arrêter quand tu veux.',
+  rm_bed:'Coucher', rm_bed_h:'Un petit signal avant l\'extinction des feux.', rm_checkin:'Bilan du soir', rm_checkin_h:'30 secondes pour faire le point sur ta journée.',
+  rm_water:'Eau', rm_water_h:'Trois petits rappels dans la journée.', rm_screens:'Écrans éteints avant de dormir', rm_screens_h:'Une idée pour poser le téléphone.',
+  rm_when:'Quand', rm_at:'À', rm_before:'{n} min avant l\'extinction', rm_never:'Jamais après minuit. Tu peux tout couper ici.',
+  rm_cal_t:'Le plus fiable : ton agenda', rm_cal_h:'Ajoute les rappels des 7 prochains jours à l\'agenda de ton téléphone. Il te prévient même quand Rythmo est fermé. Ré-exporte si ton planning change.',
+  rm_cal_btn:'Ajouter mes rappels à mon calendrier (.ics)', rm_plan_btn:'Exporter tout mon planning sur 7 jours (.ics)', rm_cal_done:'{n} rappels exportés. Ouvre le fichier pour les ajouter à ton agenda.', rm_plan_done:'Planning exporté. Ouvre le fichier pour l\'ajouter à ton agenda.', rm_none:'Aucun rappel n\'est activé.',
+  rm_app_t:'Notifications pendant que l\'app est ouverte', rm_app_h:'Ne fonctionne que si Rythmo est ouvert (ou installé et actif). Pour des rappels app fermée, utilise l\'agenda ci-dessus.',
+  rm_app_btn:'Autoriser les notifications', rm_app_on:'Notifications activées pendant que l\'app est ouverte.', rm_app_off_btn:'Couper les notifications', rm_on_msg:'C\'est fait. Tu recevras des notifications pendant que Rythmo est ouvert.', rm_off_msg:'Notifications coupées.',
+  rm_denied:'Les notifications sont bloquées pour ce site. Tu peux les réautoriser dans les réglages du navigateur ou du téléphone, ou utiliser l\'option agenda.',
+  rm_unsupported:'Ce navigateur ne peut pas afficher de notifications. L\'option agenda marche partout.',
+  rm_ios_first:'Sur iPhone, les notifications ne marchent qu\'une fois Rythmo sur l\'écran d\'accueil (voir ci-dessous). En attendant, l\'option agenda fonctionne.',
+  in_title:'Installer Rythmo', in_why:'S\'ouvre comme une app et peut afficher des notifications.', in_btn:'Installer l\'app',
+  in_ios1:'Dans Safari, touche le bouton Partager (carré avec une flèche).', in_ios2:'Choisis « Sur l\'écran d\'accueil », puis « Ajouter ».', in_ios3:'Ouvre Rythmo depuis ton écran d\'accueil.',
+  in_other:'Dans le menu du navigateur, cherche « Installer l\'application » ou « Ajouter à l\'écran d\'accueil ».',
+  n_bed:'Doucement vers le soir. Dodo vers {t} ?', n_bed_b:'Rythmo', n_checkin:'Un petit bilan de ta journée ? Ça prend 30 secondes.', n_water:'Un verre d\'eau, si ça te dit.', n_screens:'Et si on posait les écrans ? Ton lit t\'attend.', n_ignore:'Ignorer',
+  ics_rem_name:'Rythmo - rappels', ics_plan_name:'Rythmo - planning',
   w_glasses:'verres', w_hint:'Touche un verre quand tu en bois un.', w_edit:'Modifier l\'objectif', w_glass:'Verre {i} sur {n}, {s}', w_full:'rempli', w_empty:'vide', w_less:'Un de moins', w_more:'Un de plus', w_extra:'+{n} au-delà de ton objectif', w_goal_label:'Objectif d\'eau (verres par jour)',
   ob_step:'Étape {a} sur {b}', ob_skip:'Passer pour l\'instant', ob_back:'Retour', ob_next:'Continuer', ob_done:'Terminer', ob_replay:'Revoir le tutoriel', set_help:'Aide',
   ob1_t:'Un planning calme, qui suit ta vraie journée.', ob1_p:'Rythmo lit tes cours et te suggère quand dormir, manger et souffler. Des suggestions, jamais des ordres.',
@@ -495,7 +543,7 @@ fr: {
 const KEY = 'rythmo.v1';
 let storageOk = true;
 function load() { try { const s = localStorage.getItem(KEY); return s ? JSON.parse(s) : null; } catch (e) { storageOk = false; return null; } }
-function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { storageOk = false; } }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { storageOk = false; } if (typeof queueSchedule === 'function') queueSchedule(); }
 const snapSport = m => { m = +m || 30; return m <= 30 ? 30 : m <= 45 ? 45 : 60; };
 const isObj = o => !!o && typeof o === 'object' && !Array.isArray(o);
 const HHMM = /^([01]\d|2[0-3]):[0-5]\d$/;
@@ -503,7 +551,8 @@ function freshState() {
   return { v: SCHEMA, onboarded: false, lang: (navigator.language || 'en').toLowerCase().startsWith('fr') ? 'fr' : 'en', sample: false,
     settings: { sleep: 8, commute: 30, sport: 30, freeWake: '08:00', bedCap: '23:30', theme: 'horizon', themePicked: false, autoNight: false,
       sportOn: false, sportMin: 30, sportWhen: 'any', waterGoal: 8 }, // new users: no sport until they opt in
-    classes: [], tasks: [], checkins: {}, challenges: {}, water: {}, done: {}, hiddenSug: {}, overrides: {}, ui: { weekMode: 'grid' } };
+    classes: [], tasks: [], checkins: {}, challenges: {}, water: {}, done: {}, hiddenSug: {}, overrides: {}, ui: { weekMode: 'grid' },
+    reminders: { enabled: false, bed: { on: true, before: 15 }, checkin: { on: true, time: '21:30' }, water: { on: false }, screens: { on: false, before: 45 } } };
 }
 /* One-time upgrades. Never delete old keys: an older build reading the same storage keeps working. */
 function migrate(s) {
@@ -527,6 +576,12 @@ function sanitize(s) {
   out.settings = Object.assign({}, b.settings, isObj(s.settings) ? s.settings : {});
   ['checkins', 'challenges', 'water', 'done', 'hiddenSug', 'overrides', 'ui'].forEach(k => { if (!isObj(out[k])) out[k] = {}; });
   out.overrides = cleanOverrides(out.overrides);
+  const R0 = b.reminders, R = isObj(s.reminders) ? s.reminders : {}, sub = k => Object.assign({}, R0[k], isObj(R[k]) ? R[k] : {});
+  out.reminders = { enabled: !!R.enabled, bed: sub('bed'), checkin: sub('checkin'), water: sub('water'), screens: sub('screens') };
+  ['bed', 'checkin', 'water', 'screens'].forEach(k => { out.reminders[k].on = !!out.reminders[k].on; });
+  out.reminders.bed.before = [0, 15, 30, 45].includes(+out.reminders.bed.before) ? +out.reminders.bed.before : 15;
+  out.reminders.screens.before = [30, 45, 60].includes(+out.reminders.screens.before) ? +out.reminders.screens.before : 45;
+  if (!HHMM.test(out.reminders.checkin.time)) out.reminders.checkin.time = '21:30';
   const okDays = d => Array.isArray(d) ? d.map(Number).filter(n => n >= 0 && n <= 6) : [];
   out.classes = (Array.isArray(out.classes) ? out.classes : []).filter(c => isObj(c) && HHMM.test(c.start) && HHMM.test(c.end))
     .map(c => ({ id: String(c.id || uid()), title: String(c.title || '').slice(0, 40), start: c.start, end: c.end, days: okDays(c.days) }));
@@ -588,6 +643,10 @@ function effTheme() {
   const S = state.settings, h = new Date().getHours();
   if (S.autoNight && (h >= 21 || h < 6)) return 'nuit';
   return THEMES.includes(S.theme) ? S.theme : 'horizon';
+}
+function syncThemeColor() {
+  const m = document.querySelector('meta[name=theme-color]'); if (!m) return;
+  try { const c = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim(); if (c) m.setAttribute('content', c); } catch (e) {}
 }
 function download(name, text, type) {
   const blob = new Blob([text], { type: type || 'text/plain;charset=utf-8' });
@@ -1099,13 +1158,14 @@ function screenOnboarding() {
 function finishOb() { obOn = false; ob = 0; state.onboarded = true; save(); tab = 'plan'; }
 function screenSettings() {
   const S = state.settings;
-  let h = '<h1>' + esc(t('set_title')) + '</h1>' + msgP();
+  let h = '<h1>' + esc(t('set_title')) + '</h1>';
   h += '<section class="card stack"><h2>' + esc(t('set_planning')) + '</h2>' +
     '<label class="f" for="s-sleep">' + esc(t('set_sleep')) + '<select id="s-sleep" data-set="sleep">' + opts([7, 7.5, 8, 8.5, 9], S.sleep, v => t('hrs', { n: v })) + '</select></label>' +
     '<label class="f" for="s-fw">' + esc(t('set_free')) + '<input id="s-fw" type="time" data-set="freeWake" value="' + esc(S.freeWake) + '"></label>' +
     bedCapSel('s-bc') +
     '<label class="f" for="s-com">' + esc(t('set_commute')) + '<select id="s-com" data-set="commute">' + opts([0, 10, 15, 20, 30, 45, 60, 75, 90, 120], S.commute, v => t('min', { n: v })) + '</select></label></section>';
   h += '<section class="card stack"><h2>' + esc(t('sp_title')) + '</h2>' + sportControls() + '</section>';
+  h += remindersCard();
   h += '<section class="card stack"><h2>' + esc(t('water')) + '</h2><div class="stepper" role="group" aria-label="' + esc(t('w_goal_label')) + '"><button class="rb" data-act="wgoal" data-v="-1" aria-label="' + esc(t('w_less')) + '"' + (S.waterGoal <= 4 ? ' disabled' : '') + '>−</button><span class="v" aria-live="polite">' + S.waterGoal + '</span><button class="rb" data-act="wgoal" data-v="1" aria-label="' + esc(t('w_more')) + '"' + (S.waterGoal >= 12 ? ' disabled' : '') + '>+</button></div><p class="hint" style="margin:0">' + esc(t('water_goal', { n: S.waterGoal })) + '</p></section>';
   h += '<section class="card stack"><h2>' + esc(t('set_theme')) + '</h2><p class="hint" style="margin:0">' + esc(t('set_theme_hint')) + '</p>' + themeTiles() +
     toggle('autonight', S.autoNight, t('set_auto'), t('set_auto_hint')) + '</section>';
@@ -1132,6 +1192,7 @@ function render() {
   document.documentElement.setAttribute('data-theme', effTheme());
   document.documentElement.lang = state.lang;
   document.title = 'Rythmo';
+  syncThemeColor();
   if (sheet) { const f = document.getElementById(fid) || document.querySelector('.sheet input, .sheet button'); if (f && f.closest('.sheet')) f.focus({ preventScroll: true }); else { const c = document.getElementById('sh-close'); if (c) c.focus(); } }
   else if (fid) { const el = document.getElementById(fid); if (el) el.focus({ preventScroll: true }); }
   window.scrollTo(0, y);
@@ -1149,6 +1210,131 @@ function readHash() {
   return false;
 }
 window.addEventListener('popstate', () => { if (readHash()) { sheet = null; msg = ''; render(); } });
+
+/* ===================== REMINDERS (phase 1, see notifications.md) =====================
+   1) In-app notifications through the service worker, ONLY while the app is open (honest label in the UI).
+   2) The robust option: an .ics file with VALARM for the next 7 days, so the phone's calendar app reminds you.
+   Never after midnight, never guilt-tripping. Water and screens-off are off by default.
+   TODO phase 2: Web Push through the Cloudflare Worker (VAPID + D1 + cron), see notifications.md section 5. */
+const isStandalone = () => { try { return matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; } catch (e) { return false; } };
+const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const notifSupported = () => 'Notification' in window && 'serviceWorker' in navigator;
+const notifPerm = () => notifSupported() ? Notification.permission : 'unsupported';
+let installEvt = null;
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (tab === 'settings') render(); });
+window.addEventListener('appinstalled', () => { installEvt = null; });
+function fmtSpoken(m) {
+  m = ((m % 1440) + 1440) % 1440; const h = Math.floor(m / 60), mi = m % 60;
+  if (state.lang === 'fr') return h + ' h ' + pad(mi);
+  return (h % 12 || 12) + (mi ? ':' + pad(mi) : '') + (h < 12 ? ' am' : ' pm');
+}
+const WATER_TIMES = [630, 870, 1020]; // 10:30, 14:30, 17:00
+function computeReminders(days) {
+  const R = state.reminders, out = [];
+  for (let i = 0; i < days; i++) {
+    const d = addDays(today(), i), P = computeDay(d), dk = key(d);
+    const add = (kind, m, title, body, url) => {
+      if (!(m >= 0 && m < 1440)) return; // never after midnight
+      out.push({ kind, date: dk, at: new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, Math.round(m)), title, body, url });
+    };
+    if (R.bed.on) add('bed', P.bed - R.bed.before, t('n_bed', { t: fmtSpoken(P.bed) }), t('n_bed_b'), './#plan');
+    if (R.screens.on) add('screens', P.bed - R.screens.before, t('n_screens'), '', './#plan');
+    if (R.checkin.on) add('checkin', toMin(R.checkin.time), t('n_checkin'), '', './#checkin');
+    if (R.water.on) WATER_TIMES.forEach(m => { if (m > P.wake + 30 && m < P.bed - 60) add('water', m, t('n_water'), '', './#plan'); });
+  }
+  return out.sort((a, b) => a.at - b.at);
+}
+let timers = [], schedQ = null;
+function queueSchedule() { clearTimeout(schedQ); schedQ = setTimeout(scheduleInApp, 300); }
+async function scheduleInApp() {
+  timers.forEach(clearTimeout); timers = [];
+  if (!state.reminders.enabled || notifPerm() !== 'granted') return;
+  let reg = null; try { reg = await navigator.serviceWorker.getRegistration(); } catch (e) {}
+  const now = Date.now();
+  computeReminders(2).forEach(r => {
+    const ms = r.at - now; if (ms <= 0 || ms > 36 * 3600000) return;
+    timers.push(setTimeout(() => {
+      const o = { body: r.body, tag: r.kind, icon: 'icons/icon-192.png', badge: 'icons/icon-192.png', data: { url: r.url } };
+      try { if (reg) reg.showNotification(r.title, Object.assign(o, { actions: [{ action: 'dismiss', title: t('n_ignore') }] })); else new Notification(r.title, o); } catch (e) {}
+    }, ms));
+  });
+}
+async function enableReminders() { // called ONLY from a tap
+  if (!notifSupported()) { say(t('rm_unsupported'), true); return; }
+  if (isIOS() && !isStandalone()) { say(t('rm_ios_first'), true); return; }
+  let perm = 'default';
+  try { perm = await Notification.requestPermission(); } catch (e) {}
+  if (perm !== 'granted') { say(t('rm_denied'), true); return; }
+  try { await navigator.serviceWorker.register('./sw.js', { scope: './' }); await navigator.serviceWorker.ready; } catch (e) {}
+  state.reminders.enabled = true; save(); say(t('rm_on_msg'));
+  // Phase 2 would subscribe to Web Push here, inside this same tap handler (iOS requirement).
+}
+/* ---------- .ics export (UTC times, so no VTIMEZONE needed and DST is handled) ---------- */
+const icsEsc = s => String(s).replace(/\\/g, '\\\\').replace(/;/g, '\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
+const fmtUTC = d => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+function fold(line) { // RFC 5545: lines of at most 75 octets (UTF-8 aware)
+  const out = []; let cur = '', n = 0;
+  for (const ch of line) { const b = new TextEncoder().encode(ch).length; if (n + b > (out.length ? 74 : 75)) { out.push(cur); cur = ''; n = 0; } cur += ch; n += b; }
+  out.push(cur); return out.join('\r\n ');
+}
+function buildICS(name, events) {
+  const L = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Rythmo//Planner//' + state.lang.toUpperCase(), 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'X-WR-CALNAME:' + icsEsc(name)];
+  const stamp = fmtUTC(new Date());
+  events.forEach(ev => {
+    L.push('BEGIN:VEVENT', 'UID:' + ev.uid, 'DTSTAMP:' + stamp, 'DTSTART:' + fmtUTC(ev.s), 'DTEND:' + fmtUTC(ev.e), 'SUMMARY:' + icsEsc(ev.title));
+    if (ev.desc) L.push('DESCRIPTION:' + icsEsc(ev.desc));
+    L.push('TRANSP:TRANSPARENT');
+    if (ev.alarm) L.push('BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' + icsEsc(ev.title), 'TRIGGER:PT0M', 'END:VALARM');
+    L.push('END:VEVENT');
+  });
+  L.push('END:VCALENDAR');
+  return L.map(fold).join('\r\n') + '\r\n';
+}
+function remindersICS() {
+  return buildICS(t('ics_rem_name'), computeReminders(7).map(r => ({ uid: r.kind + '-' + r.date + '@rythmo', s: r.at, e: new Date(r.at.getTime() + 10 * 60000), title: r.title, desc: r.body || 'Rythmo', alarm: true })));
+}
+function planICS() {
+  const evs = [];
+  for (let i = 0; i < 7; i++) {
+    const d = addDays(today(), i), P = computeDay(d), dk = key(d);
+    P.items.forEach(it => {
+      if (it.t >= 1440) return; // nothing after midnight
+      const dur = Math.max(5, durOf(it)), s = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, it.t);
+      evs.push({ uid: 'plan-' + dk + '-' + String(it.k).replace(/[^a-zA-Z0-9_-]/g, '_') + '@rythmo', s, e: new Date(s.getTime() + dur * 60000), title: it.title, desc: it.why || '' });
+    });
+  }
+  return buildICS(t('ics_plan_name'), evs);
+}
+function remindersCard() {
+  const R = state.reminders, perm = notifPerm();
+  const row = (k, label, hint, ctl) => '<div class="rm-row">' + toggle('rmtoggle', R[k].on, label, hint, k) + (R[k].on && ctl ? ctl : '') + '</div>';
+  const sel = (id, k, vals, cur, lab) => '<label class="f" for="' + id + '"><span class="hint">' + esc(lab) + '</span><select id="' + id + '" data-rm="' + k + '">' + opts(vals, cur, v => t('rm_before', { n: v })) + '</select></label>';
+  let h = '<section class="card stack" id="reminders"><h2>' + esc(t('rm_title')) + '</h2><p style="margin:0">' + esc(t('rm_intro')) + '</p>';
+  h += row('bed', t('rm_bed'), t('rm_bed_h'), sel('rm-bed', 'bed', [0, 15, 30, 45], R.bed.before, t('rm_when')));
+  h += row('checkin', t('rm_checkin'), t('rm_checkin_h'), '<label class="f" for="rm-ci"><span class="hint">' + esc(t('rm_at')) + '</span><input id="rm-ci" type="time" data-rm="checkin" min="18:00" max="23:45" value="' + esc(R.checkin.time) + '"></label>');
+  h += row('water', t('rm_water'), t('rm_water_h'), '');
+  h += row('screens', t('rm_screens'), t('rm_screens_h'), sel('rm-sc', 'screens', [30, 45, 60], R.screens.before, t('rm_when')));
+  h += '<p class="hint" style="margin:0">' + esc(t('rm_never')) + '</p>' + msgP();
+  // Reliable option first: the phone's calendar app
+  h += '<div class="rm-box"><h3>' + esc(t('rm_cal_t')) + '</h3><p class="hint">' + esc(t('rm_cal_h')) + '</p><button class="btn pri full" data-act="icsrem">' + esc(t('rm_cal_btn')) + '</button>' +
+    '<button class="tbtn" data-act="icsplan">' + esc(t('rm_plan_btn')) + '</button></div>';
+  // In-app notifications, honestly labelled
+  h += '<div class="rm-box"><h3>' + esc(t('rm_app_t')) + '</h3><p class="hint">' + esc(t('rm_app_h')) + '</p>';
+  if (R.enabled && perm === 'granted') h += '<p class="ok-line">' + esc(t('rm_app_on')) + '</p><button class="btn full" data-act="rmoff">' + esc(t('rm_app_off_btn')) + '</button>';
+  else if (perm === 'denied') h += '<p class="hint">' + esc(t('rm_denied')) + '</p>';
+  else if (perm === 'unsupported') h += '<p class="hint">' + esc(t('rm_unsupported')) + '</p>';
+  else if (isIOS() && !isStandalone()) h += '<p class="hint">' + esc(t('rm_ios_first')) + '</p>';
+  else h += '<button class="btn full" data-act="rmon">' + esc(t('rm_app_btn')) + '</button>';
+  h += '</div>';
+  if (!isStandalone()) {
+    h += '<div class="rm-box"><h3>' + esc(t('in_title')) + '</h3>';
+    if (isIOS()) h += '<ol class="steps"><li>' + esc(t('in_ios1')) + '</li><li>' + esc(t('in_ios2')) + '</li><li>' + esc(t('in_ios3')) + '</li></ol>';
+    else if (installEvt) h += '<p class="hint">' + esc(t('in_why')) + '</p><button class="btn full" data-act="install">' + esc(t('in_btn')) + '</button>';
+    else h += '<p class="hint">' + esc(t('in_other')) + '</p>';
+    h += '</div>';
+  }
+  return h + '</section>';
+}
 
 /* ===================== CALENDAR IMPORT ===================== */
 function icsDate(v) {
@@ -1249,6 +1435,12 @@ const ACT = {
   obskip: () => { finishOb(); },
   obdone: () => { finishOb(); if (state.classes.length) curDate = firstClassDate(); },
   obreplay: () => { obOn = true; ob = 0; msg = ''; window.scrollTo(0, 0); },
+  rmtoggle: v => { if (state.reminders[v]) { state.reminders[v].on = !state.reminders[v].on; save(); } },
+  rmon: () => { enableReminders().then(render); },
+  rmoff: () => { state.reminders.enabled = false; save(); say(t('rm_off_msg')); },
+  icsrem: () => { const n = computeReminders(7).length; if (!n) { say(t('rm_none'), true); return; } download('rythmo-rappels.ics', remindersICS(), 'text/calendar;charset=utf-8'); say(t('rm_cal_done', { n })); },
+  icsplan: () => { download('rythmo-planning.ics', planICS(), 'text/calendar;charset=utf-8'); say(t('rm_plan_done')); },
+  install: () => { if (installEvt) { installEvt.prompt(); installEvt.userChoice.finally(() => { installEvt = null; render(); }); } },
   autonight: () => { state.settings.autoNight = !state.settings.autoNight; save(); },
   export: () => download('rythmo-donnees.json', JSON.stringify(state, null, 2), 'application/json'),
   reset: () => {
@@ -1347,6 +1539,12 @@ $app.addEventListener('change', e => {
     }).catch(() => { say(t('sc_import_err'), true); render(); });
     return;
   }
+  if (el.dataset && el.dataset.rm) {
+    const R = state.reminders[el.dataset.rm];
+    if (el.dataset.rm === 'checkin') { if (HHMM.test(el.value) && toMin(el.value) >= 1080) R.time = el.value; }
+    else R.before = +el.value;
+    save(); render(); return;
+  }
   if (el.name === 'theme' && THEMES.includes(el.value)) { state.settings.theme = el.value; state.settings.themePicked = true; save(); render(); return; }
   const k = el.dataset && el.dataset.set; if (!k) return;
   if (k === 'bedCap') { if (BEDCAPS.includes(el.value)) state.settings.bedCap = el.value; }
@@ -1364,10 +1562,13 @@ $app.addEventListener('change', e => {
 })();
 save();
 obOn = !state.onboarded;
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  navigator.serviceWorker.register('./sw.js', { scope: './' }).then(() => queueSchedule()).catch(() => {});
+}
 if (!readHash() && state.classes.length) curDate = firstClassDate();
 try { history.replaceState(null, '', '#' + routeHash()); } catch (e) {}
 /* Test/debug handle (read-only helpers, no data leaves the page). */
-window.Rythmo = { computeDay, classesOn, importICS, key, parseKey, get state() { return state; } };
+window.Rythmo = { computeDay, classesOn, importICS, key, parseKey, computeReminders, remindersICS, planICS, get state() { return state; } };
 render();
 })();
 </script>
