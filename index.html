@@ -361,6 +361,27 @@ details.help .steps{padding:0 var(--s-3) var(--s-3) 2.2em}
 .todo li.on .tx{text-decoration:line-through;color:var(--muted)}
 .todo-add{display:flex;gap:8px}
 .todo-add input{flex:1}
+
+.segc{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;background:var(--sunk);border-radius:var(--r-pill);margin-bottom:var(--s-3)}
+.segc button{min-height:44px;border:0;border-radius:var(--r-pill);background:none;color:var(--ink);font:600 1rem var(--f-body)}
+.segc button[aria-pressed="true"]{background:var(--surface);color:var(--accent);box-shadow:var(--shadow-1)}
+.wk-nav{display:flex;align-items:center;gap:8px;margin-bottom:var(--s-3);flex-wrap:wrap}
+.wk-nav p{margin:0;font-weight:600;flex:0 1 auto;text-align:center;min-width:9em}
+.wk-nav .rb{width:44px;height:44px}
+.desk-only{display:none!important}
+@media (min-width:900px){.desk-only{display:flex!important;margin-left:auto}}
+.wr-list{list-style:none;margin:0 0 var(--s-3);padding:0;display:grid;gap:6px}
+.wr{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md)}
+.wr.is-today{border-color:var(--accent);box-shadow:var(--shadow-1)}
+.wr-b{display:grid;grid-template-columns:64px 1fr auto;align-items:center;gap:8px;width:100%;min-height:52px;background:none;border:0;padding:4px 12px;text-align:left;color:var(--ink);font:inherit}
+.wr-d{font-variant-numeric:tabular-nums}
+.wr.is-today .wr-d b{color:var(--accent)}
+.wr-s{font-size:var(--fs-small);color:var(--muted);line-height:1.3;font-variant-numeric:tabular-nums}
+.wr .dots{display:flex;gap:3px}
+.wr .dots i{width:7px;height:7px;border-radius:50%}
+.wr-x{list-style:none;margin:0;padding:0 12px 10px 84px;display:grid;gap:2px;font-size:var(--fs-small)}
+.wr-x .time{color:var(--muted);font-variant-numeric:tabular-nums;margin-right:4px}
+.wr-x li.sport{color:var(--muted)}
 @media (prefers-reduced-motion: no-preference) {
   .btn,.chip,.tg .tr,.tg .tr::after,.glass{transition:background-color .18s ease,border-color .18s ease,left .18s ease,transform .12s ease}
   .btn:active{transform:translateY(1px)}
@@ -429,6 +450,7 @@ en: {
   sug_card:'Morning suggestions (remove any you do not want):', sug_restore:'Restore removed suggestions',
   tk_card:'Flexible tasks', tk_empty:'No tasks. That\'s perfectly fine.', tk_open:'+ Add a task',
   tk_add:'Add a flexible task', tk_hint:'Something without a fixed hour (study, project, errands). Rythmo finds a free slot on the days you pick.', tk_name:'Task name', tk_name_ph:'e.g. Group project', tk_dur:'How long', tk_btn:'Add task', tk_added:'Task added.', tk_list:'Your flexible tasks', tk_why:'Placed in a free slot ({m} min).', tk_none:'No room today for: {n}. Try another day or a shorter task.', tk_default:'Task',
+  wr_wake:'wake-up {t}', wr_bed:'bed {t}', my_classes:'My classes', edit_my_classes:'Edit my classes', add_classes_cta:'Add my classes or import my calendar', wk_free_short:'No class', n_classes:'{n} classes', n_classes_one:'1 class',
   past:'past', chal_week_one:'1 of the last 7 days', rm_chosen:'Chosen: active once exported to your calendar or notifications are allowed', imp_sec:'Import my calendar (Google, Apple, Outlook, school)',
   sport_fb_morning:'No free morning slot that day: here is the first free one.', sport_fb_evening:'No free evening slot that day: here is the first free one.',
   imp_ok:'{n} classes imported over {w}.', imp_ok_one:'1 class imported over {w}.', weeks:'{n} weeks', weeks_one:'1 week', imp_past:'This calendar only has past events: {n} classes copied as a weekly timetable.',
@@ -529,6 +551,7 @@ fr: {
   sug_card:'Suggestions du matin (retire celles dont tu ne veux pas) :', sug_restore:'Remettre les suggestions retirées',
   tk_card:'Tâches flexibles', tk_empty:'Pas de tâche. C\'est très bien comme ça.', tk_open:'+ Ajouter une tâche',
   tk_add:'Ajouter une tâche flexible', tk_hint:"Quelque chose sans heure fixe (révisions, projet, courses). Rythmo trouve un créneau libre les jours choisis.", tk_name:'Nom de la tâche', tk_name_ph:'ex. Projet de groupe', tk_dur:'Durée', tk_btn:'Ajouter la tâche', tk_added:'Tâche ajoutée.', tk_list:'Tes tâches flexibles', tk_why:'Placée dans un créneau libre ({m} min).', tk_none:"Pas de place aujourd'hui pour : {n}. Essaie un autre jour ou une tâche plus courte.", tk_default:'Tâche',
+  wr_wake:'réveil {t}', wr_bed:'au lit {t}', my_classes:'Mes cours', edit_my_classes:'Modifier mes cours', add_classes_cta:'Ajouter mes cours ou importer mon agenda', wk_free_short:'Pas de cours', n_classes:'{n} cours', n_classes_one:'1 cours',
   past:'passé', chal_week_one:'1 jour sur les 7 derniers', rm_chosen:'Choisi : actif après l\'export vers l\'agenda ou avec les notifications', imp_sec:'Importer mon agenda (Google, Apple, Outlook, école)',
   sport_fb_morning:'Pas de créneau libre le matin ce jour-là : voici le premier créneau libre.', sport_fb_evening:'Pas de créneau libre le soir ce jour-là : voici le premier créneau libre.',
   imp_ok:'{n} cours importés sur {w}.', imp_ok_one:'1 cours importé sur {w}.', weeks:'{n} semaines', weeks_one:'1 semaine', imp_past:'Cet agenda ne contient que des événements passés : {n} cours copiés comme emploi du temps hebdomadaire.',
@@ -911,7 +934,8 @@ const SUGGEST = { meal: 1, sport: 1, morning: 1, task: 1 };
 
 let msgAt = null, openSec = {};
 let tab = 'plan', curDate = today(), draft = null, msg = '', msgErr = false, resetArm = false, busy = false, scrollTask = false;
-const TABS = ['plan', 'week', 'checkin', 'schedule', 'settings'];
+const TABS = ['plan', 'week', 'checkin', 'settings'];
+let weekSub = 'week'; // Semaine | Mes cours (the former Cours tab)
 
 function header() {
   return '<div class="top"><div class="brand"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" fill="var(--accent)"/></svg>Rythmo</div>' + langToggle() + '</div>';
@@ -920,7 +944,7 @@ function langToggle() {
   return '<div class="lang" role="group" aria-label="' + esc(t('lang_label')) + '"><button data-act="lang" data-v="en" aria-pressed="' + (state.lang === 'en') + '" lang="en">EN</button><button data-act="lang" data-v="fr" aria-pressed="' + (state.lang === 'fr') + '" lang="fr">FR</button></div>';
 }
 function nav() {
-  const lab = { plan: t('nav_plan'), week: t('nav_week'), checkin: t('nav_checkin'), schedule: t('nav_schedule'), settings: t('nav_settings') };
+  const lab = { plan: t('nav_plan'), week: t('nav_week'), checkin: t('nav_checkin'), settings: t('nav_settings') };
   return '<nav class="tabs" aria-label="' + esc(t('nav_main')) + '"><div style="--n:' + TABS.length + '">' + TABS.map(id => '<button data-act="tab" data-v="' + esc(id) + '"' + (tab === id ? ' aria-current="page"' : '') + '>' + ICON[id] + '<span>' + esc(lab[id]) + '</span></button>').join('') + '</div></nav>';
 }
 function fbCard() {
@@ -954,10 +978,9 @@ function quickForm() {
     dayChips('qd', i => i < 5) + travelSel('qs-com') + '<button class="btn pri full" type="submit">' + esc(t('qs_btn')) + '</button></form>';
 }
 function emptyPlan() {
-  return '<div class="empty"><h1>' + esc(t('empty_title')) + '</h1><p>' + esc(t('empty_text')) + '</p></div>' + msgP() +
-    '<section class="card stack">' + linkForm() + fileImport() + '</section>' + quickForm() +
-    '<div class="stack"><button class="btn full" data-act="example">' + esc(t('example_cta')) + '</button>' +
-    '<button class="tbtn" data-act="tab" data-v="schedule">' + esc(t('qs_detail')) + '</button></div>' + footer();
+  return '<div class="empty"><h1>' + esc(t('empty_title')) + '</h1><p>' + esc(t('empty_text')) + '</p>' + msgP() +
+    '<button class="btn pri full" data-act="tab" data-v="courses">' + esc(t('add_classes_cta')) + '</button>' +
+    '<button class="btn full" data-act="example">' + esc(t('example_cta')) + '</button></div>';
 }
 
 const parseKey = s => { const p = String(s).split('-'); const d = new Date(+p[0], +p[1] - 1, +p[2]); return isNaN(d) ? today() : d; };
@@ -1118,24 +1141,46 @@ function sheetHtml() {
 /* ---------- Week view ---------- */
 let weekJump = null;
 // Phones get the list (44 px rows) unless the user picked the grid; desktops get the grid.
-const weekMode = () => state.ui.weekMode === 'list' || state.ui.weekMode === 'grid' ? state.ui.weekMode : (window.innerWidth < 900 ? 'list' : 'grid');
+const weekMode = () => window.innerWidth < 900 ? 'list' : (state.ui.weekMode === 'list' ? 'list' : 'grid'); // phones: compact day rows
 const weekStartOf = d => addDays(d, -wdOf(d));
+function weekSeg() {
+  return '<h1 class="sr">' + esc(weekSub === 'courses' ? t('my_classes') : t('wk_title')) + '</h1><div class="segc" role="group" aria-label="' + esc(t('nav_week')) + '">' +
+    '<button data-act="wksub" data-v="week" aria-pressed="' + (weekSub === 'week') + '">' + esc(t('nav_week')) + '</button>' +
+    '<button data-act="wksub" data-v="courses" aria-pressed="' + (weekSub === 'courses') + '">' + esc(t('my_classes')) + '</button></div>';
+}
+const mostCommon = a => { const c = {}; a.forEach(x => { c[x] = (c[x] || 0) + 1; }); return +Object.keys(c).sort((x, y) => c[y] - c[x])[0]; };
 function screenWeek() {
   const ws = weekStartOf(curDate), days = [0, 1, 2, 3, 4, 5, 6].map(i => addDays(ws, i)), Ps = days.map(computeDay), tk = key(today());
   const mode = weekMode();
   const rng = new Intl.DateTimeFormat(state.lang, { day: 'numeric', month: 'short' });
-  let h = '<h1>' + esc(t('wk_title')) + '</h1><p class="sub">' + esc(rng.format(days[0]) + ' – ' + rng.format(days[6])) + '</p>';
-  h += '<div class="wk-bar"><div class="chips"><button class="chip" data-act="wkmove" data-v="-7">‹ ' + esc(t('wk_prev')) + '</button><button class="chip" data-act="wkmove" data-v="0">' + esc(t('wk_this')) + '</button><button class="chip" data-act="wkmove" data-v="7">' + esc(t('wk_next')) + ' ›</button></div>' +
-    '<div class="chips" role="group" aria-label="' + esc(t('wk_view')) + '"><button class="chip" data-act="wkmode" data-v="grid" aria-pressed="' + (mode === 'grid') + '">' + esc(t('wk_grid')) + '</button><button class="chip" data-act="wkmode" data-v="list" aria-pressed="' + (mode === 'list') + '">' + esc(t('wk_list')) + '</button></div></div>';
-  if (Ps.every(P => !P.cl.length)) h += '<div class="tip">' + esc(t('wk_empty')) + ' <button class="tbtn" data-act="tab" data-v="schedule">' + esc(t('nav_schedule')) + '</button></div>';
+  const thisWeek = key(ws) === key(weekStartOf(today()));
+  let h = weekSeg();
+  h += '<div class="wk-nav"><button class="rb" data-act="wkmove" data-v="-7" aria-label="' + esc(t('wk_prev')) + '">‹</button><p>' + esc(rng.format(days[0]) + ' – ' + rng.format(days[6])) + '</p><button class="rb" data-act="wkmove" data-v="7" aria-label="' + esc(t('wk_next')) + '">›</button>' +
+    (thisWeek ? '' : '<button class="chip" data-act="wkmove" data-v="0">' + esc(t('wk_this')) + '</button>') +
+    '<span class="desk-only chips" role="group" aria-label="' + esc(t('wk_view')) + '"><button class="chip" data-act="wkmode" data-v="grid" aria-pressed="' + (mode === 'grid') + '">' + esc(t('wk_grid')) + '</button><button class="chip" data-act="wkmode" data-v="list" aria-pressed="' + (mode === 'list') + '">' + esc(t('wk_list')) + '</button></span></div>';
+  if (Ps.every(P => !P.cl.length)) h += '<div class="tip">' + esc(t('wk_empty')) + '<br><button class="btn pri" data-act="wksub" data-v="courses" style="margin-top:8px">' + esc(t('add_classes_cta')) + '</button></div>';
   const head = (P, d) => { const dk = key(d), b = dayBadge(P); return '<button class="wk-h' + (dk === tk ? ' is-today' : '') + '" data-act="openday" data-v="' + esc(dk) + '" aria-label="' + esc(t('wk_open', { d: longDate(d) })) + '"><b>' + esc(dayName(d, 'short')) + ' ' + d.getDate() + '</b>' + (b ? '<span class="badge">' + esc(b) + '</span>' : '') + '</button>'; };
   if (mode === 'list') {
-    h += '<div class="wk-list">' + Ps.map((P, i) => {
-      const d = days[i], dk = key(d), rows = P.items.filter(it => ['class', 'appt', 'sport', 'task'].includes(it.type));
-      return '<section class="card" id="col-' + esc(dk) + '">' + head(P, d) + '<p class="hint" style="margin:6px 0">' + esc(t('wake') + ' ' + fmt(P.wake) + ' · ' + t('bed_around') + ' ' + fmt(P.bed)) + '</p>' +
-        (rows.length ? '<ul class="tl">' + rows.map(it => '<li><span class="g">' + fmt(it.t) + '</span>' + blockHtml(it, dk) + '</li>').join('') + '</ul>' : '<p class="hint" style="margin:0">' + esc(t('wk_free_day')) + '</p>') + '</section>';
-    }).join('') + '</div>';
-    return h + footer();
+    // One compact row per day; wake-up and bedtime only when unusual for this week; today expanded.
+    const uW = mostCommon(Ps.map(P => P.wake)), uB = mostCommon(Ps.map(P => P.bed));
+    h += '<ul class="wr-list">' + Ps.map((P, i) => {
+      const d = days[i], dk = key(d), isT = dk === tk, b = dayBadge(P), cl = P.cl;
+      const bits = [];
+      if (cl.length) bits.push(fmt(cl[0].s) + '–' + fmt(cl[cl.length - 1].e) + ' · ' + tp('n_classes', cl.length, { n: cl.length }));
+      else bits.push(t('wk_free_short'));
+      if (P.wake !== uW) bits.push(t('wr_wake', { t: fmt(P.wake) }));
+      if (P.bed !== uB) bits.push(t('wr_bed', { t: fmt(P.bed) }));
+      const types = [...new Set(P.items.map(it => KIND[it.type]))].filter(x => x !== 'sleep' && x !== 'travel').slice(0, 5);
+      let r = '<li class="wr' + (isT ? ' is-today' : '') + '" id="col-' + esc(dk) + '"><button class="wr-b" data-act="openday" data-v="' + esc(dk) + '" aria-label="' + esc(t('wk_open', { d: longDate(d) })) + '">' +
+        '<span class="wr-d"><b>' + esc(dayName(d, 'short')) + '</b> ' + d.getDate() + '</span><span class="wr-s">' + esc(bits.join(' · ')) + (b ? ' <span class="badge">' + esc(b) + '</span>' : '') + '</span>' +
+        '<span class="dots" aria-hidden="true">' + types.map(k => '<i style="background:var(--b-' + k + ')"></i>').join('') + '</span></button>';
+      if (isT) {
+        const rows = P.items.filter(it => ['class', 'appt', 'sport', 'task'].includes(it.type));
+        if (rows.length) r += '<ul class="wr-x">' + rows.map(it => '<li class="' + esc(it.type) + '"><span class="time">' + fmt(it.t) + '</span> ' + esc(it.title) + '</li>').join('') + '</ul>';
+      }
+      return r + '</li>';
+    }).join('') + '</ul>';
+    return h + '<button class="tbtn" data-act="wksub" data-v="courses">' + esc(t('edit_my_classes')) + '</button>';
   }
   const start = Math.max(300, Math.floor((Math.min(...Ps.map(P => P.wake)) - 30) / 60) * 60);
   const end = Math.min(1560, Math.ceil((Math.max(...Ps.map(P => P.bed)) + 30) / 60) * 60);
@@ -1159,7 +1204,7 @@ function screenWeek() {
     });
     h += '</div></section>';
   });
-  return h + '</div>' + footer();
+  return h + '</div>';
 }
 
 function initDraft() {
@@ -1194,10 +1239,10 @@ function screenCheckin() {
   return h + fbCard() + footer();
 }
 
-function screenSchedule() {
+function screenCourses() {
   const noCl = !state.classes.length;
   const sec = (id, title, body, open) => '<details class="imp" id="' + esc(id) + '"' + ((id in openSec ? openSec[id] : open) ? ' open' : '') + '><summary>' + esc(title) + '</summary><div class="stack">' + body + '</div></details>';
-  let h = '<h1>' + esc(t('sc_title')) + '</h1><p class="sub">' + esc(t('sc_sub')) + '</p>' + msgP();
+  let h = weekSeg() + '<p class="sub">' + esc(t('sc_sub')) + '</p>' + msgP();
   if (state.cal) {
     const c = state.cal, titles = [...new Set(Object.values(c.days).flat().map(x => x.title))];
     const df = new Intl.DateTimeFormat(state.lang, { day: 'numeric', month: 'short' });
@@ -1209,7 +1254,7 @@ function screenSchedule() {
     h += '<div class="tip">' + esc(t('imp_legacy')) + ' <button class="tbtn" data-act="hintoff">' + esc(t('imp_hint_ok')) + '</button></div>';
   h += '<h2>' + esc(state.cal ? t('sc_list_weekly') : t('sc_list')) + '</h2>';
   if (noCl && state.cal) h += '<p class="sub">' + esc(t('sc_none_weekly')) + '</p>';
-  else if (noCl) h += '<p class="sub">' + esc(t('sc_none')) + '</p><button class="btn full" data-act="example" style="margin-bottom:14px">' + esc(t('example_cta')) + '</button>';
+  else if (noCl) h += '<p class="sub">' + esc(t('sc_none')) + '</p>' + quickForm() + '<button class="btn full" data-act="example" style="margin-bottom:14px">' + esc(t('example_cta')) + '</button>';
   else {
     const list = state.classes.slice().sort((a, b) => toMin(a.start) - toMin(b.start));
     h += '<ul class="cl">' + list.map(c => '<li><div class="m"><b>' + esc(c.title) + '</b><small>' + esc(c.start) + '–' + esc(c.end) + ' · ' + c.days.slice().sort().map(d => esc(dayName(WEEK[d], 'short'))).join(', ') + '</small></div><button class="x" data-act="del" data-v="' + esc(c.id) + '" aria-label="' + esc(t('sc_remove') + ' : ' + c.title) + '">' + esc(t('sc_remove')) + '</button></li>').join('') + '</ul>' +
@@ -1223,7 +1268,7 @@ function screenSchedule() {
   h += sec('s-task', '+ ' + t('tk_add'), '<form id="taskf" class="stack" style="margin:0"><p class="hint" style="margin:0">' + esc(t('tk_hint')) + '</p><label class="f" for="tn">' + esc(t('tk_name')) + '<input id="tn" type="text" maxlength="40" placeholder="' + esc(t('tk_name_ph')) + '"></label>' +
     '<label class="f" for="td">' + esc(t('tk_dur')) + '<select id="td">' + opts([15, 30, 45, 60, 90, 120, 180], 60, v => t('min', { n: v })) + '</select></label>' +
     dayChips('td-d', i => i === wdOf(curDate)) + '<button class="btn pri full" type="submit">' + esc(t('tk_btn')) + '</button>' + msgP('taskf') + '</form>', scrollTask || msgAt === 'taskf');
-  return h + footer();
+  return h;
 }
 
 function toggle(act, on, label, hint, v, onWord) {
@@ -1299,10 +1344,10 @@ function render() {
     if (obFocus) { obFocus = false; const n = document.getElementById('ob-next'); if (n) n.focus(); }
     return;
   }
-  const scr = tab === 'plan' ? screenPlan() : tab === 'week' ? screenWeek() : tab === 'checkin' ? screenCheckin() : tab === 'schedule' ? screenSchedule() : screenSettings();
+  const scr = tab === 'plan' ? screenPlan() : tab === 'week' ? (weekSub === 'courses' ? screenCourses() : screenWeek()) : tab === 'checkin' ? screenCheckin() : screenSettings();
   const fid = document.activeElement && document.activeElement.id, y = window.scrollY;
-  const wk = tab === 'week' && weekMode() === 'grid';
-  $app.innerHTML = '<div class="shell' + (tab === 'week' ? ' wide' : '') + '"' + (sheet ? ' inert' : '') + '>' + header() + '<main id="main">' + scr + '</main></div>' + '<div' + (sheet ? ' inert' : '') + '>' + nav() + '</div>' + sheetHtml();
+  const wk = tab === 'week' && weekSub === 'week' && weekMode() === 'grid';
+  $app.innerHTML = '<div class="shell' + (wk ? ' wide' : '') + '"' + (sheet ? ' inert' : '') + '>' + header() + '<main id="main">' + scr + '</main></div>' + '<div' + (sheet ? ' inert' : '') + '>' + nav() + '</div>' + sheetHtml();
   document.documentElement.setAttribute('data-theme', effTheme());
   document.documentElement.lang = state.lang;
   document.title = 'Rythmo';
@@ -1314,13 +1359,14 @@ function render() {
   if (wk && weekJump) { const c = document.getElementById('col-' + weekJump); weekJump = null; const wkEl = c && c.parentElement; if (wkEl) wkEl.scrollLeft = c.offsetLeft - wkEl.offsetLeft; }
   syncHash();
 }
-/* Routing: #plan, #week, #checkin, #schedule, #settings, #day=YYYY-MM-DD (back button works). */
-function routeHash() { return tab === 'plan' && key(curDate) !== key(today()) ? 'day=' + key(curDate) : tab; }
+/* Routing: #plan, #week, #courses (old #schedule), #checkin, #settings, #day=YYYY-MM-DD (back button works). */
+function routeHash() { return tab === 'plan' && key(curDate) !== key(today()) ? 'day=' + key(curDate) : tab === 'week' && weekSub === 'courses' ? 'courses' : tab; }
 function syncHash() { const h = routeHash(); if (String(location.hash).slice(1) !== h) { try { history.pushState(null, '', '#' + h); } catch (e) {} } }
 function readHash() {
   const h = String(location.hash || '').slice(1);
   if (/^day=\d{4}-\d{2}-\d{2}$/.test(h)) { tab = 'plan'; curDate = parseKey(h.slice(4)); return true; }
-  if (TABS.includes(h)) { tab = h; return true; }
+  if (h === 'schedule' || h === 'courses') { tab = 'week'; weekSub = 'courses'; return true; } // old #schedule links
+  if (TABS.includes(h)) { tab = h; if (h === 'week') weekSub = 'week'; return true; }
   return false;
 }
 window.addEventListener('popstate', () => { if (readHash()) { sheet = null; msg = ''; render(); } });
@@ -1633,7 +1679,8 @@ function formError(form, text, fieldId) {
 function closeSheet() { if (!sheet) return; const back = bid(sheet.d, sheet.k); sheet = null; setTimeout(() => { const el = document.getElementById(back); if (el) el.focus(); }, 0); }
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && sheet) { closeSheet(); render(); } });
 const ACT = {
-  tab: v => { tab = v; msg = ''; sheet = null; if (v === 'checkin') draft = null; if (v === 'week') weekJump = key(curDate); window.scrollTo(0, 0); },
+  tab: v => { if (v === 'schedule' || v === 'courses') { v = 'week'; weekSub = 'courses'; } else if (v === 'week') weekSub = 'week'; tab = v; msg = ''; sheet = null; if (v === 'checkin') draft = null; if (v === 'week') weekJump = key(curDate); window.scrollTo(0, 0); },
+  wksub: v => { weekSub = v === 'courses' ? 'courses' : 'week'; msg = ''; window.scrollTo(0, 0); },
   lang: v => { state.lang = v === 'en' ? 'en' : 'fr'; save(); },
   openday: v => { curDate = parseKey(v); tab = 'plan'; msg = ''; sheet = null; },
   edit: (v, b) => { sheet = { d: b.dataset.d, k: b.dataset.k }; msg = ''; },
@@ -1668,7 +1715,7 @@ const ACT = {
   hintoff: () => { state.ui.reimportHintOff = true; save(); },
   hidesug: v => { state.hiddenSug = Object.assign({}, state.hiddenSug, { [v]: true }); save(); },
   showsug: () => { state.hiddenSug = {}; save(); },
-  addtask: () => { tab = 'schedule'; msg = ''; scrollTask = true; },
+  addtask: () => { tab = 'week'; weekSub = 'courses'; msg = ''; scrollTask = true; },
   sporton: () => { state.settings.sportOn = !state.settings.sportOn; save(); },
   sportmin: v => { state.settings.sportMin = snapSport(v); save(); },
   sportwhen: v => { if (['morning', 'evening', 'any'].includes(v)) state.settings.sportWhen = v; save(); },
