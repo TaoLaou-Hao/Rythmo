@@ -426,7 +426,7 @@ div.row{grid-template-columns:52px 22px minmax(0,1fr)}
 .tipline{margin:var(--s-2) 0 0;color:var(--ink);font-size:.9375rem}
 .tipline b{color:var(--muted);font-weight:600}
 
-details.acc{border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface);margin-bottom:var(--s-2)}
+details.acc{border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface);margin-bottom:6px}
 details.acc>summary{cursor:pointer;list-style:none;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;min-height:56px;padding:0 var(--s-3)}
 details.acc>summary::-webkit-details-marker{display:none}
 details.acc>summary::after{content:"›";font-size:1.4rem;color:var(--muted);transition:transform .15s ease}
@@ -522,6 +522,7 @@ en: {
   rm_s_bed:'bedtime', rm_s_checkin:'check-in', rm_s_water:'water', rm_s_screens:'screens off', rm_s_none:'none', rm_s_live:'notifications on', rm_chosen_short:'Chosen', rm_chosen_note:'Chosen reminders work once added to your calendar or with notifications (below).',
   sum_bed:'bed by {t}', sum_trv:'commute {n} min', sum_water:'{n} glasses a day', sum_water_one:'1 glass a day', sum_auto:'auto night', sum_data:'export, tutorial, erase', set_data_help:'Data and help', set_export_short:'Export data', set_commute_short:'Commute (one way)',
   ci_remind:'Remind me every evening',
+  in_ios_short:'Safari > Share > "Add to Home Screen", then open Rythmo from its icon.',
   st_now:'Now', st_next:'Next', st_until:'until {t}', st_free:'Free time', st_sleep_time:'Sleep time', st_first:'First class', wake_tmr:'wake-up {t}',
   tl_label:'Your day', past_n:'{n} past blocks', past_n_one:'1 past block', sug_short:'suggestion', sug_never:'Stop suggesting this',
   w_count:'{w} / {g} glasses', w_hint_short:'tap a glass when you drink one', act_notes:'Notes', act_todos:'To-do', act_todos_n:'To-do ({n})', act_day:'Edit this day',
@@ -550,7 +551,7 @@ en: {
   rm_app_btn:'Allow notifications', rm_app_on:'Notifications are on while the app is open.', rm_app_off_btn:'Turn notifications off', rm_on_msg:'Done. You will get notifications while Rythmo is open.', rm_off_msg:'Notifications are off.',
   rm_denied:'Blocked for this site: allow them in your browser or phone settings, or use the calendar.',
   rm_unsupported:'This browser cannot show notifications. The calendar option works everywhere.',
-  rm_ios_first:'On iPhone, notifications only work once Rythmo is on your Home Screen (see below). Meanwhile, the calendar option works.',
+  rm_ios_first:'On iPhone, add Rythmo to your Home Screen first (below).',
   in_title:'Install Rythmo', in_why:'Opens like an app, and can show notifications.', in_btn:'Install the app',
   in_ios1:'In Safari, tap the Share button (square with an arrow).', in_ios2:'Choose "Add to Home Screen", then "Add".', in_ios3:'Open Rythmo from your Home Screen.',
   in_other:'Browser menu > "Install app" or "Add to Home screen".',
@@ -631,6 +632,7 @@ fr: {
   rm_s_bed:'coucher', rm_s_checkin:'bilan', rm_s_water:'eau', rm_s_screens:'écrans', rm_s_none:'aucun', rm_s_live:'notifications', rm_chosen_short:'Choisi', rm_chosen_note:'Les rappels choisis marchent une fois ajoutés à ton agenda ou avec les notifications (ci-dessous).',
   sum_bed:'coucher ≤ {t}', sum_trv:'trajet {n} min', sum_water:'{n} verres par jour', sum_water_one:'1 verre par jour', sum_auto:'nuit auto', sum_data:'export, tutoriel, effacer', set_data_help:'Données et aide', set_export_short:'Exporter', set_commute_short:'Trajet (aller)',
   ci_remind:'Me le rappeler chaque soir',
+  in_ios_short:'Safari > Partager > « Sur l\'écran d\'accueil », puis ouvre Rythmo depuis l\'icône.',
   st_now:'Maintenant', st_next:'Ensuite', st_until:'jusqu\'à {t}', st_free:'Temps libre', st_sleep_time:'Heure de dormir', st_first:'Premier cours', wake_tmr:'réveil {t}',
   tl_label:'Ta journée', past_n:'{n} blocs passés', past_n_one:'1 bloc passé', sug_short:'suggestion', sug_never:'Ne plus me le proposer',
   w_count:'{w} / {g} verres', w_hint_short:'touche un verre quand tu en bois un', act_notes:'Notes', act_todos:'À faire', act_todos_n:'À faire ({n})', act_day:'Modifier ce jour',
@@ -659,7 +661,7 @@ fr: {
   rm_app_btn:'Autoriser les notifications', rm_app_on:'Notifications activées pendant que l\'app est ouverte.', rm_app_off_btn:'Couper les notifications', rm_on_msg:'C\'est fait. Tu recevras des notifications pendant que Rythmo est ouvert.', rm_off_msg:'Notifications coupées.',
   rm_denied:'Bloquées pour ce site : réautorise-les dans les réglages du navigateur ou du téléphone, ou utilise l\'agenda.',
   rm_unsupported:'Ce navigateur ne peut pas afficher de notifications. L\'option agenda marche partout.',
-  rm_ios_first:'Sur iPhone, les notifications ne marchent qu\'une fois Rythmo sur l\'écran d\'accueil (voir ci-dessous). En attendant, l\'option agenda fonctionne.',
+  rm_ios_first:'Sur iPhone, ajoute d\'abord Rythmo à l\'écran d\'accueil (ci-dessous).',
   in_title:'Installer Rythmo', in_why:'S\'ouvre comme une app et peut afficher des notifications.', in_btn:'Installer l\'app',
   in_ios1:'Dans Safari, touche le bouton Partager (carré avec une flèche).', in_ios2:'Choisis « Sur l\'écran d\'accueil », puis « Ajouter ».', in_ios3:'Ouvre Rythmo depuis ton écran d\'accueil.',
   in_other:'Menu du navigateur > « Installer l\'application » ou « Ajouter à l\'écran d\'accueil ».',
@@ -1605,14 +1607,14 @@ function remindersBody() {
   // In-app notifications, honestly labelled
   h += '<div class="rm-box"><h3>' + esc(t('rm_app_t')) + '</h3>' + (live || perm === 'default' ? '<p class="hint">' + esc(t('rm_app_h')) + '</p>' : '');
   if (live) h += '<p class="ok-line">' + esc(t('rm_app_on')) + '</p><button class="btn full" data-act="rmoff">' + esc(t('rm_app_off_btn')) + '</button>';
+  else if (isIOS() && !isStandalone()) h += '<p class="hint">' + esc(t('rm_ios_first')) + '</p>'; // iPhone Safari: install first (Notification is unavailable there)
   else if (perm === 'denied') h += '<p class="hint">' + esc(t('rm_denied')) + '</p>';
   else if (perm === 'unsupported') h += '<p class="hint">' + esc(t('rm_unsupported')) + '</p>';
-  else if (isIOS() && !isStandalone()) h += '<p class="hint">' + esc(t('rm_ios_first')) + '</p>';
   else h += '<button class="btn full" data-act="rmon">' + esc(t('rm_app_btn')) + '</button>';
   // Install help: one line. Desktop browsers without an install prompt get nothing (installing matters on phones).
   const coarse = (() => { try { return matchMedia('(pointer: coarse)').matches; } catch (e) { return false; } })();
   if (!isStandalone()) {
-    if (isIOS()) h += '<p class="hint"><b>' + esc(t('in_title')) + (state.lang === 'fr' ? ' :' : ':') + '</b> ' + esc(t('in_ios1') + ' ' + t('in_ios2') + ' ' + t('in_ios3')) + '</p>';
+    if (isIOS()) h += '<p class="hint"><b>' + esc(t('in_title')) + (state.lang === 'fr' ? ' :' : ':') + '</b> ' + esc(t('in_ios_short')) + '</p>';
     else if (installEvt) h += '<button class="btn full" data-act="install">' + esc(t('in_btn')) + '</button>';
     else if (coarse) h += '<p class="hint"><b>' + esc(t('in_title')) + (state.lang === 'fr' ? ' :' : ':') + '</b> ' + esc(t('in_other')) + '</p>';
   }
