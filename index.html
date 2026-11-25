@@ -342,6 +342,15 @@ button.block:hover{border-color:var(--c)}
 details.help{border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface)}
 details.help>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;padding:0 var(--s-3);font-weight:600}
 details.help .steps{padding:0 var(--s-3) var(--s-3) 2.2em}
+
+.todo{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.todo li{display:flex;align-items:center;gap:4px}
+.todo .tick{flex:1;display:flex;align-items:center;gap:10px;min-height:44px;background:none;border:0;padding:0 4px;text-align:left;color:var(--ink)}
+.todo .box{flex:0 0 24px;width:24px;height:24px;border-radius:6px;border:2px solid var(--line-strong);display:grid;place-items:center;font-weight:800;color:var(--on-accent)}
+.todo li.on .box{background:var(--accent);border-color:var(--accent)}
+.todo li.on .tx{text-decoration:line-through;color:var(--muted)}
+.todo-add{display:flex;gap:8px}
+.todo-add input{flex:1}
 @media (prefers-reduced-motion: no-preference) {
   .btn,.chip,.tg .tr,.tg .tr::after,.glass{transition:background-color .18s ease,border-color .18s ease,left .18s ease,transform .12s ease}
   .btn:active{transform:translateY(1px)}
@@ -410,6 +419,7 @@ en: {
   sug_card:'Morning suggestions (remove any you do not want):', sug_restore:'Restore removed suggestions',
   tk_card:'Flexible tasks', tk_empty:'No tasks. That\'s perfectly fine.', tk_open:'+ Add a task',
   tk_add:'Add a flexible task', tk_hint:'Something without a fixed hour (study, project, errands). Rythmo finds a free slot on the days you pick.', tk_name:'Task name', tk_name_ph:'e.g. Group project', tk_dur:'How long', tk_btn:'Add task', tk_added:'Task added.', tk_list:'Your flexible tasks', tk_why:'Placed in a free slot ({m} min).', tk_none:'No room today for: {n}. Try another day or a shorter task.', tk_default:'Task',
+  nt_title:'Notes & to-do', nt_empty:'Nothing on the list. That\'s fine too.', nt_add_label:'New to-do', nt_add_ph:'e.g. Print the report', nt_add:'Add', nt_clear:'Remove done items', nt_note:'Free note', nt_note_ph:'Anything you want to remember…', nt_note_hint:'Saved on this device when you leave the field.',
   hp_intro:'Where do I find my calendar link? Pick your calendar:',
   hp_g_t:'Google Calendar', hp_g_1:'On a computer, open calendar.google.com (the phone app does not show the link).', hp_g_2:'Settings (gear) > Settings, then click your calendar under "Settings for my calendars".', hp_g_3:'Scroll to "Integrate calendar" and copy "Secret address in iCal format".', hp_g_4:'Paste it above. Keep it private: anyone with it can read the calendar.',
   hp_a_t:'Apple Calendar (iCloud)', hp_a_1:'iPhone: open Calendar, tap Calendars, then the (i) next to your calendar.', hp_a_2:'Turn on "Public Calendar", then tap "Share Link…" > Copy.', hp_a_3:'Mac: right-click the calendar > Share Calendar > Public Calendar, then copy the link.', hp_a_4:'Paste it above (a webcal:// link works). Only iCloud calendars can be shared this way.',
@@ -502,6 +512,7 @@ fr: {
   sug_card:'Suggestions du matin (retire celles dont tu ne veux pas) :', sug_restore:'Remettre les suggestions retirées',
   tk_card:'Tâches flexibles', tk_empty:'Pas de tâche. C\'est très bien comme ça.', tk_open:'+ Ajouter une tâche',
   tk_add:'Ajouter une tâche flexible', tk_hint:"Quelque chose sans heure fixe (révisions, projet, courses). Rythmo trouve un créneau libre les jours choisis.", tk_name:'Nom de la tâche', tk_name_ph:'ex. Projet de groupe', tk_dur:'Durée', tk_btn:'Ajouter la tâche', tk_added:'Tâche ajoutée.', tk_list:'Tes tâches flexibles', tk_why:'Placée dans un créneau libre ({m} min).', tk_none:"Pas de place aujourd'hui pour : {n}. Essaie un autre jour ou une tâche plus courte.", tk_default:'Tâche',
+  nt_title:'Notes et à faire', nt_empty:'Rien sur la liste. C\'est bien aussi.', nt_add_label:'Nouvelle chose à faire', nt_add_ph:'ex. Imprimer le rapport', nt_add:'Ajouter', nt_clear:'Retirer ce qui est fait', nt_note:'Note libre', nt_note_ph:'Ce que tu veux garder en tête…', nt_note_hint:'Enregistrée sur cet appareil quand tu quittes le champ.',
   hp_intro:'Où trouver le lien de ton agenda ? Choisis ton calendrier :',
   hp_g_t:'Google Agenda', hp_g_1:'Sur un ordinateur, ouvre calendar.google.com (l\'appli mobile n\'affiche pas le lien).', hp_g_2:'Paramètres (roue dentée) > Paramètres, puis clique sur ton agenda sous « Paramètres de mes agendas ».', hp_g_3:'Descends à « Intégrer l\'agenda » et copie l\'« Adresse secrète au format iCal ».', hp_g_4:'Colle-la ci-dessus. Garde-la pour toi : elle donne accès à ton agenda.',
   hp_a_t:'Calendrier Apple (iCloud)', hp_a_1:'iPhone : ouvre Calendrier, touche Calendriers, puis le (i) à côté de ton calendrier.', hp_a_2:'Active « Calendrier public », puis touche « Partager le lien… » > Copier.', hp_a_3:'Mac : clic droit sur le calendrier > Partager le calendrier > Calendrier public, puis copie le lien.', hp_a_4:'Colle-le ci-dessus (un lien webcal:// marche). Seuls les calendriers iCloud se partagent ainsi.',
@@ -566,7 +577,7 @@ function freshState() {
   return { v: SCHEMA, onboarded: false, lang: (navigator.language || 'en').toLowerCase().startsWith('fr') ? 'fr' : 'en', sample: false,
     settings: { sleep: 8, commute: 30, sport: 30, freeWake: '08:00', bedCap: '23:30', theme: 'horizon', themePicked: false, autoNight: false,
       sportOn: false, sportMin: 30, sportWhen: 'any', waterGoal: 8 }, // new users: no sport until they opt in
-    classes: [], tasks: [], checkins: {}, challenges: {}, water: {}, done: {}, hiddenSug: {}, overrides: {}, ui: { weekMode: 'grid' },
+    classes: [], tasks: [], checkins: {}, challenges: {}, water: {}, done: {}, hiddenSug: {}, overrides: {}, ui: { weekMode: 'grid' }, note: '', todos: [],
     reminders: { enabled: false, bed: { on: true, before: 15 }, checkin: { on: true, time: '21:30' }, water: { on: false }, screens: { on: false, before: 45 } } };
 }
 /* One-time upgrades. Never delete old keys: an older build reading the same storage keeps working. */
@@ -591,6 +602,8 @@ function sanitize(s) {
   out.settings = Object.assign({}, b.settings, isObj(s.settings) ? s.settings : {});
   ['checkins', 'challenges', 'water', 'done', 'hiddenSug', 'overrides', 'ui'].forEach(k => { if (!isObj(out[k])) out[k] = {}; });
   out.overrides = cleanOverrides(out.overrides);
+  out.note = String(typeof out.note === 'string' ? out.note : '').slice(0, 2000);
+  out.todos = (Array.isArray(out.todos) ? out.todos : []).filter(x => isObj(x) && x.text).slice(0, 30).map(x => ({ id: String(x.id || uid()).slice(0, 20), text: String(x.text).slice(0, 80), done: !!x.done }));
   const R0 = b.reminders, R = isObj(s.reminders) ? s.reminders : {}, sub = k => Object.assign({}, R0[k], isObj(R[k]) ? R[k] : {});
   out.reminders = { enabled: !!R.enabled, bed: sub('bed'), checkin: sub('checkin'), water: sub('water'), screens: sub('screens') };
   ['bed', 'checkin', 'water', 'screens'].forEach(k => { out.reminders[k].on = !!out.reminders[k].on; });
@@ -968,6 +981,7 @@ function screenPlan() {
   h += '<p class="hint">' + esc(t('tap_hint')) + '</p>' + timeline(P, k, isToday);
   if (P.noSport) h += '<div class="tip">' + esc(t('sport_none')) + '</div>';
   h += waterCard(k, isToday);
+  h += notesCard();
   h += dayEditCard(P, k);
   const dayTasks = state.tasks.filter(x => x.days.includes(wdOf(date)));
   const morning = P.items.filter(x => x.type === 'morning');
@@ -995,6 +1009,17 @@ function waterCard(k, isToday) {
   h += '</div><div class="w-row"><button class="rb" data-act="water" data-v="-1" aria-label="' + esc(t('w_less')) + '">−</button><button class="rb" data-act="water" data-v="1" aria-label="' + esc(t('w_more')) + '">+</button>' +
     (w > g ? '<span class="hint">' + esc(t('w_extra', { n: w - g })) + '</span>' : '') + '</div>';
   return h + '<p class="hint" style="margin:0">' + esc(t('w_hint')) + '</p></section>';
+}
+
+/* ---------- Light notes + to-do (not a notes app) ---------- */
+function notesCard() {
+  const L = state.todos;
+  let h = '<section class="card stack" id="notes"><h2>' + esc(t('nt_title')) + '</h2>';
+  h += L.length ? '<ul class="todo">' + L.map(x => '<li class="' + (x.done ? 'on' : '') + '"><button class="tick" data-act="todotoggle" data-v="' + esc(x.id) + '" role="checkbox" aria-checked="' + x.done + '"><span class="box" aria-hidden="true">' + (x.done ? '✓' : '') + '</span><span class="tx">' + esc(x.text) + '</span></button><button class="x" data-act="tododel" data-v="' + esc(x.id) + '" aria-label="' + esc(t('sc_remove') + ' : ' + x.text) + '">✕</button></li>').join('') + '</ul>' : '<p class="hint" style="margin:0">' + esc(t('nt_empty')) + '</p>';
+  h += '<form id="todof" class="todo-add"><label class="sr" for="todo-in">' + esc(t('nt_add_label')) + '</label><input id="todo-in" type="text" maxlength="80" placeholder="' + esc(t('nt_add_ph')) + '" autocomplete="off"><button class="btn" type="submit">' + esc(t('nt_add')) + '</button></form>';
+  if (L.some(x => x.done)) h += '<button class="tbtn" data-act="todoclear">' + esc(t('nt_clear')) + '</button>';
+  h += '<label class="f" for="note">' + esc(t('nt_note')) + '<textarea id="note" rows="3" maxlength="2000" placeholder="' + esc(t('nt_note_ph')) + '">' + esc(state.note) + '</textarea><span class="hint">' + esc(t('nt_note_hint')) + '</span></label>';
+  return h + '</section>';
 }
 
 /* ---------- Block editor (bottom sheet) ---------- */
@@ -1547,6 +1572,9 @@ const ACT = {
   icsrem: () => { const n = computeReminders(7).length; if (!n) { say(t('rm_none'), true); return; } download('rythmo-rappels.ics', remindersICS(), 'text/calendar;charset=utf-8'); say(t('rm_cal_done', { n })); },
   icsplan: () => { download('rythmo-planning.ics', planICS(), 'text/calendar;charset=utf-8'); say(t('rm_plan_done')); },
   install: () => { if (installEvt) { installEvt.prompt(); installEvt.userChoice.finally(() => { installEvt = null; render(); }); } },
+  todotoggle: v => { state.todos = state.todos.map(x => x.id === v ? Object.assign({}, x, { done: !x.done }) : x); save(); },
+  tododel: v => { state.todos = state.todos.filter(x => x.id !== v); save(); },
+  todoclear: () => { state.todos = state.todos.filter(x => !x.done); save(); },
   autonight: () => { state.settings.autoNight = !state.settings.autoNight; save(); },
   export: () => download('rythmo-donnees.json', JSON.stringify(state, null, 2), 'application/json'),
   reset: () => {
@@ -1613,6 +1641,11 @@ $app.addEventListener('submit', e => {
     }
     say(t('edited_day')); closeSheet(); render(); return;
   }
+  if (id === 'todof') {
+    const el = document.getElementById('todo-in'), v = el.value.trim().slice(0, 80);
+    if (v && state.todos.length < 30) { state.todos = state.todos.concat([{ id: uid(), text: v, done: false }]); save(); }
+    render(); const n = document.getElementById('todo-in'); if (n) n.focus(); return;
+  }
   if (id === 'workf') {
     const s0 = document.getElementById('wk-s').value, e0 = document.getElementById('wk-e').value, lb = document.getElementById('wk-l').value.trim().slice(0, 40);
     if (!HHMM.test(s0) || !HHMM.test(e0) || toMin(e0) <= toMin(s0)) { say(t('sc_bad_time'), true); render(); return; }
@@ -1645,6 +1678,7 @@ $app.addEventListener('change', e => {
     }).catch(() => { say(t('sc_import_err'), true); render(); });
     return;
   }
+  if (el.id === 'note') { state.note = String(el.value).slice(0, 2000); save(); return; } // saved on change/blur, no re-render (keeps focus)
   if (el.dataset && el.dataset.rm) {
     const R = state.reminders[el.dataset.rm];
     if (el.dataset.rm === 'checkin') { if (HHMM.test(el.value) && toMin(el.value) >= 1080) R.time = el.value; }
