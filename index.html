@@ -901,6 +901,7 @@ const KIND = { appt: 'class', wake: 'sleep', bed: 'sleep', wind: 'sleep', meal: 
 const ICK = { appt: 'task', wake: 'wake', bed: 'sleep', wind: 'wind', meal: 'meal', class: 'class', travel: 'travel', sport: 'sport', task: 'task', morning: 'free' };
 const SUGGEST = { meal: 1, sport: 1, morning: 1, task: 1 };
 
+let msgAt = null, openSec = {};
 let tab = 'plan', curDate = today(), draft = null, msg = '', msgErr = false, resetArm = false, busy = false, scrollTask = false;
 const TABS = ['plan', 'week', 'checkin', 'schedule', 'settings'];
 
@@ -919,7 +920,7 @@ function fbCard() {
 }
 function footer() { return '<p class="note">' + esc(t('footer')) + (storageOk ? '' : '<br>' + esc(t('nostore'))) + '</p>'; }
 function opts(arr, cur, label) { return arr.map(v => '<option value="' + esc(v) + '"' + (String(v) === String(cur) ? ' selected' : '') + '>' + esc(label(v)) + '</option>').join(''); }
-function msgP() { return '<p class="msg' + (msgErr ? ' err' : '') + '" role="status">' + esc(msg) + '</p>'; }
+function msgP(at) { return '<p class="msg' + (msgErr ? ' err' : '') + '" role="status">' + ((msgAt || null) === (at || null) ? esc(msg) : '') + '</p>'; }
 
 function linkForm() {
   if (!RELAY) return '';
@@ -931,7 +932,7 @@ function icsHelp() {
   return '<div class="helps"><p class="hint" style="margin:0">' + esc(t('hp_intro')) + '</p>' + p('hp_g', 4) + p('hp_a', 4) + p('hp_o', 4) + p('hp_e', 4) + '</div>';
 }
 function fileImport() {
-  return '<div><label class="btn full" for="ics">' + esc(t('sc_import')) + '</label><input id="ics" class="sr" type="file" accept=".ics,text/calendar"><p class="hint" style="margin-top:6px">' + esc(t('sc_import_hint')) + '</p></div>';
+  return '<div><label class="btn full" for="ics">' + esc(t('sc_import')) + '</label><input id="ics" class="sr" type="file" accept=".ics,text/calendar"><p class="hint" style="margin-top:6px">' + esc(t('sc_import_hint')) + '</p>' + msgP('link') + '</div>';
 }
 function travelSel(id) {
   return '<label class="f" for="' + esc(id) + '">' + esc(t('trv_label')) + '<select id="' + esc(id) + '">' + opts([0, 10, 15, 20, 30, 45, 60, 75, 90, 120], state.settings.commute, v => t('min', { n: v })) + '</select><span class="hint">' + esc(t('trv_hint')) + '</span></label>';
@@ -1185,7 +1186,7 @@ function screenCheckin() {
 
 function screenSchedule() {
   const noCl = !state.classes.length;
-  const sec = (id, title, body, open) => '<details class="imp" id="' + esc(id) + '"' + (open ? ' open' : '') + '><summary>' + esc(title) + '</summary><div class="stack">' + body + '</div></details>';
+  const sec = (id, title, body, open) => '<details class="imp" id="' + esc(id) + '"' + ((id in openSec ? openSec[id] : open) ? ' open' : '') + '><summary>' + esc(title) + '</summary><div class="stack">' + body + '</div></details>';
   let h = '<h1>' + esc(t('sc_title')) + '</h1><p class="sub">' + esc(t('sc_sub')) + '</p>' + msgP();
   if (state.cal) {
     const c = state.cal, titles = [...new Set(Object.values(c.days).flat().map(x => x.title))];
@@ -1208,10 +1209,10 @@ function screenSchedule() {
   h += sec('s-link', t('lk_title'), linkForm() + fileImport(), noCl && !!RELAY);
   h += sec('s-class', '+ ' + t('sc_add'), '<form id="addf" class="stack" style="margin:0"><label class="f" for="cn">' + esc(t('sc_name')) + '<input id="cn" type="text" maxlength="40" placeholder="' + esc(t('sc_name_ph')) + '"></label>' +
     '<div class="grid2"><label class="f" for="cs">' + esc(t('sc_start')) + '<input id="cs" type="time" value="08:30" required></label><label class="f" for="ce">' + esc(t('sc_end')) + '<input id="ce" type="time" value="10:30" required></label></div>' +
-    dayChips('cd') + '<button class="btn pri full" type="submit">' + esc(t('sc_add_btn')) + '</button></form>');
+    dayChips('cd', i => i === wdOf(curDate)) + '<button class="btn pri full" type="submit">' + esc(t('sc_add_btn')) + '</button>' + msgP('addf') + '</form>', !!(msgAt === 'addf'));
   h += sec('s-task', '+ ' + t('tk_add'), '<form id="taskf" class="stack" style="margin:0"><p class="hint" style="margin:0">' + esc(t('tk_hint')) + '</p><label class="f" for="tn">' + esc(t('tk_name')) + '<input id="tn" type="text" maxlength="40" placeholder="' + esc(t('tk_name_ph')) + '"></label>' +
     '<label class="f" for="td">' + esc(t('tk_dur')) + '<select id="td">' + opts([15, 30, 45, 60, 90, 120, 180], 60, v => t('min', { n: v })) + '</select></label>' +
-    dayChips('td-d') + '<button class="btn pri full" type="submit">' + esc(t('tk_btn')) + '</button></form>', scrollTask);
+    dayChips('td-d', i => i === wdOf(curDate)) + '<button class="btn pri full" type="submit">' + esc(t('tk_btn')) + '</button>' + msgP('taskf') + '</form>', scrollTask || msgAt === 'taskf');
   return h + footer();
 }
 
@@ -1607,7 +1608,17 @@ async function fetchICS(u) {
 const firstClassDate = () => { for (let i = 0; i < 7; i++) { const d = addDays(today(), i); if (classesOn(d).length) return d; } return today(); };
 
 /* ===================== ACTIONS ===================== */
-function say(m, err) { msg = m; msgErr = !!err; }
+function say(m, err, at) { msg = m; msgErr = !!err; msgAt = at || null; }
+/* Validation error shown inside the form itself, without re-rendering: the accordion stays open,
+   typed values stay, and the message is read out (role=alert) next to the field. */
+function formError(form, text, fieldId) {
+  let p = form.querySelector('.ferr');
+  if (!p) { p = document.createElement('p'); p.className = 'msg err ferr'; p.setAttribute('role', 'alert'); const btn = form.querySelector('button[type=submit]'); form.insertBefore(p, btn || null); }
+  p.textContent = text;
+  const f = fieldId && document.getElementById(fieldId);
+  if (f) { f.setAttribute('aria-invalid', 'true'); f.setAttribute('aria-describedby', 'ferr-' + form.id); p.id = 'ferr-' + form.id; f.focus(); }
+  p.scrollIntoView({ block: 'nearest' });
+}
 function closeSheet() { if (!sheet) return; const back = bid(sheet.d, sheet.k); sheet = null; setTimeout(() => { const el = document.getElementById(back); if (el) el.focus(); }, 0); }
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && sheet) { closeSheet(); render(); } });
 const ACT = {
@@ -1677,16 +1688,19 @@ $app.addEventListener('click', e => {
   const b = e.target.closest('[data-act]'); if (!b || !$app.contains(b)) return;
   const a = b.dataset.act, f = ACT[a]; if (!f) return;
   if (a !== 'reset') resetArm = false;
+  msg = ''; msgAt = null; // a new action never shows an old message
   f(b.dataset.v, b, e);
   render();
 });
+$app.addEventListener('toggle', e => { const d = e.target; if (d.tagName === 'DETAILS' && d.id) openSec[d.id] = d.open; }, true);
 $app.addEventListener('submit', e => {
-  const id = e.target.id; e.preventDefault();
+  const id = e.target.id, form = e.target; e.preventDefault();
+  msg = ''; msgAt = null;
   if (id === 'quickf') {
     const s = document.getElementById('qs-s').value, en = document.getElementById('qs-e').value;
     const days = Array.from(document.querySelectorAll('input[name=qd]:checked')).map(x => +x.value);
-    if (!s || !en || toMin(en) <= toMin(s)) { say(t('sc_bad_time'), true); render(); return; }
-    if (!days.length) { say(t('sc_need_day'), true); render(); return; }
+    if (!s || !en || toMin(en) <= toMin(s)) { formError(form, t('sc_bad_time'), 'qs-e'); return; }
+    if (!days.length) { formError(form, t('sc_need_day'), null); return; }
     state.settings.commute = +document.getElementById('qs-com').value;
     const S0 = toMin(s), E0 = toMin(en);
     state.classes = (S0 < 720 && E0 > 810)
@@ -1698,11 +1712,11 @@ $app.addEventListener('submit', e => {
   }
   if (id === 'urlf') {
     const urls = (document.getElementById('icsurl').value || '').split(/[\s,;]+/).filter(Boolean).map(x => x.replace(/^webcals?:\/\//i, 'https://'));
-    if (!urls.length || urls.some(x => !/^https?:\/\/\S+$/i.test(x))) { say(t('sc_url_bad'), true); render(); return; }
+    if (!urls.length || urls.some(x => !/^https?:\/\/\S+$/i.test(x))) { formError(form, t('sc_url_bad'), 'icsurl'); return; }
     busy = true; say(''); render();
     Promise.allSettled(urls.slice(0, 6).map(fetchICS)).then(rs => {
       const r = applyImport(rs.filter(x => x.status === 'fulfilled').map(x => x.value));
-      if (!r.ok) { say(t(rs.some(x => x.status === 'fulfilled') ? 'lk_empty' : 'lk_fail'), true); return; }
+      if (!r.ok) { say(t(rs.some(x => x.status === 'fulfilled') ? 'lk_empty' : 'lk_fail'), true, 'link'); return; }
       if (obOn) finishOb();
       tab = 'plan'; curDate = firstClassDate(); save(); say(r.text);
     }).finally(() => { busy = false; render(); });
@@ -1711,15 +1725,15 @@ $app.addEventListener('submit', e => {
   if (id === 'taskf') {
     const title = document.getElementById('tn').value.trim().slice(0, 40) || t('tk_default'), dur = +document.getElementById('td').value;
     const days = Array.from(document.querySelectorAll('input[name=td-d]:checked')).map(x => +x.value);
-    if (!days.length) { say(t('sc_need_day'), true); render(); return; }
-    state.tasks = state.tasks.concat([{ id: uid(), title, dur, days }]); save(); say(t('tk_added')); render(); return;
+    if (!days.length) { formError(form, t('sc_need_day'), null); return; }
+    state.tasks = state.tasks.concat([{ id: uid(), title, dur, days }]); save(); say(t('tk_added'), false, 'taskf'); render(); return;
   }
   if (id === 'sheetf') {
     const it = sheetItem(); if (!it) { sheet = null; render(); return; }
     const dk = sheet.d, v = id2 => (document.getElementById(id2) || {}).value || '';
     if (it.type === 'class' || it.type === 'appt') {
       const s0 = v('sh-s'), e0 = v('sh-e');
-      if (!HHMM.test(s0) || !HHMM.test(e0) || toMin(e0) <= toMin(s0)) { say(t('sc_bad_time'), true); render(); return; }
+      if (!HHMM.test(s0) || !HHMM.test(e0) || toMin(e0) <= toMin(s0)) { formError(form, t('sc_bad_time'), 'sh-e'); return; }
       setOv(dk, o => {
         if (it.src === 'work') { o.work = Object.assign({}, o.work, { start: s0, end: e0 }); }
         else if (it.src === 'extra') o.add = (o.add || []).map(c => c.id === it.cid ? Object.assign({}, c, { start: s0, end: e0 }) : c);
@@ -1738,13 +1752,13 @@ $app.addEventListener('submit', e => {
   }
   if (id === 'workf') {
     const s0 = document.getElementById('wk-s').value, e0 = document.getElementById('wk-e').value, lb = document.getElementById('wk-l').value.trim().slice(0, 40);
-    if (!HHMM.test(s0) || !HHMM.test(e0) || toMin(e0) <= toMin(s0)) { say(t('sc_bad_time'), true); render(); return; }
+    if (!HHMM.test(s0) || !HHMM.test(e0) || toMin(e0) <= toMin(s0)) { formError(form, t('sc_bad_time'), 'wk-e'); return; }
     setOv(key(curDate), o => { o.kind = 'work'; o.work = { label: lb, start: s0, end: e0 }; }); say(t('edited_day')); render(); return;
   }
   if (id === 'dayaddf') {
     const title = document.getElementById('da-n').value.trim().slice(0, 40) || t('sc_default');
     const s0 = document.getElementById('da-s').value, e0 = document.getElementById('da-e').value;
-    if (!HHMM.test(s0) || !HHMM.test(e0) || toMin(e0) <= toMin(s0)) { say(t('sc_bad_time'), true); render(); return; }
+    if (!HHMM.test(s0) || !HHMM.test(e0) || toMin(e0) <= toMin(s0)) { formError(form, t('sc_bad_time'), 'da-e'); return; }
     const school = !!(document.getElementById('da-school') || {}).checked;
     setOv(key(curDate), o => { o.add = (o.add || []).concat([{ id: uid(), title, start: s0, end: e0, school }]); }); say(t('edited_day')); render(); return;
   }
@@ -1752,10 +1766,10 @@ $app.addEventListener('submit', e => {
     const title = document.getElementById('cn').value.trim().slice(0, 40) || t('sc_default');
     const start = document.getElementById('cs').value, end = document.getElementById('ce').value;
     const days = Array.from(document.querySelectorAll('input[name=cd]:checked')).map(x => +x.value);
-    if (!start || !end || toMin(end) <= toMin(start)) { say(t('sc_bad_time'), true); render(); return; }
-    if (!days.length) { say(t('sc_need_day'), true); render(); return; }
+    if (!start || !end || toMin(end) <= toMin(start)) { formError(form, t('sc_bad_time'), 'ce'); return; }
+    if (!days.length) { formError(form, t('sc_need_day'), null); return; }
     if (state.sample) { state.classes = state.classes.filter(c => c.origin !== 'sample'); state.sample = false; }
-    state.classes.push({ id: uid(), title, start, end, days, origin: 'manual' }); save(); say(t('sc_added')); render();
+    state.classes.push({ id: uid(), title, start, end, days, origin: 'manual' }); save(); say(t('sc_added'), false, 'addf'); render();
   }
 });
 $app.addEventListener('change', e => {
