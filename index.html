@@ -1,286 +1,257 @@
 <!doctype html>
-<html lang="fr">
+<html lang="fr" data-theme="horizon">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Rythmo versions de test</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rythmo</title>
+<meta name="description" content="Rythmo : un planning calme qui suit ta vraie journée d'étudiant (sommeil, repas, cours).">
+<script>
+/* Theme before first paint (no flash). Old links #a-#e and the old saved variant still open the matching theme. */
+(function () {
+  var T = ['horizon', 'nuit', 'doux', 'clair'], M = { a: 'horizon', b: 'horizon', c: 'doux', d: 'clair', e: 'nuit' }, th = 'horizon';
+  try {
+    var s = JSON.parse(localStorage.getItem('rythmo.v1') || 'null') || {}, st = s.settings || {};
+    th = st.theme || M[String(s.variant || '').toLowerCase()] || 'horizon';
+    var h = String(location.hash || '').slice(1).toLowerCase();
+    if (M[h] && !st.themePicked) th = M[h];
+    var hr = new Date().getHours();
+    if (st.autoNight && (hr >= 21 || hr < 6)) th = 'nuit';
+  } catch (e) {}
+  document.documentElement.setAttribute('data-theme', T.indexOf(th) >= 0 ? th : 'horizon');
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600;700&family=Archivo:wght@500;700;900&family=JetBrains+Mono:wght@500;700&family=Caveat:wght@600;700&family=Nunito:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Figtree:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=Nunito:wght@400;600;700&display=swap">
 <style>
-/* Test build: 5 variants (A-E) of the same app, switched from a sticky tester bar. Layout: one phone-width column (max 480px) centred on any screen. Header, day pills, hero (lights-out time), timeline, challenge, bottom tab bar.
-   Identity: "Douce Nuit" base. Night-blue ink, violet accent, one hue per pillar (sleep violet, meals peach, move green, water blue). No mascot yet. */
-:root{
-  --bg:#f3f1fa; --surface:#ffffff; --ink:#1b2140; --muted:#5e6485; --line:#dedaf0;
-  --accent:#5b4bdb; --on-accent:#ffffff; --accent-soft:#e9e6fb;
-  --c-sleep:#6a5be0; --c-meal:#e8845c; --c-move:#1f9d7a; --c-water:#2f8fd8; --c-class:#8a90ab;
-  --warn:#a85a00; --warn-soft:#fdf0dc;
-  --f-display:"Bricolage Grotesque",system-ui,sans-serif; --f-body:"DM Sans",system-ui,-apple-system,sans-serif; --f-mono:"DM Mono",ui-monospace,Menlo,monospace;
+/* ---------- Rythmo themes: tokens only (see themes.md). Switch with <html data-theme="horizon|nuit|doux|clair">. ---------- */
+:root, [data-theme="horizon"] {
+  color-scheme: light;
+  --bg:#f4f3fb; --surface:#ffffff; --sunk:#ebe9f6;
+  --sky-top:#e3e0f7; --sky-bottom:#f4f3fb;
+  --ink:#1c2140; --muted:#565c7c;
+  --line:#c9cde0; --line-strong:#7d83a3;
+  --accent:#3f43b8; --on-accent:#ffffff; --accent-soft:#e4e6f8; --now:#3f43b8;
+  --b-sleep:#3f43b8; --b-meal:#b4531f; --b-class:#4d5575; --b-sport:#0f7560;
+  --b-travel:#6b5a2e; --b-task:#8a3f7a; --b-free:#2a6f9c;
+  --warn:#8a4a00; --warn-soft:#fbecd0;
+  --focus:#1a1a8c;
+  --r-sm:8px; --r-md:14px; --r-lg:20px; --r-pill:999px;
+  --shadow-1:0 1px 2px rgba(28,33,64,.06),0 4px 14px rgba(28,33,64,.07);
+  --shadow-2:0 8px 28px rgba(28,33,64,.14);
+  --block-tint:16%; --btn-radius:var(--r-md); --card-border:1px solid var(--line);
+  --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:24px; --s-6:32px; --s-7:48px;
+  --f-display:"Instrument Serif",Georgia,"Times New Roman",serif;
+  --f-body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --fs-body:1rem; --fs-small:.875rem; --fs-h2:1.5rem; --fs-h1:2.125rem;
+  --h-weight:400; --h-style:normal;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#11152a; --surface:#1a2040; --ink:#ecebf7; --muted:#a4a9c6; --line:#2d3458;
-  --accent:#a99cf5; --on-accent:#11152a; --accent-soft:#272d55;
-  --c-sleep:#a99cf5; --c-meal:#ffa17e; --c-move:#4cc9a0; --c-water:#6bb6f0; --c-class:#7b82a3;
-  --warn:#ffc16b; --warn-soft:#3a2e1a; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#11152a; --surface:#1a2040; --ink:#ecebf7; --muted:#a4a9c6; --line:#2d3458;
-  --accent:#a99cf5; --on-accent:#11152a; --accent-soft:#272d55;
-  --c-sleep:#a99cf5; --c-meal:#ffa17e; --c-move:#4cc9a0; --c-water:#6bb6f0; --c-class:#7b82a3;
-  --warn:#ffc16b; --warn-soft:#3a2e1a; color-scheme:dark}
-body{background:var(--bg);color:var(--ink);font:16px/1.5 var(--f-body)}
-*{box-sizing:border-box}
-button,input,select{font:inherit;color:inherit}
+[data-theme="nuit"] {
+  color-scheme: dark;
+  --bg:#17141f; --surface:#221e2d; --sunk:#110f18;
+  --sky-top:#2a2140; --sky-bottom:#17141f;
+  --ink:#f4efe8; --muted:#c3bccd;
+  --line:#3a3447; --line-strong:#8a8199;
+  --accent:#f0b36a; --on-accent:#1d1408; --accent-soft:#3a2f27; --now:#f0b36a;
+  --b-sleep:#b5a8ff; --b-meal:#ffa987; --b-class:#b9c0dc; --b-sport:#6fd8b4;
+  --b-travel:#d9c27a; --b-task:#e9a0d6; --b-free:#8cc4ee;
+  --warn:#ffc56e; --warn-soft:#3a2d18;
+  --focus:#ffd9a0;
+  --shadow-1:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.3);
+  --shadow-2:0 8px 28px rgba(0,0,0,.5);
+  --block-tint:16%;
+}
+[data-theme="doux"] {
+  color-scheme: light;
+  --bg:#fbf5ec; --surface:#fffdf8; --sunk:#f3eadb;
+  --sky-top:#f3e6f6; --sky-bottom:#fbf5ec;
+  --ink:#33293a; --muted:#675c70;
+  --line:#e6d9e4; --line-strong:#8d7f93;
+  --accent:#7a4fb0; --on-accent:#ffffff; --accent-soft:#eee3f8; --now:#7a4fb0;
+  --b-sleep:#7a4fb0; --b-meal:#b8562d; --b-class:#5f5a78; --b-sport:#2f7a55;
+  --b-travel:#7a6330; --b-task:#a63e78; --b-free:#2f78a8;
+  --warn:#7a4d00; --warn-soft:#fbefd2;
+  --focus:#4b2a85;
+  --r-sm:12px; --r-md:20px; --r-lg:24px; --btn-radius:var(--r-pill);
+  --shadow-1:0 2px 0 rgba(51,41,58,.05),0 6px 18px rgba(90,60,110,.10);
+  --shadow-2:0 10px 30px rgba(90,60,110,.18);
+  --f-display:"Caveat","Comic Sans MS",cursive;
+  --f-body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --fs-h2:1.75rem; --fs-h1:2.5rem; --h-weight:700;
+}
+[data-theme="clair"] {
+  color-scheme: light;
+  --bg:#ffffff; --surface:#ffffff; --sunk:#f3f5f7;
+  --sky-top:#ffffff; --sky-bottom:#ffffff;
+  --ink:#14181f; --muted:#4f5966;
+  --line:#dde2e8; --line-strong:#6b7684;
+  --accent:#1b5fd1; --on-accent:#ffffff; --accent-soft:#e6effc; --now:#1b5fd1;
+  --b-sleep:#3c4bb8; --b-meal:#a85200; --b-class:#1f2733; --b-sport:#0b7352;
+  --b-travel:#6e5a1a; --b-task:#8f2f73; --b-free:#0b6a9e;
+  --warn:#8a4a00; --warn-soft:#fdeacc;
+  --focus:#0b3fa8;
+  --r-sm:4px; --r-md:8px; --r-lg:10px; --btn-radius:var(--r-md);
+  --shadow-1:0 1px 2px rgba(20,24,31,.08); --shadow-2:0 6px 20px rgba(20,24,31,.14);
+  --block-tint:12%;
+  --f-display:"Figtree",system-ui,sans-serif;
+  --f-body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --h-weight:650;
+}
+
+/* ---------- Base ---------- */
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--bg);color:var(--ink);font:var(--fs-body)/1.5 var(--f-body);-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body)}
+button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
-:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.shell{max-width:480px;margin:0 auto;padding-inline:16px;padding-block:12px 110px}
-.top{display:flex;justify-content:space-between;align-items:center;padding-block:4px 14px}
-.brand{display:flex;gap:8px;align-items:center;font:700 22px/1 var(--f-display);letter-spacing:-.02em}
-.lang{display:flex;border:1px solid var(--line);border-radius:99px;overflow:hidden}
-.lang button{background:none;border:0;padding:5px 11px;font:600 13px var(--f-body);color:var(--muted)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.shell{max-width:560px;margin:0 auto;padding:12px 16px calc(112px + env(safe-area-inset-bottom,0px))}
+h1,h2{font-family:var(--f-display);font-weight:var(--h-weight);font-style:var(--h-style);margin:0 0 var(--s-2);text-wrap:balance}
+h1{font-size:var(--fs-h1);line-height:1.1}
+h2{font-size:var(--fs-h2);line-height:1.15}
+h3{font:600 1rem/1.3 var(--f-body);margin:0 0 var(--s-1)}
+p{margin:0 0 var(--s-3)}
+a{color:var(--accent)}
+.sub,.muted{color:var(--muted)}
+.small{font-size:var(--fs-small)}
+.time{font-variant-numeric:tabular-nums}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:4px 0 12px}
+.brand{display:flex;gap:8px;align-items:center;font:var(--h-weight) 1.75rem/1 var(--f-display);color:var(--ink)}
+.lang{display:inline-flex;border:1px solid var(--line-strong);border-radius:var(--r-pill);overflow:hidden;background:var(--surface)}
+.lang button{background:none;border:0;min-width:48px;min-height:44px;padding:0 12px;font:600 .875rem var(--f-body);color:var(--muted)}
 .lang button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
-h1{font:700 28px/1.15 var(--f-display);letter-spacing:-.02em;margin:0 0 4px;text-wrap:balance}
-h2{font:700 19px/1.2 var(--f-display);letter-spacing:-.01em;margin:0 0 10px}
-.sub{color:var(--muted);margin:0 0 16px}
-.pills{display:flex;gap:6px;overflow-x:auto;padding-block:2px 14px;margin-inline:-16px;padding-inline:16px;scrollbar-width:none}
-.pills::-webkit-scrollbar{display:none}
-.pill{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:7px 14px;font:500 14px var(--f-body);color:var(--muted)}
-.pill[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
-.hero{background:var(--accent-soft);border-radius:18px;padding:18px;display:grid;gap:4px;margin-bottom:12px}
-.hero .lab{font:500 13px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-.hero .big{font:700 56px/1 var(--f-display);letter-spacing:-.03em;color:var(--accent);font-variant-numeric:tabular-nums}
-.hero .txt{color:var(--ink)}
-.warn{background:var(--warn-soft);color:var(--warn);border-radius:10px;padding:10px 12px;font-size:14px;font-weight:500;margin-bottom:12px}
-.row2{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:18px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;min-width:0}
-.card .lab{font:500 12px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
-.card .val{font:600 15px/1.35 var(--f-body)}
-.cnt{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.cnt .n{font:700 30px/1 var(--f-display);font-variant-numeric:tabular-nums}
-.rb{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--surface);font:600 20px/1 var(--f-body)}
-.rb.add{background:var(--c-water);border-color:var(--c-water);color:#fff}
-.tl{list-style:none;margin:0 0 18px;padding:0}
-.tl li{display:grid;grid-template-columns:62px 12px 1fr;gap:10px;padding-block:9px}
-.tl .time{font:500 14px/1.6 var(--f-mono);color:var(--muted);font-variant-numeric:tabular-nums}
-.rail{position:relative}
-.rail i{display:block;width:10px;height:10px;border-radius:50%;background:var(--c);margin-top:7px;position:relative;z-index:1}
-.rail::after{content:"";position:absolute;left:4px;top:18px;bottom:-22px;width:2px;background:var(--line)}
-.tl li:last-child .rail::after{display:none}
-.ttl{font-weight:600}
-.why{color:var(--muted);font-size:14px;line-height:1.4}
-.tl li.cls .ttl{font-weight:500;color:var(--muted)}
-.tip{background:var(--surface);border:1px dashed var(--line);border-radius:12px;padding:10px 12px;color:var(--muted);font-size:14px;margin-bottom:18px}
-.chal{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:18px;display:grid;gap:10px}
-.chal .t{font:600 17px/1.3 var(--f-body)}
-.btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:11px 16px;font-weight:600}
-.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
-.btn.done{background:var(--c-move);border-color:var(--c-move);color:#fff}
+
+/* ---------- Components ---------- */
+.card{background:var(--surface);border:var(--card-border);border-radius:var(--r-lg);box-shadow:var(--shadow-1);padding:var(--s-4);margin-bottom:var(--s-4);min-width:0}
+.card>h2:first-child{margin-bottom:var(--s-3)}
+.stack{display:grid;gap:var(--s-3)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 var(--s-5);border-radius:var(--btn-radius);border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);font:600 1rem var(--f-body);text-decoration:none;text-align:center}
+.btn.pri{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
 .btn.full{width:100%}
-a.btn{display:block;text-align:center;text-decoration:none;color:var(--ink)}
-a.btn.pri{color:var(--on-accent)}
-.btn.danger{color:var(--warn);border-color:var(--warn)}
-.stack{display:grid;gap:14px;margin-bottom:18px}
-label.f{display:grid;gap:5px;font-size:14px;color:var(--muted)}
-input[type=text],input[type=time],select{width:100%;padding:10px 12px;border:1px solid var(--line);background:var(--surface);border-radius:10px;color:var(--ink)}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.chips{display:flex;flex-wrap:wrap;gap:6px}
-.chips label{position:relative}
-.chips input{position:absolute;opacity:0;inset:0}
-.chips span{display:block;padding:7px 12px;border:1px solid var(--line);border-radius:99px;font-size:14px;background:var(--surface);color:var(--muted)}
-.chips input:checked + span{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
-.chips input:focus-visible + span{outline:2px solid var(--accent);outline-offset:2px}
-.cl{list-style:none;margin:0;padding:0;display:grid;gap:8px}
-.cl li{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.btn.warnb{color:var(--warn);border-color:var(--warn)}
+.btn[disabled]{opacity:.6;cursor:default}
+.tbtn{background:none;border:0;min-height:44px;padding:0 4px;color:var(--accent);font:600 1rem var(--f-body);text-decoration:underline;text-underline-offset:3px;text-align:left}
+.chips{display:flex;flex-wrap:wrap;gap:var(--s-2)}
+.chip{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 var(--s-3);border-radius:var(--r-pill);border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);font:500 .9375rem var(--f-body)}
+.chip[aria-pressed="true"],.chip[aria-current="date"]{background:var(--accent-soft);color:var(--accent);border-color:var(--accent);font-weight:700}
+.chip[aria-pressed="true"]::before{content:"✓";font-weight:700}
+.chips.cb label{position:relative}
+.chips.cb input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.chips.cb span{display:inline-flex;align-items:center;min-height:44px;padding:0 var(--s-3);border:1px solid var(--line-strong);border-radius:var(--r-pill);background:var(--surface);font-size:.9375rem}
+.chips.cb input:checked+span{background:var(--accent-soft);color:var(--accent);border-color:var(--accent);font-weight:700}
+.chips.cb input:checked+span::before{content:"✓ "}
+.chips.cb input:focus-visible+span{outline:3px solid var(--focus);outline-offset:2px}
+label.f{display:grid;gap:6px;font-weight:600}
+label.f .hint,.hint{color:var(--muted);font-size:var(--fs-small);font-weight:400}
+input[type=text],input[type=time],input[type=url],select,textarea{width:100%;min-height:44px;padding:8px 12px;border:1px solid var(--line-strong);border-radius:var(--r-sm);background:var(--surface);color:var(--ink);font-size:1rem}
+textarea{resize:vertical;line-height:1.4}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-3)}
+.msg{min-height:1.5em;font-weight:600;color:var(--b-sport);margin:0 0 var(--s-2)}
+.msg.err{color:var(--warn)}
+.msg:empty{min-height:0;margin:0}
+.warn{background:var(--warn-soft);color:var(--warn);border-radius:var(--r-md);padding:var(--s-3);font-weight:600;margin-bottom:var(--s-3)}
+.tip{border:1px dashed var(--line-strong);border-radius:var(--r-md);padding:var(--s-3);color:var(--muted);margin-bottom:var(--s-4)}
+.note{color:var(--muted);font-size:var(--fs-small);margin-top:var(--s-5)}
+.cl{list-style:none;margin:0;padding:0;display:grid;gap:var(--s-2)}
+.cl li{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:6px 6px 6px 12px}
 .cl .m{min-width:0}
-.cl .m b{display:block;overflow-wrap:anywhere}
-.cl .m small{color:var(--muted);font:400 13px var(--f-mono)}
-.x{background:none;border:0;color:var(--muted);font-size:14px;padding:6px}
+.cl .m b{display:block;overflow-wrap:anywhere;font-weight:600}
+.cl .m small{color:var(--muted);font-size:var(--fs-small);font-variant-numeric:tabular-nums}
+.x{background:none;border:0;min-height:44px;min-width:44px;padding:0 10px;color:var(--accent);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+details.imp{margin-bottom:var(--s-3);border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface)}
+details.imp>summary{cursor:pointer;font-weight:700;min-height:48px;display:flex;align-items:center;padding:0 var(--s-4)}
+details.imp>.stack{padding:0 var(--s-4) var(--s-4)}
+
+/* Day header (sky only here) */
+.day-header{background:linear-gradient(var(--sky-top),var(--sky-bottom));border-radius:var(--r-lg);padding:var(--s-4) var(--s-4) var(--s-3);margin:0 -4px var(--s-4)}
+.day-header h1{margin-bottom:var(--s-3)}
+.eyebrow{font-weight:600;color:var(--muted);margin:0 0 2px}
+.pills{display:flex;gap:6px;overflow-x:auto;padding:2px 2px 10px;scrollbar-width:none}
+.pills::-webkit-scrollbar{display:none}
+.pills .chip{flex:0 0 auto}
+.sum{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-2)}
+.sum div{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:8px 10px}
+.sum span{display:block;color:var(--muted);font-size:var(--fs-small)}
+.sum b{font:600 1.25rem/1.2 var(--f-body);font-variant-numeric:tabular-nums}
+
+/* Day timeline */
+.tl{list-style:none;margin:0 0 var(--s-4);padding:0;display:grid;gap:var(--s-2)}
+.tl>li{display:grid;grid-template-columns:52px 1fr;gap:10px;align-items:start}
+.tl .g{color:var(--muted);font-weight:600;padding-top:12px;text-align:right;font-variant-numeric:tabular-nums;font-size:.9375rem}
+.block{--c:var(--b-free);display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:color-mix(in srgb,var(--c) var(--block-tint),var(--surface));border:1px solid transparent;border-left:4px solid var(--c);border-radius:var(--r-md);min-height:44px;padding:var(--s-2) var(--s-3);color:var(--ink);font:inherit}
+.block.sleep{--c:var(--b-sleep)} .block.meal{--c:var(--b-meal)} .block.class{--c:var(--b-class)}
+.block.sport{--c:var(--b-sport)} .block.travel{--c:var(--b-travel)} .block.task{--c:var(--b-task)} .block.free{--c:var(--b-free)}
+.block.suggestion{border:1px dashed var(--c);border-left:4px solid var(--c)}
+.block .ic{flex:0 0 auto;color:var(--c);display:grid;place-items:center}
+.block .bd{flex:1 1 auto;min-width:0}
+.block .ttl{display:block;font-weight:600;overflow-wrap:anywhere}
+.block .hint{display:block}
+.block .tag{display:inline-block;font-size:var(--fs-small);color:var(--muted);font-style:italic}
+.block.travel,.block.class{padding-block:6px}
+.tl>li.past .block{opacity:.7}
+
+/* Bottom nav */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:4;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav.tabs div{max-width:640px;margin:0 auto;display:grid;grid-template-columns:repeat(var(--n,5),1fr)}
+nav.tabs button{background:none;border:0;min-height:56px;padding:8px 2px 6px;display:grid;justify-items:center;gap:2px;font:600 .75rem var(--f-body);color:var(--muted)}
+nav.tabs button[aria-current="page"]{color:var(--accent)}
+nav.tabs button[aria-current="page"] svg{stroke-width:2.4}
+
+/* Check-in */
 .seg{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
-.seg button{padding:11px 0;border:1px solid var(--line);background:var(--surface);border-radius:10px;font:600 16px var(--f-body)}
+.seg button{min-height:48px;border:1px solid var(--line-strong);background:var(--surface);border-radius:var(--r-sm);font-weight:700}
 .seg button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
-.ends{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:4px}
+.ends{display:flex;justify-content:space-between;font-size:var(--fs-small);color:var(--muted);margin-top:4px}
 .stepper{display:flex;align-items:center;gap:16px}
-.stepper .v{font:700 34px/1 var(--f-display);min-width:3.2ch;text-align:center;font-variant-numeric:tabular-nums}
+.stepper .v{font:600 2rem/1 var(--f-body);min-width:3.2ch;text-align:center;font-variant-numeric:tabular-nums}
+.rb{width:48px;height:48px;border-radius:50%;border:1px solid var(--line-strong);background:var(--surface);font:600 1.25rem/1 var(--f-body);color:var(--ink)}
 .chart{position:relative;height:120px;display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:end;margin-top:6px}
 .chart .b{display:grid;align-items:end;height:100%;position:relative}
-.chart .b i{display:block;background:var(--accent);border-radius:6px 6px 2px 2px;min-height:3px}
-.chart .b i.none{background:none;border-bottom:2px dashed var(--line);border-radius:0}
-.chart .b em{position:absolute;left:0;right:0;text-align:center;font:500 11px var(--f-mono);color:var(--muted);font-style:normal}
-.goal{position:absolute;left:0;right:0;border-top:2px dashed var(--c-meal);pointer-events:none}
-.days{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:6px;text-align:center;font:500 12px var(--f-mono);color:var(--muted)}
+.chart .b i{display:block;background:var(--b-sleep);border-radius:6px 6px 2px 2px;min-height:3px}
+.chart .b i.none{background:none;border-bottom:2px dashed var(--line-strong);border-radius:0}
+.chart .b em{position:absolute;left:0;right:0;text-align:center;font-size:.75rem;color:var(--muted);font-style:normal}
+.goal{position:absolute;left:0;right:0;border-top:2px dashed var(--b-meal);pointer-events:none}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:6px;text-align:center;font-size:.8125rem;color:var(--muted)}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-block:14px}
-.stats div{background:var(--accent-soft);border-radius:12px;padding:10px;text-align:center}
-.stats b{display:block;font:700 22px var(--f-display);font-variant-numeric:tabular-nums}
-.stats span{font-size:12px;color:var(--muted)}
-.msg{min-height:22px;font-size:14px;color:var(--c-move);font-weight:500;margin:0 0 8px}
-.msg.err{color:var(--warn)}
-.note{color:var(--muted);font-size:13px;margin-top:22px}
-.empty{text-align:center;padding-block:36px 10px;display:grid;gap:12px}
+.stats div{background:var(--accent-soft);border-radius:var(--r-md);padding:10px;text-align:center}
+.stats b{display:block;font:600 1.375rem var(--f-body);font-variant-numeric:tabular-nums}
+.stats span{font-size:.8125rem;color:var(--muted)}
+.empty{text-align:center;padding-block:24px 10px;display:grid;gap:12px}
 .empty p{color:var(--muted);margin:0}
-nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
-nav.tabs div{max-width:480px;margin:0 auto;display:grid;grid-template-columns:repeat(var(--n,3),1fr)}
-nav.tabs button{background:none;border:0;padding:10px 4px 9px;display:grid;justify-items:center;gap:3px;font:500 12px var(--f-body);color:var(--muted)}
-nav.tabs button[aria-current="page"]{color:var(--accent)}
-.vbar{position:sticky;top:0;z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
-.vbar>div{max-width:480px;margin:0 auto;padding:8px 16px 10px;display:grid;gap:8px}
-.vtabs{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
-.vtabs button{padding:8px 0;border:1px solid var(--line);background:var(--bg);border-radius:10px;font:700 16px var(--f-display);color:var(--muted)}
-.vtabs button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
-.vinfo{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
-.vinfo b{color:var(--ink)}
-.vinfo .x{white-space:nowrap;border:1px solid var(--line);border-radius:8px;padding:4px 8px;font-size:12px}
-.vinfo .lang{flex:0 0 auto}
-details.imp{margin-bottom:18px;border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface)}
-details.imp summary{cursor:pointer;font-weight:600}
-.empty .card .chips{justify-content:flex-start}
-.vinfo>span:first-child{flex:1 1 auto;min-width:0}
-.vinfo .x.arm{color:var(--warn);border-color:var(--warn)}
-.vform{flex:0 0 auto;font-weight:700;font-size:13px;padding:6px 12px;border-radius:99px;background:var(--accent);color:var(--on-accent);text-decoration:none;white-space:nowrap}
-.vinfo b{flex:1 1 auto;min-width:0;font-size:13px}
-.vbar>div{gap:6px;padding-block:8px 6px}
-.prog{height:8px;border-radius:99px;background:var(--accent-soft);overflow:hidden;margin:6px 0 14px}
-.prog i{display:block;height:100%;background:var(--c-move)}
-.todo{list-style:none;margin:0 0 18px;padding:0;display:grid;gap:8px}
-.todo li button.t{width:100%;display:grid;grid-template-columns:28px 52px 1fr;gap:10px;align-items:center;text-align:left;background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--c);border-radius:12px;padding:11px 12px}
-.todo .box{width:24px;height:24px;border-radius:7px;border:2px solid var(--line);display:grid;place-items:center;font-weight:700;color:var(--on-accent)}
-.todo li.on .box{background:var(--c-move);border-color:var(--c-move)}
-.todo li.on .ttl{text-decoration:line-through;color:var(--muted)}
-.todo .time{font:500 14px var(--f-mono);color:var(--muted)}
-.todo li.cls{padding:2px 12px 2px 14px;color:var(--muted);font-size:14px}
-.fbv{font:500 13px var(--f-mono);background:var(--accent-soft);border-radius:8px;padding:6px 10px;margin-bottom:12px}
 
-/* ===== A · Horizon : the day as a sky (Rise, Oura, Apple Weather) ===== */
-:root[data-v="A"]{--bg:#f3f4fa;--surface:#fff;--ink:#0e1530;--muted:#575f7d;--line:#dde1ee;--accent:#3b3fc4;--on-accent:#fff;--accent-soft:#e6e8fa;--c-sleep:#3b3fc4;--c-meal:#c95a2c;--c-move:#13806a;--c-water:#2475c2;--c-class:#8b93ad;--warn:#9a4f00;--warn-soft:#fdeacc;--f-display:"Instrument Serif",Georgia,serif;--f-body:"Geist",system-ui,sans-serif;--f-mono:"Geist",system-ui,sans-serif;color-scheme:light}
-[data-v="A"] h1{font:400 34px/1.05 var(--f-display);letter-spacing:-.01em}
-[data-v="A"] h2{font:400 24px/1.1 var(--f-display)}
-[data-v="A"] .brand{font:400 26px/1 var(--f-display)}
-.skyh{background:#0e1530;color:#eef0fb;border-radius:22px;padding:18px 18px 14px;margin-bottom:14px;display:grid;gap:4px}
-.skyh .lab{font:500 12px var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:#a9b0d6}
-.skyh .big{font:italic 400 72px/0.95 var(--f-display);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-.skyh .txt{color:#cfd4ef;font-size:15px}
-.skyh svg{width:100%;height:auto;margin-top:10px;display:block}
-.skyh svg text{font:500 7px var(--f-body);fill:#a9b0d6}
-.hz{list-style:none;margin:0 0 18px;padding:0;display:grid}
-.hz li{display:grid;grid-template-columns:78px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);align-items:baseline}
-.hz .tm{font:italic 400 26px/1 var(--f-display);color:var(--c);font-variant-numeric:tabular-nums}
-.hz li.cls .tm{font-size:18px;color:var(--muted)}
-.hz li.cls .ttl{font-weight:400;color:var(--muted)}
-/* ===== B · Ticket : neo-brutalist transit ticket (Gumroad, ticket stubs) ===== */
-:root[data-v="B"]{--bg:#efece3;--surface:#fff;--ink:#111;--muted:#454545;--line:#111;--accent:#ffd400;--on-accent:#111;--accent-soft:#fff2a1;--c-sleep:#3049ff;--c-meal:#ff5c2b;--c-move:#00a26a;--c-water:#1e9bff;--c-class:#cfcfcf;--warn:#111;--warn-soft:#ffd400;--f-display:"Archivo",system-ui,sans-serif;--f-body:"Archivo",system-ui,sans-serif;--f-mono:"JetBrains Mono",ui-monospace,monospace;color-scheme:light}
-[data-v="B"] h1{font:900 30px/1 var(--f-display);text-transform:uppercase;letter-spacing:-.02em}
-[data-v="B"] h2{font:900 18px/1.1 var(--f-display);text-transform:uppercase}
-[data-v="B"] .brand{font:900 24px/1 var(--f-display);text-transform:uppercase}
-[data-v="B"] .card,[data-v="B"] .chal,[data-v="B"] .btn,[data-v="B"] .pill,[data-v="B"] .rb,[data-v="B"] input,[data-v="B"] select,[data-v="B"] .cl li,[data-v="B"] .tip,[data-v="B"] .warn,[data-v="B"] .stats div,[data-v="B"] .lang{border:2px solid #111;border-radius:0;box-shadow:4px 4px 0 #111}
-[data-v="B"] .btn.pri,[data-v="B"] .pill[aria-pressed="true"],[data-v="B"] .seg button[aria-pressed="true"],[data-v="B"] .lang button[aria-pressed="true"]{background:var(--accent);color:#111;border-color:#111}
-[data-v="B"] .btn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 #111}
-[data-v="B"] .rb.add{background:var(--c-water);color:#111}
-.bh{display:grid;grid-template-columns:1fr auto;border:2px solid #111;background:var(--accent);box-shadow:6px 6px 0 #111;margin-bottom:18px}
-.bh>div{padding:14px}
-.bh .lab{font:700 12px var(--f-mono);text-transform:uppercase}
-.bh .big{font:700 54px/1 var(--f-mono);letter-spacing:-.04em}
-.bh .side{border-left:2px dashed #111;display:grid;place-items:center;padding:10px 14px;text-align:center;font:700 12px var(--f-mono);text-transform:uppercase}
-.bh .side b{display:block;font-size:28px}
-.tix{display:grid;gap:14px;margin-bottom:22px}
-.tk{position:relative;display:grid;grid-template-columns:86px 1fr;text-align:left;width:100%;padding:0;background:#fff;border:2px solid #111;border-radius:0;box-shadow:4px 4px 0 #111;color:#111}
-.tk .stub{background:var(--c);border-right:2px dashed #111;padding:12px 8px;display:grid;align-content:center;justify-items:center;gap:2px}
-.tk .stub b{font:700 19px var(--f-mono);color:#111;background:#fff;border:2px solid #111;padding:1px 4px}
-.tk .stub small{font:700 10px var(--f-mono);text-transform:uppercase;color:#111}
-.tk .bd{padding:12px 14px}
-.tk .ttl{font:900 16px/1.15 var(--f-display);text-transform:uppercase}
-.tk .why{color:#333}
-.tk.cls{box-shadow:none;border-style:dashed;background:transparent}
-.tk.cls .stub{background:transparent}
-.tk .stamp{position:absolute;right:10px;top:50%;transform:translateY(-50%) rotate(-12deg);border:3px solid var(--c-move);color:var(--c-move);font:900 15px var(--f-mono);padding:2px 8px;background:#fff}
-.tk.on .bd{opacity:.45}
-/* ===== C · Doux : no-guilt, hand-drawn (Finch, Gentler Streak) ===== */
-:root[data-v="C"]{--bg:#f6f2fb;--surface:#fffdf9;--ink:#2e2a3d;--muted:#696380;--line:#e6deef;--accent:#6f55c2;--on-accent:#fff;--accent-soft:#ece5fa;--c-sleep:#6f55c2;--c-meal:#d27a4b;--c-move:#3f8f67;--c-water:#4688c0;--c-class:#a39db3;--warn:#7c5300;--warn-soft:#fbf0d9;--f-display:"Caveat",cursive;--f-body:"Nunito",system-ui,sans-serif;--f-mono:"Nunito",system-ui,sans-serif;color-scheme:light}
-[data-v="C"] h1{font:700 36px/1 var(--f-display);color:var(--accent)}
-[data-v="C"] h2{font:700 26px/1 var(--f-display)}
-[data-v="C"] .brand{font:700 30px/1 var(--f-display)}
-[data-v="C"] .card,[data-v="C"] .chal,[data-v="C"] .tip,[data-v="C"] .warn{border-radius:24px}
-[data-v="C"] .btn{border-radius:99px}
-[data-v="C"] .warn{background:var(--accent-soft);color:var(--ink)}
-[data-v="C"] nav.tabs{left:16px;right:16px;bottom:12px;border:1px solid var(--line);border-radius:22px;box-shadow:0 6px 24px rgba(60,40,110,.12)}
-.ch{padding:6px 2px 4px;margin-bottom:10px}
-.hand{font:700 34px/1.1 var(--f-display);color:var(--ink)}
-.circ{position:relative;display:inline-block;padding:0 8px;color:var(--accent)}
-.rc{position:absolute;inset:-8px -6px;width:calc(100% + 12px);height:calc(100% + 16px);overflow:visible;pointer-events:none}
-.rc path{fill:none;stroke:var(--c,var(--accent));stroke-width:2.2;stroke-linecap:round}
-.three{list-style:none;margin:6px 0 10px;padding:0;display:grid;gap:12px}
-.three button{width:100%;display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:14px 16px}
-.three .tm{position:relative;font:700 26px/1 var(--f-display);color:var(--c);padding:4px 6px}
-.three .ok{width:28px;height:28px;border-radius:50%;border:2px dashed var(--line);display:grid;place-items:center;color:#fff;font-weight:800}
-.three .on .ok{background:var(--c-move);border:0}
-.three .on .ttl{text-decoration:line-through;text-decoration-thickness:2px;text-decoration-color:var(--c-move)}
-.gentle{font:600 24px/1.15 var(--f-display);color:var(--muted);margin:2px 4px 16px}
-details.rest{margin-bottom:18px;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:12px 16px}
-details.rest summary{cursor:pointer;font-weight:700}
-details.rest ul{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px;font-size:14px}
-details.rest li span{display:inline-block;min-width:50px;color:var(--muted)}
-/* ===== D · Agenda : calendar-native, Swiss grid (Notion Calendar, Structured) ===== */
-:root[data-v="D"]{--bg:#fff;--surface:#fff;--ink:#161616;--muted:#5c5c5c;--line:#e4e4e4;--accent:#d93a24;--on-accent:#fff;--accent-soft:#fdecea;--c-sleep:#4453d1;--c-meal:#c76a05;--c-move:#0d8058;--c-water:#0a74ba;--c-class:#2b2b2b;--warn:#9a4f00;--warn-soft:#fdeacc;--f-display:"IBM Plex Sans",system-ui,sans-serif;--f-body:"IBM Plex Sans",system-ui,sans-serif;--f-mono:"IBM Plex Mono",ui-monospace,monospace;color-scheme:light}
-[data-v="D"] h1{font:600 26px/1.15 var(--f-display);letter-spacing:-.01em}
-[data-v="D"] h2{font:600 16px/1.2 var(--f-display)}
-[data-v="D"] .card,[data-v="D"] .chal,[data-v="D"] .btn,[data-v="D"] .pill,[data-v="D"] input,[data-v="D"] select,[data-v="D"] .tip,[data-v="D"] .stats div{border-radius:4px}
-[data-v="D"] .hero,[data-v="D"] .stats div{background:#f6f6f6}
-.dsum{display:grid;grid-template-columns:repeat(3,1fr);border-top:2px solid var(--ink);border-bottom:1px solid var(--line);margin-bottom:16px}
-.dsum div{padding:10px 8px 10px 0}
-.dsum div+div{padding-left:10px;border-left:1px solid var(--line)}
-.dsum span{display:block;font:500 11px var(--f-mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
-.dsum b{font:600 24px var(--f-mono);font-variant-numeric:tabular-nums}
-.dsum div:first-child b{color:var(--accent)}
-.cal{position:relative;margin:0 0 8px 46px;border-left:1px solid var(--line)}
-.cal .hr{position:absolute;left:0;right:0;border-top:1px solid var(--line)}
-.cal .hr span{position:absolute;left:-46px;top:-8px;width:40px;text-align:right;font:400 11px var(--f-mono);color:var(--muted)}
-.cal .blk{position:absolute;left:6px;right:0;border-radius:4px;padding:3px 8px;font-size:12.5px;line-height:1.3;overflow:hidden;display:flex;gap:6px;align-items:flex-start}
-.cal .blk b{font:500 11px/1.6 var(--f-mono)}
-.cal .blk.cls{background:#2b2b2b;color:#fff}
-.cal .blk.sug{background:color-mix(in srgb,var(--c) 12%,#fff);border:1.5px dashed var(--c);color:var(--ink);left:20px}
-.cal .bed{position:absolute;left:-4px;right:0;border-top:2px solid var(--accent)}
-.cal .bed span{position:absolute;right:0;top:-20px;font:600 11px var(--f-mono);color:var(--accent);background:#fff;padding:0 4px}
-.cal .now{position:absolute;left:-5px;right:0;border-top:1.5px solid var(--ink)}
-.cal .now::before{content:"";position:absolute;left:-4px;top:-5px;width:8px;height:8px;border-radius:50%;background:var(--ink)}
-.dleg{display:flex;gap:16px;font-size:12px;color:var(--muted);margin:0 0 18px}
-.dleg i{display:inline-block;width:14px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
-[data-v="D"] nav.tabs.top div{background:#f1f1f1;border-radius:8px;padding:3px;gap:3px}
-[data-v="D"] nav.tabs.top button{border-radius:6px;color:var(--ink);font-weight:500}
-[data-v="D"] nav.tabs.top button[aria-current="page"]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.15)}
-/* ===== E · Batterie : performance dashboard (Whoop, Bevel, Nike Run Club) ===== */
-:root[data-v="E"]{--bg:#0c0c0e;--surface:#16161a;--ink:#f3f3f3;--muted:#a0a0aa;--line:#2a2a31;--accent:#ff5a1f;--on-accent:#0c0c0e;--accent-soft:#2a1810;--c-sleep:#9686ff;--c-meal:#ffb547;--c-move:#37d68a;--c-water:#4cb4ff;--c-class:#5d5d68;--warn:#ffb547;--warn-soft:#2a2212;--f-display:"Barlow Condensed",system-ui,sans-serif;--f-body:"Barlow",system-ui,sans-serif;--f-mono:"Barlow Condensed",system-ui,sans-serif;color-scheme:dark}
-[data-v="E"] h1{font:700 32px/1 var(--f-display);text-transform:uppercase;letter-spacing:.01em}
-[data-v="E"] h2{font:700 20px/1 var(--f-display);text-transform:uppercase;letter-spacing:.02em}
-[data-v="E"] .brand{font:700 26px/1 var(--f-display);text-transform:uppercase;letter-spacing:.04em}
-[data-v="E"] .card,[data-v="E"] .chal{border-radius:6px;border-color:transparent}
-[data-v="E"] .btn{border-radius:6px;text-transform:uppercase;letter-spacing:.06em;font-family:var(--f-display);font-size:17px}
-.ring{display:grid;grid-template-columns:150px 1fr;gap:16px;align-items:center;margin-bottom:16px}
-.ring svg{width:150px;height:150px}
-.ring .n{font:700 44px var(--f-display);fill:var(--ink)}
-.ring .u{font:600 12px var(--f-body);fill:var(--muted);letter-spacing:.1em;text-transform:uppercase}
-.rk{display:grid;gap:10px}
-.rk div span{display:block;font:600 12px var(--f-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-.rk div b{font:700 34px/1 var(--f-display);font-variant-numeric:tabular-nums}
-.rk div:first-child b{color:var(--accent)}
-.seq{list-style:none;margin:0 0 18px;padding:0;display:grid;gap:6px}
-.seq li{display:grid;grid-template-columns:30px 64px 1fr;gap:10px;align-items:center;background:var(--surface);border-radius:6px;padding:10px 12px;border-left:4px solid var(--c)}
-.seq .ix{font:600 13px var(--f-display);color:var(--muted)}
-.seq .tm{font:700 24px/1 var(--f-display);font-variant-numeric:tabular-nums}
-.seq .ttl{font:700 17px/1.1 var(--f-display);text-transform:uppercase;letter-spacing:.02em}
-.seq li.cls{background:transparent;border-left-color:var(--line)}
-.seq li.cls .ttl,.seq li.cls .tm{color:var(--muted);font-weight:500}
-/* ===== shared: top tabs, tester bar extras ===== */
-nav.tabs.top{position:static;background:none;border:0;padding:0 0 14px}
-nav.tabs.top div{max-width:none}
-nav.tabs.top button{grid-auto-flow:column;padding:9px 4px;font-size:14px;font-weight:700}
-nav.tabs.top svg{display:none}
-[data-v="B"] nav.tabs.top div{gap:8px}
-[data-v="B"] nav.tabs.top button{border:2px solid #111;background:#fff;color:#111;text-transform:uppercase;font:700 13px var(--f-mono);box-shadow:3px 3px 0 #111}
-[data-v="B"] nav.tabs.top button[aria-current="page"]{background:var(--accent)}
-details.da{font-size:13px;color:var(--muted)}
-details.da summary{cursor:pointer;color:var(--accent);font-weight:600;font-family:var(--f-body)}
-details.da .dab{display:grid;gap:6px;padding:8px 0 2px}
-details.da .qq{display:block;font-style:italic;color:var(--ink)}
-details.da .sw{display:flex;gap:4px}
-details.da .sw i{width:22px;height:22px;border-radius:4px;border:1px solid var(--line)}
+/* Settings: theme picker */
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-3)}
+@media (min-width:700px){.tiles{grid-template-columns:repeat(4,1fr)}}
+.tile{position:relative;display:block;cursor:pointer;border-radius:var(--r-md)}
+.tile input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.tile .pv{display:grid;gap:5px;height:96px;padding:10px;border-radius:var(--r-md);background:var(--bg);color:var(--ink);border:2px solid var(--line);font-family:var(--f-body);overflow:hidden}
+.tile .pv b{font:var(--h-weight) 1.25rem/1 var(--f-display);font-style:var(--h-style)}
+.tile .pv .strip{background:var(--surface);border-radius:6px;padding:5px;display:flex;gap:4px;align-items:center}
+.tile .pv .strip i{display:block;height:8px;border-radius:3px;flex:1}
+.tile .pv .dot{width:12px;height:12px;border-radius:50%;background:var(--accent);flex:0 0 12px!important}
+.tile .nm{display:flex;justify-content:space-between;align-items:center;font-weight:600;padding:6px 2px 0;min-height:32px}
+.tile input:checked~.pv{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
+.tile input:checked~.nm::after{content:"✓";color:var(--accent);font-weight:800}
+.tile input:focus-visible~.pv{outline:3px solid var(--focus);outline-offset:2px}
+/* Toggle */
+.tg{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;width:100%;background:none;border:0;padding:4px 0;text-align:left;color:var(--ink)}
+.tg .lb{display:grid;gap:2px;font-weight:600}
+.tg .tr{flex:0 0 52px;width:52px;height:32px;border-radius:var(--r-pill);border:1px solid var(--line-strong);background:var(--sunk);position:relative}
+.tg .tr::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:var(--surface);border:1px solid var(--line-strong);display:grid;place-items:center;font-size:14px;line-height:22px;text-align:center}
+.tg[aria-checked="true"] .tr{background:var(--accent);border-color:var(--accent)}
+.tg[aria-checked="true"] .tr::after{left:23px;content:"✓";color:var(--accent);border-color:var(--surface)}
+.tg .st{font-size:var(--fs-small);color:var(--muted);font-weight:500}
 
-@media (prefers-reduced-motion:no-preference){.chart .b i{transition:height .3s ease}}
+@media (prefers-reduced-motion: no-preference) {
+  .btn,.chip,.tg .tr,.tg .tr::after,.glass{transition:background-color .18s ease,border-color .18s ease,left .18s ease,transform .12s ease}
+  .btn:active{transform:translateY(1px)}
+  .day-header{animation:sky .6s ease both}
+  @keyframes sky{from{opacity:.4}to{opacity:1}}
+}
+@media (prefers-reduced-motion: reduce) {
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
 </style>
 <script data-goatcounter="https://rythmo.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
@@ -288,182 +259,161 @@ details.da .sw i{width:22px;height:22px;border-radius:4px;border:1px solid var(-
 <div id="app"></div>
 <script>
 (function () {
+'use strict';
+/* ===================== CONFIG ===================== */
 const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSc82fZq4bbi5RvtrHeVOebLYmaa5w0WAXumdykyZkfqkQtn4A/viewform';
-const WATER_GOAL = 6;
+const RELAY = 'https://rythmo.tao-laou-hao.workers.dev';
+const THEMES = ['horizon', 'nuit', 'doux', 'clair'];
+const LEGACY = { a: 'horizon', b: 'horizon', c: 'doux', d: 'clair', e: 'nuit' }; // old variants A-E
+const SCHEMA = 2;
 
-/* ---------- Text (EN / FR) ---------- */
+/* ===================== TEXT (EN / FR) ===================== */
 const T = {
 en: {
-  nav_plan:'Plan', nav_checkin:'Check-in', nav_schedule:'Timetable',
-  today:'Today', lights_today:'Lights out tonight', lights_other:'Lights out that night',
-  hero_txt:'Tomorrow you wake at {w}. That leaves {h} h of sleep.',
-  short_night:'Your timetable only leaves {h} h of sleep that night. Try to nap or go to bed as early as you can.',
+  nav_plan:'Today', nav_checkin:'Check-in', nav_schedule:'Classes', nav_settings:'Settings', nav_main:'Main', lang_label:'Language',
+  today:'Today', bed_around:'Bed around', wake_next:'Wake-up', sleep_h:'Sleep',
+  short_night:'Your timetable only leaves {h} h of sleep that night. Go to bed as early as you can, or plan a short nap.',
   wake:'Wake up', wake_class:'First class at {c}. Time to get ready and travel: {m} min.', wake_free:'No class. Your usual free-day wake-up.',
   breakfast:'Breakfast', breakfast_why:'Eat something before the day starts.',
   lunch:'Lunch', lunch_why:'A 45-minute gap between classes.', lunch_tight:'Quick lunch', lunch_tight_why:'No long gap. Pack something simple and eat after {c}.',
-  dinner:'Dinner', dinner_why:'At least 3 h before lights out, so you fall asleep easier.', dinner_late:'Late dinner', dinner_late_why:'Late finish. Keep it light.',
-  sport:'Workout, {m} min', sport_why:'Free slot, away from meals and bedtime.', sport_none:'No room for a full workout today. A 10-minute walk between classes still counts.',
-  winddown:'Screens off', winddown_why:'45 minutes to calm down before sleep.',
+  dinner:'Dinner', dinner_why:'About 3 h before bed, so you fall asleep more easily.', dinner_late:'Late dinner', dinner_late_why:'Late finish. Keep it light.',
+  sport:'Sport, {m} min', sport_why:'Free slot, away from meals and bedtime.', sport_none:'No room for sport today. A 10-minute walk still counts.',
+  winddown:'Screens off', winddown_why:'45 minutes to slow down before sleep.',
   lightsout:'Lights out', lightsout_why:'Based on your first class tomorrow.', lightsout_reg:'Same bedtime every night keeps your body clock steady, even when tomorrow starts late.',
   water:'Water', water_goal:'Goal: {n} glasses', water_goal_day:'Goal: {n} glasses a day',
-  chal_title:'Challenge of the day', chal_done:'Done. Nice.', chal_mark:'Mark as done', chal_week:'{n} of the last 7 days completed',
+  chal_title:'Small idea for today', chal_done:'Done. Nice.', chal_mark:'Mark as done', chal_week:'{n} of the last 7 days',
   ch_bed:'Lights out by {t}', ch_water:'Drink {n} glasses of water', ch_walk:'Take a 10-minute walk between two classes or after dinner',
   ch_breakfast:'Eat breakfast before your first class', ch_screens:'Put your phone away 30 minutes before lights out', ch_stretch:'Stretch for 5 minutes before bed',
-  empty_title:'Add your classes to get a plan', empty_text:'Rythmo reads your timetable and tells you when to sleep, eat and move.',
-  empty_cta:'Add my timetable', example_cta:'Try an example week', example_note:'Example week. Replace it with your own classes in the Timetable tab.',
-  ci_title:'Evening check-in', ci_sub:'Takes 20 seconds.', ci_sleep:'Hours slept last night', ci_quality:'Sleep quality', ci_energy:'Energy today',
+  empty_title:'Add your classes to get a plan', empty_text:'Classes first, everything else fits around them.',
+  example_cta:'Try an example week', example_note:'Example week. Replace it with your own classes in the Classes tab.',
+  ci_title:'Evening check-in', ci_sub:'Takes 20 seconds. Whenever you like.', ci_sleep:'Hours slept last night', ci_quality:'Sleep quality', ci_energy:'Energy today',
   low:'Low', high:'High', ci_save:'Save check-in', ci_update:'Update check-in', ci_saved:'Saved. See you tomorrow evening.',
-  ci_week:'Your last 7 days', ci_goal:'Orange line: your sleep goal ({h} h)', st_sleep:'Avg sleep (h)', st_energy:'Avg energy', st_count:'Check-ins',
-  in_short:'You sleep about {d} h less than your goal. Try the lights-out time in your plan.', in_ok:'You are close to your sleep goal. Keep going.', in_none:'Do two check-ins to see your trend.',
+  ci_week:'Your last 7 days', ci_goal:'Dashed line: your sleep need ({h} h)', st_sleep:'Avg sleep (h)', st_energy:'Avg energy', st_count:'Check-ins',
+  in_short:'You sleep about {d} h less than you need. The bedtime in your plan can help.', in_ok:'You are close to the sleep you need.', in_none:'Two check-ins and you will see your trend.',
   fb_title:'Help us improve Rythmo', fb_text:'3 minutes, anonymous. Your answers decide what we build next.', fb_cta:'Open the feedback form',
-  sc_title:'Your timetable', sc_sub:'Rythmo builds your day around these classes.',
-  sc_import:'Import a calendar file (.ics)', sc_import_hint:'Export it from your school calendar or Google Calendar. It replaces the classes below.',
+  sc_title:'Your classes', sc_sub:'Rythmo builds your day around these classes.',
+  sc_import:'Import a calendar file (.ics)', sc_import_hint:'Export it from your school calendar or calendar app. It replaces the classes below.',
   sc_import_ok:'{n} classes imported.', sc_import_none:'No timed events found in that file.', sc_import_err:'Could not read that file.',
-  qs_title:'Your usual school day (30 seconds)', qs_start:'First class starts', qs_end:'Last class ends', qs_btn:'Build my plan', qs_or:'or', qs_detail:'Enter my exact timetable instead', qs_am:'Morning classes', qs_pm:'Afternoon classes', sc_imp_sum:'Import from Google Calendar or your school (optional)',
-  lk_title:'Paste your calendar link', lk_btn:'Get my plan', lk_busy:'Reading your calendar…', lk_fail:'Could not read that link. Check it is the iCal link of your calendar, or use the 30-second form below.', lk_empty:'No classes found in that calendar.', lk_note:'Google Calendar: Settings > your calendar > "Secret address in iCal format". The link is read through the Rythmo relay and is never stored.',
-  sc_url:'Or paste your calendar link (iCal / webcal)', sc_url_ph:'https://… or webcal://… (one link per line if you have several calendars)', sc_url_btn:'Get my calendar from this link', sc_url_hint:'Your browser will download the calendar file from the link. Then tap "Import a calendar file" above and pick it.', sc_url_bad:'That does not look like a calendar link. It should start with https:// or webcal://.', sc_url_ok:'Link ready. Tap the purple button below to download your calendar, then tap "Import a calendar file" and pick it.', sc_url_dl:'Download my calendar file',
+  qs_title:'Your usual school day (30 seconds)', qs_start:'First class starts', qs_end:'Last class ends', qs_btn:'Build my plan', qs_or:'or', qs_detail:'Enter my exact timetable instead', qs_am:'Morning classes', qs_pm:'Afternoon classes',
+  lk_title:'Import from a calendar link', lk_btn:'Import my classes', lk_busy:'Reading your calendar…', lk_fail:'Could not read that link. Check it is the iCal (.ics) link of your calendar, or add your classes by hand.', lk_empty:'No classes found in that calendar.', lk_note:'The link is read through the Rythmo relay and is never stored.',
+  sc_url_ph:'https://… or webcal://… (one link per line if you have several calendars)', sc_url_bad:'That does not look like a calendar link. It should start with https:// or webcal://.',
   sc_add:'Add a class', sc_name:'Class name', sc_name_ph:'e.g. Statistics', sc_start:'Starts', sc_end:'Ends', sc_days:'Days', sc_add_btn:'Add class',
   sc_added:'Class added.', sc_list:'Your classes', sc_none:'No classes yet.', sc_remove:'Remove', sc_clear:'Remove all classes', sc_default:'Class',
   sc_bad_time:'The end time must be after the start time.', sc_need_day:'Pick at least one day.',
-  travel_to:'Travel to school', travel_home:'Travel home', trv_label:'Travel time to school (one way)', trv_hint:'Door to door. It is added to your calendar before your first class and after your last one.',
+  travel_to:'Travel to school', travel_home:'Travel home', trv_label:'Travel time to school (one way)', trv_hint:'Door to door. Added before your first class and after your last one.',
   wake_calm:'First class at {c}. Your morning is free: no need to rush.',
-  mo_gentle:'Gentle start (15 min)', mo_gentle_why:'Yesterday was a heavy day. Easy stretching or a short walk in daylight, no hard workout.',
-  mo_calm:'Quiet time (20 min)', mo_calm_why:'Read, listen to music or just sit with a drink instead of scrolling. Your body is still recovering.',
+  mo_gentle:'Gentle start (15 min)', mo_gentle_why:'Yesterday was a heavy day. Easy stretching or a short walk in daylight.',
+  mo_calm:'Quiet time (20 min)', mo_calm_why:'Read, listen to music or just sit with a drink instead of scrolling.',
   mo_focus:'Focus block (45 min)', mo_focus_why:'Your head is freshest in the morning. Start with your hardest revision or project task.',
-  mo_move:'Quick movement (15 min)', mo_move_why:'Wake the body up: a short run, skipping rope or a bodyweight set.',
+  mo_move:'Quick movement (15 min)', mo_move_why:'Wake the body up: a short walk, skipping rope or a few stretches.',
   mo_prep:'Pack your bag', mo_prep_why:'Bag, charger, water bottle, lunch: ten minutes now saves stress later.',
   sug_card:'Morning suggestions (remove any you do not want):', sug_restore:'Restore removed suggestions',
-  tk_card:'Flexible tasks', tk_empty:'No flexible task on this day.', tk_open:'+ Add a task',
+  tk_card:'Flexible tasks', tk_empty:'No tasks. That\'s perfectly fine.', tk_open:'+ Add a task',
   tk_add:'Add a flexible task', tk_hint:'Something without a fixed hour (study, project, errands). Rythmo finds a free slot on the days you pick.', tk_name:'Task name', tk_name_ph:'e.g. Group project', tk_dur:'How long', tk_btn:'Add task', tk_added:'Task added.', tk_list:'Your flexible tasks', tk_why:'Placed in a free slot ({m} min).', tk_none:'No room today for: {n}. Try another day or a shorter task.', tk_default:'Task',
-  sc_rhythm:'Your rhythm', set_sleep:'Sleep you need', set_commute:'Travel time to school (one way)', set_sport:'Workout length', set_free:'Wake-up on free days',
+  set_title:'Settings', set_planning:'Planning', set_sleep:'Sleep you need', set_commute:'Travel time to school (one way)', set_sport:'Sport length', set_free:'Wake-up on free days',
+  set_theme:'Theme', set_theme_hint:'Pick the look you find easiest to read.', set_auto:'Automatic: Night in the evening', set_auto_hint:'Switches to Night between 21:00 and 6:00, without changing your choice.',
+  th_horizon:'Horizon', th_nuit:'Night', th_doux:'Soft', th_clair:'Clear',
+  set_lang:'Language', set_data:'Your data', set_reset:'Erase all my data', set_reset_confirm:'Tap again to erase everything', set_reset_done:'Everything was erased.',
+  set_export:'Download my data (.json)', on:'On', off:'Off',
   min:'{n} min', hrs:'{n} h',
   footer:'Your data stays on this device. Visits are counted anonymously (GoatCounter, no cookies). Rythmo gives general wellbeing tips, not medical advice. Student project at Aivancity.',
-  v_fb:'Feedback ↗',
-  v_form:'Done testing? Give feedback on version {v} (3 min)',
-  v_label:'Version {v}', v_pick:'Version to test', v_reset:'New tester', v_confirm:'Tap again to erase', v_in_form:'In the feedback form, choose: Version {v} ({n}).',
-  vn_A:'Horizon', vn_B:'Ticket', vn_C:'Doux', vn_D:'Agenda', vn_E:'Batterie',
-  vd_A:'The day as a sky. Serif, calm, premium.', vd_B:'Neo-brutalist transit tickets. Loud and fast.', vd_C:'3 small things, hand-drawn, no guilt.', vd_D:'Looks like your calendar. Swiss grid.', vd_E:'Sleep battery, sporty dark dashboard.',
-  why_da:'Why this design?', da_concept:'Idea', da_insight:'From our interviews', da_refs:'References', da_type:'Type',
-  stamp:'Done', three_t:'3 small things today', three_note:'Miss one? No problem. Tomorrow we recalculate.', rest_day:'The rest of your day', tonight_bed:'Tonight, bed around', leg_cls:'Class', leg_sug:'Rythmo suggestion', sleep_win:'sleep', ticket_left:'left',
-  nextup:'Next up', markdone:'Mark done', sleep_h:'Sleep (h)',
-  list_done:'{a} of {b} done',
   nostore:'Saving is unavailable in this view. Your data is kept only until you close the page.'
 },
 fr: {
-  nav_plan:'Plan', nav_checkin:'Bilan', nav_schedule:'Emploi du temps',
-  today:"Aujourd'hui", lights_today:"Extinction des feux ce soir", lights_other:"Extinction des feux ce soir-là",
-  hero_txt:'Demain, réveil à {w}. Ça te laisse {h} h de sommeil.',
-  short_night:"Ton emploi du temps ne laisse que {h} h de sommeil cette nuit-là. Essaie de te coucher dès que possible ou de faire une sieste.",
+  nav_plan:'Aujourd\'hui', nav_checkin:'Bilan', nav_schedule:'Cours', nav_settings:'Réglages', nav_main:'Navigation principale', lang_label:'Langue',
+  today:"Aujourd'hui", bed_around:'Au lit vers', wake_next:'Réveil', sleep_h:'Sommeil',
+  short_night:"Ton emploi du temps ne laisse que {h} h de sommeil cette nuit-là. Couche-toi dès que tu peux, ou prévois une petite sieste.",
   wake:'Réveil', wake_class:'Premier cours à {c}. Préparation et trajet : {m} min.', wake_free:'Pas de cours. Ton réveil habituel des jours libres.',
   breakfast:'Petit-déjeuner', breakfast_why:'Mange quelque chose avant que la journée commence.',
-  lunch:'Déjeuner', lunch_why:'Un créneau de 45 minutes entre deux cours.', lunch_tight:'Déjeuner rapide', lunch_tight_why:'Pas de grand créneau. Prépare un repas simple et mange après {c}.',
-  dinner:'Dîner', dinner_why:"Au moins 3 h avant l'extinction des feux, pour mieux t'endormir.", dinner_late:'Dîner tardif', dinner_late_why:'Fin tardive. Reste sur du léger.',
-  sport:'Sport, {m} min', sport_why:'Créneau libre, loin des repas et du coucher.', sport_none:"Pas la place pour une vraie séance aujourd'hui. Une marche de 10 minutes entre deux cours compte aussi.",
-  winddown:'Écrans éteints', winddown_why:'45 minutes pour se calmer avant de dormir.',
+  lunch:'Déjeuner', lunch_why:'Un créneau de 45 minutes entre deux cours.', lunch_tight:'Déjeuner rapide', lunch_tight_why:'Pas de grand créneau. Prévois un repas simple et mange après {c}.',
+  dinner:'Dîner', dinner_why:"Environ 3 h avant le coucher, pour t'endormir plus facilement.", dinner_late:'Dîner tardif', dinner_late_why:'Fin tardive. Reste sur du léger.',
+  sport:'Sport, {m} min', sport_why:'Créneau libre, loin des repas et du coucher.', sport_none:"Pas de place pour le sport aujourd'hui. Une marche de 10 minutes, ça compte aussi.",
+  winddown:'Écrans éteints', winddown_why:'45 minutes pour ralentir avant de dormir.',
   lightsout:'Extinction des feux', lightsout_why:'Calculé sur ton premier cours de demain.', lightsout_reg:'Se coucher à la même heure chaque soir règle ton horloge interne, même quand demain commence tard.',
   water:'Eau', water_goal:'Objectif : {n} verres', water_goal_day:'Objectif : {n} verres par jour',
-  chal_title:'Défi du jour', chal_done:'Fait. Bravo.', chal_mark:'Marquer comme fait', chal_week:'{n} jours sur les 7 derniers',
+  chal_title:'Petite idée du jour', chal_done:'Fait. Bravo.', chal_mark:'Marquer comme fait', chal_week:'{n} jours sur les 7 derniers',
   ch_bed:'Éteindre les lumières avant {t}', ch_water:"Boire {n} verres d'eau", ch_walk:'Faire 10 minutes de marche entre deux cours ou après le dîner',
   ch_breakfast:'Prendre un petit-déjeuner avant ton premier cours', ch_screens:"Ranger ton téléphone 30 minutes avant l'extinction des feux", ch_stretch:'Faire 5 minutes d’étirements avant de dormir',
-  empty_title:'Ajoute tes cours pour avoir un plan', empty_text:'Rythmo lit ton emploi du temps et te dit quand dormir, manger et bouger.',
-  empty_cta:'Ajouter mon emploi du temps', example_cta:'Essayer une semaine exemple', example_note:"Semaine exemple. Remplace-la par tes cours dans l'onglet Emploi du temps.",
-  ci_title:'Bilan du soir', ci_sub:'Ça prend 20 secondes.', ci_sleep:"Heures dormies cette nuit", ci_quality:'Qualité du sommeil', ci_energy:"Énergie aujourd'hui",
+  empty_title:'Ajoute tes cours pour avoir un plan', empty_text:"Tes cours d'abord, le reste s'organise autour.",
+  example_cta:'Essayer une semaine exemple', example_note:"Semaine exemple. Remplace-la par tes cours dans l'onglet Cours.",
+  ci_title:'Bilan du soir', ci_sub:'Ça prend 20 secondes. Quand tu veux.', ci_sleep:"Heures dormies cette nuit", ci_quality:'Qualité du sommeil', ci_energy:"Énergie aujourd'hui",
   low:'Faible', high:'Haute', ci_save:'Enregistrer le bilan', ci_update:'Mettre à jour le bilan', ci_saved:'Enregistré. À demain soir.',
-  ci_week:'Tes 7 derniers jours', ci_goal:'Ligne orange : ton objectif de sommeil ({h} h)', st_sleep:'Sommeil moy. (h)', st_energy:'Énergie moy.', st_count:'Bilans',
-  in_short:"Tu dors environ {d} h de moins que ton objectif. Essaie l'heure d'extinction de ton plan.", in_ok:'Tu es proche de ton objectif de sommeil. Continue.', in_none:'Fais deux bilans pour voir ta tendance.',
+  ci_week:'Tes 7 derniers jours', ci_goal:'Ligne pointillée : ton besoin de sommeil ({h} h)', st_sleep:'Sommeil moy. (h)', st_energy:'Énergie moy.', st_count:'Bilans',
+  in_short:"Tu dors environ {d} h de moins que ton besoin. L'heure de coucher de ton plan peut aider.", in_ok:'Tu es proche du sommeil dont tu as besoin.', in_none:'Deux bilans et tu verras ta tendance.',
   fb_title:'Aide-nous à améliorer Rythmo', fb_text:'3 minutes, anonyme. Tes réponses décident de la suite.', fb_cta:'Ouvrir le formulaire',
-  sc_title:'Ton emploi du temps', sc_sub:'Rythmo construit ta journée autour de ces cours.',
-  sc_import:'Importer un fichier calendrier (.ics)', sc_import_hint:"Exporte-le depuis le calendrier de ton école ou Google Agenda. Il remplace les cours ci-dessous.",
+  sc_title:'Tes cours', sc_sub:'Rythmo construit ta journée autour de ces cours.',
+  sc_import:'Importer un fichier calendrier (.ics)', sc_import_hint:"Exporte-le depuis l'agenda de ton école ou ton appli d'agenda. Il remplace les cours ci-dessous.",
   sc_import_ok:'{n} cours importés.', sc_import_none:'Aucun événement horaire trouvé dans ce fichier.', sc_import_err:'Impossible de lire ce fichier.',
-  qs_title:'Ta journée de cours type (30 secondes)', qs_start:'Début du premier cours', qs_end:'Fin du dernier cours', qs_btn:'Créer mon plan', qs_or:'ou', qs_detail:'Entrer mon emploi du temps exact', qs_am:'Cours du matin', qs_pm:'Cours de l\'après-midi', sc_imp_sum:'Importer depuis Google Agenda ou ton école (facultatif)',
-  lk_title:'Colle le lien de ton agenda', lk_btn:'Créer mon plan', lk_busy:'Lecture de ton agenda…', lk_fail:'Impossible de lire ce lien. Vérifie que c\'est le lien iCal de ton agenda, ou utilise le formulaire de 30 secondes ci-dessous.', lk_empty:'Aucun cours trouvé dans cet agenda.', lk_note:'Google Agenda : Paramètres > ton agenda > « Adresse secrète au format iCal ». Le lien est lu via le relais de Rythmo et n\'est jamais enregistré.',
-  sc_url:'Ou colle le lien de ton agenda (iCal / webcal)', sc_url_ph:'https://… ou webcal://… (un lien par ligne si tu as plusieurs agendas)', sc_url_btn:'Récupérer mon agenda depuis ce lien', sc_url_hint:'Ton navigateur télécharge le fichier de l\'agenda depuis le lien. Ensuite, touche « Importer un fichier calendrier » ci-dessus et choisis-le.', sc_url_bad:'Ce lien ne ressemble pas à un lien d\'agenda. Il doit commencer par https:// ou webcal://.', sc_url_ok:'Lien prêt. Touche le bouton violet ci-dessous pour télécharger ton agenda, puis « Importer un fichier calendrier » pour le choisir.', sc_url_dl:'Télécharger le fichier de mon agenda',
+  qs_title:'Ta journée de cours type (30 secondes)', qs_start:'Début du premier cours', qs_end:'Fin du dernier cours', qs_btn:'Créer mon plan', qs_or:'ou', qs_detail:'Entrer mon emploi du temps exact', qs_am:'Cours du matin', qs_pm:'Cours de l\'après-midi',
+  lk_title:'Importer depuis un lien d\'agenda', lk_btn:'Importer mes cours', lk_busy:'Lecture de ton agenda…', lk_fail:'Impossible de lire ce lien. Vérifie que c\'est le lien iCal (.ics) de ton agenda, ou ajoute tes cours à la main.', lk_empty:'Aucun cours trouvé dans cet agenda.', lk_note:'Le lien est lu via le relais de Rythmo et n\'est jamais enregistré.',
+  sc_url_ph:'https://… ou webcal://… (un lien par ligne si tu as plusieurs agendas)', sc_url_bad:'Ce lien ne ressemble pas à un lien d\'agenda. Il doit commencer par https:// ou webcal://.',
   sc_add:'Ajouter un cours', sc_name:'Nom du cours', sc_name_ph:'ex. Statistiques', sc_start:'Début', sc_end:'Fin', sc_days:'Jours', sc_add_btn:'Ajouter le cours',
   sc_added:'Cours ajouté.', sc_list:'Tes cours', sc_none:'Aucun cours pour le moment.', sc_remove:'Retirer', sc_clear:'Retirer tous les cours', sc_default:'Cours',
   sc_bad_time:"L'heure de fin doit être après l'heure de début.", sc_need_day:'Choisis au moins un jour.',
-  travel_to:'Trajet vers l\'école', travel_home:'Trajet retour', trv_label:'Temps de trajet vers l\'école (aller)', trv_hint:'De porte à porte. Il est ajouté à ton calendrier avant ton premier cours et après le dernier.',
+  travel_to:'Trajet vers l\'école', travel_home:'Trajet retour', trv_label:'Temps de trajet vers l\'école (aller)', trv_hint:'De porte à porte. Ajouté avant ton premier cours et après le dernier.',
   wake_calm:'Premier cours à {c}. Ta matinée est libre : pas besoin de te presser.',
-  mo_gentle:'Démarrage en douceur (15 min)', mo_gentle_why:"Hier a été une grosse journée. Étirements tranquilles ou petite marche à la lumière du jour, pas de séance intense.",
-  mo_calm:'Moment calme (20 min)', mo_calm_why:"Lis, écoute de la musique ou prends un thé au lieu de scroller. Ton corps récupère encore.",
+  mo_gentle:'Démarrage en douceur (15 min)', mo_gentle_why:"Hier a été une grosse journée. Étirements tranquilles ou petite marche à la lumière du jour.",
+  mo_calm:'Moment calme (20 min)', mo_calm_why:"Lis, écoute de la musique ou prends un thé au lieu de scroller.",
   mo_focus:'Bloc de concentration (45 min)', mo_focus_why:"Ta tête est la plus fraîche le matin. Commence par la révision ou la tâche de projet la plus dure.",
-  mo_move:'Un peu de mouvement (15 min)', mo_move_why:"Réveille le corps : petite course, corde à sauter ou une série au poids du corps.",
+  mo_move:'Un peu de mouvement (15 min)', mo_move_why:"Réveille le corps : petite marche, corde à sauter ou quelques étirements.",
   mo_prep:'Prépare ton sac', mo_prep_why:"Sac, chargeur, gourde, repas : dix minutes maintenant évitent du stress plus tard.",
   sug_card:'Suggestions du matin (retire celles dont tu ne veux pas) :', sug_restore:'Remettre les suggestions retirées',
-  tk_card:'Tâches flexibles', tk_empty:'Aucune tâche flexible ce jour-là.', tk_open:'+ Ajouter une tâche',
+  tk_card:'Tâches flexibles', tk_empty:'Pas de tâche. C\'est très bien comme ça.', tk_open:'+ Ajouter une tâche',
   tk_add:'Ajouter une tâche flexible', tk_hint:"Quelque chose sans heure fixe (révisions, projet, courses). Rythmo trouve un créneau libre les jours choisis.", tk_name:'Nom de la tâche', tk_name_ph:'ex. Projet de groupe', tk_dur:'Durée', tk_btn:'Ajouter la tâche', tk_added:'Tâche ajoutée.', tk_list:'Tes tâches flexibles', tk_why:'Placée dans un créneau libre ({m} min).', tk_none:"Pas de place aujourd'hui pour : {n}. Essaie un autre jour ou une tâche plus courte.", tk_default:'Tâche',
-  sc_rhythm:'Ton rythme', set_sleep:'Sommeil nécessaire', set_commute:'Temps de trajet vers l\'école (aller)', set_sport:'Durée du sport', set_free:'Réveil les jours libres',
+  set_title:'Réglages', set_planning:'Planning', set_sleep:'Sommeil dont tu as besoin', set_commute:'Temps de trajet vers l\'école (aller)', set_sport:'Durée du sport', set_free:'Réveil les jours sans cours',
+  set_theme:'Thème', set_theme_hint:'Choisis l\'apparence la plus facile à lire pour toi.', set_auto:'Automatique : Nuit le soir', set_auto_hint:'Passe en Nuit entre 21 h et 6 h, sans changer ton choix.',
+  th_horizon:'Horizon', th_nuit:'Nuit', th_doux:'Doux', th_clair:'Clair',
+  set_lang:'Langue', set_data:'Tes données', set_reset:'Effacer toutes mes données', set_reset_confirm:'Touche encore pour tout effacer', set_reset_done:'Tout a été effacé.',
+  set_export:'Télécharger mes données (.json)', on:'Activé', off:'Désactivé',
   min:'{n} min', hrs:'{n} h',
   footer:"Tes données restent sur cet appareil. Les visites sont comptées de façon anonyme (GoatCounter, sans cookies). Rythmo donne des conseils de bien-être généraux, pas des conseils médicaux. Projet étudiant à Aivancity.",
-  v_fb:'Avis ↗',
-  v_form:'Test fini ? Donne ton avis sur la version {v} (3 min)',
-  v_label:'Version {v}', v_pick:'Version à tester', v_reset:'Nouveau testeur', v_confirm:'Touche encore pour effacer', v_in_form:'Dans le formulaire, choisis : Version {v} ({n}).',
-  vn_A:'Horizon', vn_B:'Ticket', vn_C:'Doux', vn_D:'Agenda', vn_E:'Batterie',
-  vd_A:'La journée comme un ciel. Serif, calme, premium.', vd_B:'Tickets de transport néo-brutalistes. Ça claque.', vd_C:'3 petites choses, dessinées à la main, sans culpabilité.', vd_D:'La forme de ton agenda. Grille suisse.', vd_E:'Batterie de sommeil, tableau de bord sportif sombre.',
-  why_da:'Pourquoi ce design ?', da_concept:'Idée', da_insight:'Tiré de nos interviews', da_refs:'Références', da_type:'Typo',
-  stamp:'Fait', three_t:'3 petites choses aujourd\'hui', three_note:'Tu en rates une ? Pas grave. Demain, on recalcule.', rest_day:'Le reste de ta journée', tonight_bed:'Ce soir, au lit vers', leg_cls:'Cours', leg_sug:'Suggestion Rythmo', sleep_win:'sommeil', ticket_left:'restants',
-  nextup:'À suivre', markdone:'Fait', sleep_h:'Sommeil (h)',
-  list_done:'{a} sur {b} faits',
   nostore:"L'enregistrement n'est pas disponible dans cette vue. Tes données sont gardées jusqu'à la fermeture de la page."
 }};
 
-/* ---------- State ---------- */
+/* ===================== STORE (localStorage 'rythmo.v1', schema v) ===================== */
 const KEY = 'rythmo.v1';
 let storageOk = true;
 function load() { try { const s = localStorage.getItem(KEY); return s ? JSON.parse(s) : null; } catch (e) { storageOk = false; return null; } }
 function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { storageOk = false; } }
-const base = { lang: (navigator.language || 'en').toLowerCase().startsWith('fr') ? 'fr' : 'en', sample: false,
-  settings: { sleep: 8, commute: 30, sport: 30, freeWake: '08:00' }, classes: [], tasks: [], checkins: {}, challenges: {}, water: {}, done: {}, variant: 'A' };
-let state = Object.assign({}, base, load() || {});
-state.settings = Object.assign({}, base.settings, state.settings || {});
-const TABS = ['plan', 'checkin', 'schedule'];
-const VARS = {
-  A: { nav: 'bottom', plan: 'sky' },
-  B: { nav: 'top', plan: 'ticket' },
-  C: { nav: 'bottom', plan: 'soft' },
-  D: { nav: 'top', plan: 'cal' },
-  E: { nav: 'bottom', plan: 'ring' }
-};
-const DA = {
-  A: { sw: ['#0e1530', '#3b3fc4', '#f2a88a', '#9ec9f0', '#f3f4fa'], type: 'Instrument Serif · Geist', refs: 'Rise Science, Oura, Apple Météo',
-       q: '« J\u2019arrive en cours et je dors. » (Nari)',
-       en: 'Your day is drawn as a sky: night, dawn, daylight, dusk. Bedtime is computed from tomorrow\u2019s first class, like Nari already does in her head. Calm, editorial, premium.',
-       fr: 'La journée est dessinée comme un ciel : nuit, aube, jour, crépuscule. L\u2019heure de coucher est calculée sur le premier cours du lendemain, comme Nari le fait déjà de tête. Calme, éditorial, premium.' },
-  B: { sw: ['#111111', '#ffd400', '#3049ff', '#ff5c2b', '#efece3'], type: 'Archivo Black · JetBrains Mono', refs: 'Gumroad (néo-brutalisme), tickets de transport',
-       q: '3 à 4 h de transport par jour (Camille), réveil très tôt pour l\u2019école loin (Nari)',
-       en: 'Transport came up in 3 of 6 interviews. Each part of the day is a ticket you punch. Thick outlines, hard shadows, flat colours: loud, fast to read, nothing like a template.',
-       fr: 'Les transports reviennent dans 3 interviews sur 6. Chaque moment de la journée est un ticket qu\u2019on composte. Contours épais, ombres dures, aplats : ça claque, ça se lit vite, rien d\u2019un template.' },
-  C: { sw: ['#2e2a3d', '#6f55c2', '#ece5fa', '#d27a4b', '#3f8f67'], type: 'Caveat (manuscrit) · Nunito', refs: 'Finch, Gentler Streak, tendance « human scribble »',
-       q: '« Des choses simples, j\u2019en faisais une montagne impossible à gravir. » (Camille)',
-       en: 'Rigid plans made Camille feel guilty and Amélie stressed. So only 3 small things a day, hand-drawn marks, and no red: missing one is fine.',
-       fr: 'Les plannings rigides culpabilisaient Camille et stressaient Amélie. Donc seulement 3 petites choses par jour, des traits dessinés à la main, et pas de rouge : en rater une, ce n\u2019est pas grave.' },
-  D: { sw: ['#161616', '#d93a24', '#2b2b2b', '#4453d1', '#ffffff'], type: 'IBM Plex Sans · IBM Plex Mono', refs: 'Notion Calendar, Structured, graphisme suisse',
-       q: '4 interviewés sur 6 s\u2019organisent déjà avec Google Agenda, Calendrier Apple ou Notes',
-       en: 'Students already live in their calendar. Rythmo looks like one: classes are solid blocks, its suggestions slot into the gaps as dashed blocks. Swiss grid, one red accent for bedtime.',
-       fr: 'Les étudiants vivent déjà dans leur agenda. Rythmo en a la forme : les cours en blocs pleins, ses suggestions glissées dans les trous en pointillés. Grille suisse, un seul rouge pour le coucher.' },
-  E: { sw: ['#0c0c0e', '#ff5a1f', '#9686ff', '#37d68a', '#16161a'], type: 'Barlow Condensed · Barlow', refs: 'Whoop, Bevel, Nike Run Club',
-       q: 'Ethan et Amélie pilotent déjà leur sport (séances, charges, repas préparés)',
-       en: 'For students who like numbers: sleep as a battery to fill, the day as a numbered sequence. Dark, condensed, sporty, readable at night without blinding you.',
-       fr: 'Pour ceux qui aiment les chiffres : le sommeil comme une batterie à remplir, la journée comme une séquence numérotée. Sombre, condensé, sportif, lisible la nuit sans éblouir.' }
-};
-const VIDS = ['A', 'B', 'C', 'D', 'E'];
-const DA_EN = {
-  A: { q: '"I get to class and I fall asleep." (Nari)', refs: 'Rise Science, Oura, Apple Weather' },
-  B: { q: '3 to 4 hours of commuting a day (Camille), very early wake-up for a distant school (Nari)', refs: 'Gumroad (neo-brutalism), transit tickets' },
-  C: { q: '"I turned simple things into an impossible mountain to climb." (Camille)', refs: 'Finch, Gentler Streak, the "human scribble" trend' },
-  D: { q: '4 of the 6 students we interviewed already plan with Google Calendar, Apple Calendar or Notes', refs: 'Notion Calendar, Structured, Swiss graphic design' },
-  E: { q: 'Ethan and Amélie already manage their sport closely (sessions, weights, meal prep)', refs: 'Whoop, Bevel, Nike Run Club' }
-};
-const langBtns = () => '<span class="lang" role="group" aria-label="Language"><button data-act="lang" data-v="en" aria-pressed="' + (state.lang === 'en') + '">EN</button><button data-act="lang" data-v="fr" aria-pressed="' + (state.lang === 'fr') + '">FR</button></span>';
-function hashVar() { try { const h = (location.hash || '').replace('#', '').toUpperCase(); return VIDS.includes(h) ? h : null; } catch (e) { return null; } }
-if (!VIDS.includes(state.variant)) state.variant = 'A';
-if (hashVar()) state.variant = hashVar();
-const V = () => VARS[state.variant];
-let resetArm = false, busy = false, scrollTask = false;
-state.done = state.done || {};
-const firstClassDay = () => { for (let i = 0; i < 7; i++) if (classesFor(wdOf(addDays(today(), i))).length) return i; return 0; };
-let tab = 'plan', dayOffset = 0, draft = null, msg = '', msgErr = false;
+const isObj = o => !!o && typeof o === 'object' && !Array.isArray(o);
+const HHMM = /^([01]\d|2[0-3]):[0-5]\d$/;
+function freshState() {
+  return { v: SCHEMA, lang: (navigator.language || 'en').toLowerCase().startsWith('fr') ? 'fr' : 'en', sample: false,
+    settings: { sleep: 8, commute: 30, sport: 30, freeWake: '08:00', theme: 'horizon', themePicked: false, autoNight: false },
+    classes: [], tasks: [], checkins: {}, challenges: {}, water: {}, done: {}, hiddenSug: {} };
+}
+/* One-time upgrades. Never delete old keys: an older build reading the same storage keeps working. */
+function migrate(s) {
+  const v = +s.v || 1;
+  s.settings = isObj(s.settings) ? s.settings : {};
+  if (v < 2) {
+    if (!THEMES.includes(s.settings.theme)) s.settings.theme = LEGACY[String(s.variant || 'a').toLowerCase()] || 'horizon';
+  }
+  s.v = SCHEMA;
+  return s;
+}
+/* Defensive shape check, so a corrupt or hand-edited storage can never break rendering. */
+function sanitize(s) {
+  const b = freshState();
+  const out = Object.assign({}, b, s);
+  out.settings = Object.assign({}, b.settings, isObj(s.settings) ? s.settings : {});
+  ['checkins', 'challenges', 'water', 'done', 'hiddenSug'].forEach(k => { if (!isObj(out[k])) out[k] = {}; });
+  const okDays = d => Array.isArray(d) ? d.map(Number).filter(n => n >= 0 && n <= 6) : [];
+  out.classes = (Array.isArray(out.classes) ? out.classes : []).filter(c => isObj(c) && HHMM.test(c.start) && HHMM.test(c.end))
+    .map(c => ({ id: String(c.id || uid()), title: String(c.title || '').slice(0, 40), start: c.start, end: c.end, days: okDays(c.days) }));
+  out.tasks = (Array.isArray(out.tasks) ? out.tasks : []).filter(k => isObj(k) && +k.dur > 0)
+    .map(k => ({ id: String(k.id || uid()), title: String(k.title || '').slice(0, 40), dur: Math.min(600, +k.dur), days: okDays(k.days) }));
+  if (!THEMES.includes(out.settings.theme)) out.settings.theme = 'horizon';
+  if (!HHMM.test(out.settings.freeWake)) out.settings.freeWake = '08:00';
+  ['sleep', 'commute', 'sport'].forEach(k => { out.settings[k] = +out.settings[k]; if (!isFinite(out.settings[k])) out.settings[k] = b.settings[k]; });
+  if (out.lang !== 'fr' && out.lang !== 'en') out.lang = b.lang;
+  return out;
+}
+const uid = () => Math.random().toString(36).slice(2, 9);
+const stored = load();
+let state = sanitize(stored ? migrate(stored) : freshState());
 
-/* ---------- Helpers ---------- */
+/* ===================== UTIL ===================== */
 const $app = document.getElementById('app');
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const t = (k, v) => { let s = (T[state.lang] || T.en)[k] || T.en[k] || k; if (v) Object.keys(v).forEach(n => { s = s.split('{' + n + '}').join(v[n]); }); return s; };
@@ -471,7 +421,6 @@ const pad = n => String(n).padStart(2, '0');
 const toMin = s => { const p = String(s).split(':'); return (+p[0]) * 60 + (+p[1] || 0); };
 const fmt = m => { m = ((Math.round(m) % 1440) + 1440) % 1440; return pad(Math.floor(m / 60)) + ':' + pad(m % 60); };
 const fmtH = n => String(Math.round(n * 10) / 10);
-const uid = () => Math.random().toString(36).slice(2, 9);
 const key = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
 const today = () => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), d.getDate()); };
 const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
@@ -479,8 +428,18 @@ const wdOf = d => (d.getDay() + 6) % 7; // Monday = 0
 const dayName = (d, style) => new Intl.DateTimeFormat(state.lang, { weekday: style || 'short' }).format(d);
 const longDate = d => new Intl.DateTimeFormat(state.lang, { weekday: 'long', day: 'numeric', month: 'long' }).format(d);
 const WEEK = [0, 1, 2, 3, 4, 5, 6].map(i => new Date(2024, 0, 1 + i)); // a real Monday-to-Sunday week, for day labels
+function effTheme() {
+  const S = state.settings, h = new Date().getHours();
+  if (S.autoNight && (h >= 21 || h < 6)) return 'nuit';
+  return THEMES.includes(S.theme) ? S.theme : 'horizon';
+}
+function download(name, text, type) {
+  const blob = new Blob([text], { type: type || 'text/plain;charset=utf-8' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+}
 
-/* ---------- Plan engine (simple rules, no AI) ---------- */
+/* ===================== ENGINE (simple rules, no AI) ===================== */
 function classesFor(wd) {
   return state.classes.filter(c => c.days.includes(wd)).map(c => ({ title: c.title, s: toMin(c.start), e: toMin(c.end) })).sort((a, b) => a.s - b.s);
 }
@@ -489,17 +448,15 @@ function dayHard(wd) {
   if (!cl.length) return false;
   return cl.reduce((n, c) => n + c.e - c.s, 0) >= 360 || cl[cl.length - 1].e >= 1080 || cl.length >= 4;
 }
+const BED_CAP = 1410; // 23:30, latest recommended lights-out
 function wakeInfo(wd, prevHard) {
   const cl = classesFor(wd), S = state.settings;
   if (!cl.length) return { wake: toMin(S.freeWake), first: null };
   const byClass = Math.max(300, cl[0].s - S.commute - 60);
-  // regular rhythm: a late first class is not a reason to wake up late (a little extra rest after a heavy day)
   const cap = BED_CAP + S.sleep * 60 + 15 - 1440 + (prevHard ? 60 : 0);
   return { wake: Math.min(byClass, cap), first: cl[0], calm: cap < byClass };
 }
 const overlaps = (a1, a2, b1, b2) => a1 < b2 && b1 < a2;
-
-const BED_CAP = 1410; // 23:30, latest recommended lights-out
 function computeDay(date) {
   const S = state.settings, wd = wdOf(date), cl = classesFor(wd);
   const ph = dayHard((wd + 6) % 7), w = wakeInfo(wd, ph), wn = wakeInfo((wd + 1) % 7, dayHard(wd));
@@ -507,39 +464,34 @@ function computeDay(date) {
   const lastEnd = cl.length ? cl[cl.length - 1].e : 0;
   let bed = 1440 + wn.wake - sleepMin - 15;
   const capped = bed > BED_CAP;
-  if (capped) bed = BED_CAP; // regular bedtime: a late start tomorrow is not a reason to sleep late
+  if (capped) bed = BED_CAP;
   const bedIdeal = bed;
   if (lastEnd) bed = Math.max(bed, lastEnd + S.commute + 90);
   const hours = (1440 + wn.wake - bed - 15) / 60;
   const short = bed > bedIdeal + 1;
   const items = []; const meals = [];
-
-  items.push({ t: w.wake, type: 'wake', c: '--c-sleep', title: t('wake'), why: w.first ? (w.calm ? t('wake_calm', { c: fmt(w.first.s) }) : t('wake_class', { c: fmt(w.first.s), m: S.commute + 60 })) : t('wake_free') });
+  items.push({ t: w.wake, type: 'wake', title: t('wake'), why: w.first ? (w.calm ? t('wake_calm', { c: fmt(w.first.s) }) : t('wake_class', { c: fmt(w.first.s), m: S.commute + 60 })) : t('wake_free') });
   const bf = w.wake + 20; meals.push([bf, bf + 20]);
-  items.push({ t: bf, dur: 20, type: 'meal', c: '--c-meal', title: t('breakfast'), why: t('breakfast_why') });
-  cl.forEach(c => items.push({ t: c.s, end: c.e, type: 'class', c: '--c-class', title: c.title }));
+  items.push({ t: bf, dur: 20, type: 'meal', title: t('breakfast'), why: t('breakfast_why') });
+  cl.forEach(c => items.push({ t: c.s, end: c.e, type: 'class', title: c.title }));
   const trips = [];
   if (cl.length && S.commute > 0) {
     trips.push([cl[0].s - S.commute, cl[0].s], [lastEnd, lastEnd + S.commute]);
-    items.push({ t: trips[0][0], end: trips[0][1], type: 'class', c: '--c-class', title: t('travel_to') },
-               { t: trips[1][0], end: trips[1][1], type: 'class', c: '--c-class', title: t('travel_home') });
+    items.push({ t: trips[0][0], end: trips[0][1], type: 'travel', title: t('travel_to') },
+               { t: trips[1][0], end: trips[1][1], type: 'travel', title: t('travel_home') });
   }
-
-  // Calm morning (late first class): suggestions that depend on how heavy yesterday was
   if (w.calm && cl.length) {
     const ci = state.checkins[key(addDays(date, -1))];
     const tired = ph || !!(ci && (ci.energy <= 2 || ci.sleepH < S.sleep - 1));
     const m0 = bf + 25, mEnd = cl[0].s - S.commute - 30, win = mEnd - m0;
     const hid = state.hiddenSug || {};
-    const add = (at, dur, title, why) => { if (hid[title]) return; items.push({ t: at, dur, type: 'morning', sug: title, c: '--c-move', title: t(title), why: t(why) }); trips.push([at, at + dur]); };
+    const add = (at, dur, title, why) => { if (hid[title]) return; items.push({ t: at, dur, type: 'morning', sug: title, title: t(title), why: t(why) }); trips.push([at, at + dur]); };
     if (win >= (tired ? 30 : 60)) {
       if (tired) { add(m0, 15, 'mo_gentle', 'mo_gentle_why'); if (win >= 75) add(m0 + 30, 20, 'mo_calm', 'mo_calm_why'); }
       else { add(m0, 45, 'mo_focus', 'mo_focus_why'); if (win >= 90) add(m0 + 60, 15, 'mo_move', 'mo_move_why'); }
       add(mEnd - 10, 10, 'mo_prep', 'mo_prep_why');
     }
   }
-
-  // Lunch
   let lt = null, tight = false, tightAfter = null;
   if (!cl.length) lt = 750;
   else {
@@ -553,17 +505,13 @@ function computeDay(date) {
     else { tight = true; const after = cl.find(c => c.e >= 690 && c.e <= 900); tightAfter = after || cl[cl.length - 1]; lt = tightAfter.e + 10; }
   }
   meals.push([lt, lt + (tight ? 20 : 45)]);
-  items.push(tight ? { t: lt, type: 'meal', c: '--c-meal', title: t('lunch_tight'), why: t('lunch_tight_why', { c: tightAfter.title }) }
-                   : { t: lt, type: 'meal', c: '--c-meal', title: t('lunch'), why: t('lunch_why') });
-
-  // Dinner
+  items.push(tight ? { t: lt, dur: 20, type: 'meal', title: t('lunch_tight'), why: t('lunch_tight_why', { c: tightAfter.title }) }
+                   : { t: lt, dur: 45, type: 'meal', title: t('lunch'), why: t('lunch_why') });
   let dinner = Math.max(Math.min(1170, bed - 180), 1080), late = false;
   if (lastEnd && lastEnd + S.commute + 15 > dinner) { dinner = lastEnd + S.commute + 15; late = true; }
   if (dinner > bed - 90) late = true;
   meals.push([dinner, dinner + 45]);
-  items.push({ t: dinner, type: 'meal', c: '--c-meal', title: late ? t('dinner_late') : t('dinner'), why: late ? t('dinner_late_why') : t('dinner_why') });
-
-  // Workout
+  items.push({ t: dinner, dur: 45, type: 'meal', title: late ? t('dinner_late') : t('dinner'), why: late ? t('dinner_late_why') : t('dinner_why') });
   let sportT = null;
   const from = Math.max(w.wake + 45, 420), to = Math.min(1260, bed - 120);
   for (let x = from; x + S.sport <= to; x += 15) {
@@ -572,182 +520,143 @@ function computeDay(date) {
     if (meals.some(m => overlaps(x, x + S.sport, m[0] - 30, m[1] + 30))) continue;
     if (sportT === null || Math.abs(x - 1050) < Math.abs(sportT - 1050)) sportT = x;
   }
-  if (sportT !== null) items.push({ t: sportT, type: 'sport', c: '--c-move', title: t('sport', { m: S.sport }), why: t('sport_why') });
-
-  // Flexible tasks (no fixed hour): drop each one into a free slot on its days
+  if (sportT !== null) items.push({ t: sportT, dur: S.sport, type: 'sport', title: t('sport', { m: S.sport }), why: t('sport_why') });
   const unplaced = [];
   const tasks = (state.tasks || []).filter(k => k.days.includes(wd)).sort((a, b) => b.dur - a.dur);
   if (tasks.length) {
-    const busy = items.map(it => [it.t, it.end || it.t + (it.dur || (it.type === 'sport' ? S.sport : it.type === 'meal' ? 40 : it.type === 'wake' ? 15 : 0))]);
+    const busyR = items.map(it => [it.t, it.end || it.t + (it.dur || (it.type === 'wake' ? 15 : 0))]);
     tasks.forEach(k => {
       let best = null;
       for (let x = Math.max(w.wake + 60, 480); x + k.dur <= bed - 90; x += 15) {
-        if (busy.some(b => overlaps(x, x + k.dur, b[0] - 10, b[1] + 10))) continue;
+        if (busyR.some(b => overlaps(x, x + k.dur, b[0] - 10, b[1] + 10))) continue;
         if (best === null || Math.abs(x - 900) < Math.abs(best - 900)) best = x;
       }
       if (best === null) { unplaced.push(k.title); return; }
-      busy.push([best, best + k.dur]);
-      items.push({ t: best, dur: k.dur, type: 'task', c: '--c-water', title: k.title, why: t('tk_why', { m: k.dur }) });
+      busyR.push([best, best + k.dur]);
+      items.push({ t: best, dur: k.dur, type: 'task', title: k.title, why: t('tk_why', { m: k.dur }) });
     });
   }
-  items.push({ t: bed - 45, type: 'wind', c: '--c-sleep', title: t('winddown'), why: t('winddown_why') });
-  items.push({ t: bed, type: 'bed', c: '--c-sleep', title: t('lightsout'), why: capped && bed === BED_CAP ? t('lightsout_reg') : t('lightsout_why') });
+  items.push({ t: bed - 45, dur: 45, type: 'wind', title: t('winddown'), why: t('winddown_why') });
+  items.push({ t: bed, type: 'bed', title: t('lightsout'), why: capped && bed === BED_CAP ? t('lightsout_reg') : t('lightsout_why') });
   items.sort((a, b) => a.t - b.t);
-  return { items, bed, wakeNext: wn.wake, hours, short, noSport: sportT === null, unplaced };
+  return { items, bed, wake: w.wake, wakeNext: wn.wake, hours, short, noSport: sportT === null, unplaced };
 }
-
 function challengeFor(date, P) {
   const y = addDays(date, -1), ci = state.checkins[key(y)];
   let id;
   if (ci && ci.sleepH < state.settings.sleep - 1) id = 'ch_bed';
   else if (ci && ci.energy <= 2) id = 'ch_walk';
   else { const L = ['ch_bed', 'ch_water', 'ch_walk', 'ch_breakfast', 'ch_screens', 'ch_stretch']; id = L[Math.floor(date.getTime() / 86400000) % L.length]; }
-  return { id, text: t(id, { t: fmt(P.bed), n: WATER_GOAL }) };
+  return { id, text: t(id, { t: fmt(P.bed), n: 6 }) };
 }
 function weekDone() { let n = 0; for (let i = 0; i < 7; i++) if (state.challenges[key(addDays(today(), -i))]) n++; return n; }
 
-/* ---------- Screens ---------- */
+/* ===================== VIEWS ===================== */
+const SVG = p => '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + '</svg>';
 const ICON = {
-  plan: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></svg>',
-  checkin: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>',
-  schedule: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>'
+  plan: SVG('<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/>'),
+  checkin: SVG('<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>'),
+  schedule: SVG('<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>'),
+  settings: SVG('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>')
 };
+const BI = { // block icons
+  sleep: '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
+  wake: '<circle cx="12" cy="13" r="4"/><path d="M12 3v3M4.9 6.9l2 2M19.1 6.9l-2 2M3 19h18"/>',
+  meal: '<path d="M4 11h16a8 8 0 0 1-16 0zM9 4c0 1.5 1 1.5 1 3M13 4c0 1.5 1 1.5 1 3"/>',
+  class: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5zM4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>',
+  travel: '<path d="M5 12h14M13 6l6 6-6 6"/>',
+  sport: '<path d="M3 15c3 0 3-6 6-6s3 6 6 6 3-6 6-6"/>',
+  task: '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12l3 3 5-6"/>',
+  free: '<path d="M5 8h11v5a5 5 0 0 1-10 0zM16 9h2a2 2 0 0 1 0 4h-2"/>',
+  wind: '<rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/>'
+};
+const KIND = { wake: 'sleep', bed: 'sleep', wind: 'sleep', meal: 'meal', class: 'class', travel: 'travel', sport: 'sport', task: 'task', morning: 'free' };
+const ICK = { wake: 'wake', bed: 'sleep', wind: 'wind', meal: 'meal', class: 'class', travel: 'travel', sport: 'sport', task: 'task', morning: 'free' };
+const SUGGEST = { meal: 1, sport: 1, morning: 1, task: 1 };
+
+let tab = 'plan', curDate = today(), draft = null, msg = '', msgErr = false, resetArm = false, busy = false, scrollTask = false;
+const TABS = ['plan', 'checkin', 'schedule', 'settings'];
+
 function header() {
-  return '<div class="top"><div class="brand"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" fill="var(--accent)"/></svg>Rythmo</div>' +
-    '<div class="lang" role="group" aria-label="Language"><button data-act="lang" data-v="en" aria-pressed="' + (state.lang === 'en') + '">EN</button><button data-act="lang" data-v="fr" aria-pressed="' + (state.lang === 'fr') + '">FR</button></div></div>';
+  return '<div class="top"><div class="brand"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" fill="var(--accent)"/></svg>Rythmo</div>' + langToggle() + '</div>';
+}
+function langToggle() {
+  return '<div class="lang" role="group" aria-label="' + esc(t('lang_label')) + '"><button data-act="lang" data-v="en" aria-pressed="' + (state.lang === 'en') + '" lang="en">EN</button><button data-act="lang" data-v="fr" aria-pressed="' + (state.lang === 'fr') + '" lang="fr">FR</button></div>';
 }
 function nav() {
-  const b = (id, label) => '<button data-act="tab" data-v="' + id + '"' + (tab === id ? ' aria-current="page"' : '') + '>' + ICON[id] + '<span>' + label + '</span></button>';
-  const lab = { plan: t('nav_plan'), checkin: t('nav_checkin'), schedule: t('nav_schedule') };
-  return '<nav class="tabs' + (V().nav === 'top' ? ' top' : '') + '" aria-label="Main"><div style="--n:' + TABS.length + '">' + TABS.map(id => b(id, lab[id])).join('') + '</div></nav>';
-}
-function vbar() {
-  const v = state.variant;
-  return '<div class="vbar"><div><div class="vtabs" role="group" aria-label="' + esc(t('v_pick')) + '">' + VIDS.map(i => '<button data-act="var" data-v="' + i + '" aria-pressed="' + (i === v) + '" aria-label="' + esc(t('v_label', { v: i }) + ': ' + t('vn_' + i)) + '">' + i + '</button>').join('') + '</div>' +
-    '<div class="vinfo"><b>' + esc(t('v_label', { v: v }) + ' · ' + t('vn_' + v)) + '</b>' + langBtns() + '<a class="vform" href="' + FORM_URL + '" target="_blank" rel="noopener">' + esc(t('v_fb')) + '</a></div>' + daHtml(v) + '</div></div>';
-}
-function daHtml(v) {
-  const d = DA[v];
-  return '<details class="da"><summary>' + esc(t('why_da')) + '</summary><div class="dab"><div>' + esc(t('vd_' + v)) + '</div><div><b>' + esc(t('da_concept')) + '.</b> ' + esc(d[state.lang] || d.en) + '</div><div><b>' + esc(t('da_insight')) + '.</b><span class="qq">' + esc(state.lang === 'en' ? DA_EN[v].q : d.q) + '</span></div><div><b>' + esc(t('da_refs')) + '.</b> ' + esc(state.lang === 'en' ? DA_EN[v].refs : d.refs) + '</div><div><b>' + esc(t('da_type')) + '.</b> ' + esc(d.type) + '</div><div class="sw">' + d.sw.map(c => '<i style="background:' + c + '"></i>').join('') + '</div><button class="x' + (resetArm ? ' arm' : '') + '" data-act="reset" style="justify-self:start;border:1px solid var(--line);border-radius:8px;padding:6px 10px">' + esc(resetArm ? t('v_confirm') : t('v_reset')) + '</button></div></details>';
+  const lab = { plan: t('nav_plan'), checkin: t('nav_checkin'), schedule: t('nav_schedule'), settings: t('nav_settings') };
+  return '<nav class="tabs" aria-label="' + esc(t('nav_main')) + '"><div style="--n:' + TABS.length + '">' + TABS.map(id => '<button data-act="tab" data-v="' + esc(id) + '"' + (tab === id ? ' aria-current="page"' : '') + '>' + ICON[id] + '<span>' + esc(lab[id]) + '</span></button>').join('') + '</div></nav>';
 }
 function fbCard() {
-  return '<section class="card" style="margin-top:18px"><h2>' + esc(t('fb_title')) + '</h2><p class="sub" style="margin-bottom:12px">' + esc(t('fb_text')) + '</p><div class="fbv">' + esc(t('v_in_form', { v: state.variant, n: t('vn_' + state.variant) })) + '</div><a class="btn pri" href="' + FORM_URL + '" target="_blank" rel="noopener">' + esc(t('fb_cta')) + '</a></section>';
+  return '<section class="card"><h2>' + esc(t('fb_title')) + '</h2><p class="sub">' + esc(t('fb_text')) + '</p><a class="btn pri full" href="' + esc(FORM_URL) + '" target="_blank" rel="noopener">' + esc(t('fb_cta')) + '</a></section>';
 }
 function footer() { return '<p class="note">' + esc(t('footer')) + (storageOk ? '' : '<br>' + esc(t('nostore'))) + '</p>'; }
+function opts(arr, cur, label) { return arr.map(v => '<option value="' + esc(v) + '"' + (String(v) === String(cur) ? ' selected' : '') + '>' + esc(label(v)) + '</option>').join(''); }
+function msgP() { return '<p class="msg' + (msgErr ? ' err' : '') + '" role="status">' + esc(msg) + '</p>'; }
 
-function linkForm(withMsg, plain) {
+function linkForm() {
   if (!RELAY) return '';
-  return '<form id="urlf" class="' + (plain ? '' : 'card ') + 'stack" style="text-align:left;margin:0">' + (plain ? '' : '<h2 style="margin:0">' + esc(t('lk_title')) + '</h2>') + '<label class="f" for="icsurl"><span class="why">' + esc(t('lk_note')) + '</span><textarea id="icsurl" rows="2" autocomplete="off" spellcheck="false" placeholder="' + esc(t('sc_url_ph')) + '"></textarea></label>' + travelSel('lk-com') + '<button class="btn pri full" type="submit"' + (busy ? ' disabled' : '') + '>' + esc(busy ? t('lk_busy') : t('lk_btn')) + '</button>' + (withMsg ? '<p class="msg' + (msgErr ? ' err' : '') + '" role="status" style="margin:0">' + esc(msg) + '</p>' : '') + '</form>';
+  return '<form id="urlf" class="stack" style="margin:0"><label class="f" for="icsurl">' + esc(t('lk_title')) + '<span class="hint">' + esc(t('lk_note')) + '</span><textarea id="icsurl" rows="2" autocomplete="off" spellcheck="false" placeholder="' + esc(t('sc_url_ph')) + '"></textarea></label>' +
+    '<button class="btn pri full" type="submit"' + (busy ? ' disabled' : '') + '>' + esc(busy ? t('lk_busy') : t('lk_btn')) + '</button></form>';
+}
+function fileImport() {
+  return '<div><label class="btn full" for="ics">' + esc(t('sc_import')) + '</label><input id="ics" class="sr" type="file" accept=".ics,text/calendar"><p class="hint" style="margin-top:6px">' + esc(t('sc_import_hint')) + '</p></div>';
 }
 function travelSel(id) {
-  return '<label class="f" for="' + id + '">' + esc(t('trv_label')) + '<select id="' + id + '">' + opts([0, 10, 15, 20, 30, 45, 60, 75, 90, 120], state.settings.commute, v => t('min', { n: v })) + '</select><span class="why">' + esc(t('trv_hint')) + '</span></label>';
+  return '<label class="f" for="' + esc(id) + '">' + esc(t('trv_label')) + '<select id="' + esc(id) + '">' + opts([0, 10, 15, 20, 30, 45, 60, 75, 90, 120], state.settings.commute, v => t('min', { n: v })) + '</select><span class="hint">' + esc(t('trv_hint')) + '</span></label>';
+}
+function dayChips(nm, checked) {
+  return '<fieldset style="border:0;padding:0;margin:0"><legend class="hint" style="margin-bottom:6px">' + esc(t('sc_days')) + '</legend><div class="chips cb">' + WEEK.map((d, i) => '<label><input type="checkbox" name="' + esc(nm) + '" value="' + i + '"' + (checked && checked(i) ? ' checked' : '') + '><span>' + esc(dayName(d, 'short')) + '</span></label>').join('') + '</div></fieldset>';
+}
+function quickForm() {
+  return '<form id="quickf" class="card stack" style="text-align:left"><h2>' + esc(t('qs_title')) + '</h2>' +
+    '<div class="grid2"><label class="f" for="qs-s">' + esc(t('qs_start')) + '<input id="qs-s" type="time" value="09:00" required></label><label class="f" for="qs-e">' + esc(t('qs_end')) + '<input id="qs-e" type="time" value="17:00" required></label></div>' +
+    dayChips('qd', i => i < 5) + travelSel('qs-com') + '<button class="btn pri full" type="submit">' + esc(t('qs_btn')) + '</button></form>';
 }
 function emptyPlan() {
-  return '<div class="empty"><h1>' + esc(t('empty_title')) + '</h1><p>' + esc(t('empty_text')) + '</p>' + linkForm(true) + '<p style="display:' + (RELAY ? 'block' : 'none') + '">' + esc(t('qs_or')) + '</p>' +
-    '<form id="quickf" class="card stack" style="text-align:left;margin:0"><h2 style="margin:0">' + esc(t('qs_title')) + '</h2>' +
-    '<div class="grid2"><label class="f" for="qs-s">' + esc(t('qs_start')) + '<input id="qs-s" type="time" value="09:00" required></label><label class="f" for="qs-e">' + esc(t('qs_end')) + '<input id="qs-e" type="time" value="17:00" required></label></div>' +
-    '<div><div class="why" style="margin-bottom:6px">' + esc(t('sc_days')) + '</div><div class="chips">' + WEEK.map((d, i) => '<label><input type="checkbox" name="qd" value="' + i + '"' + (i < 5 ? ' checked' : '') + '><span>' + esc(dayName(d, 'short')) + '</span></label>').join('') + '</div></div>' +
-    travelSel('qs-com') + '<button class="btn pri full" type="submit">' + esc(t('qs_btn')) + '</button></form>' +
-    '<p>' + esc(t('qs_or')) + '</p><button class="btn full" data-act="example">' + esc(t('example_cta')) + '</button>' +
-    '<button class="x" data-act="tab" data-v="schedule" style="text-decoration:underline">' + esc(t('qs_detail')) + '</button></div>';
+  return '<div class="empty"><h1>' + esc(t('empty_title')) + '</h1><p>' + esc(t('empty_text')) + '</p></div>' + msgP() +
+    '<section class="card stack">' + linkForm() + fileImport() + '</section>' + quickForm() +
+    '<div class="stack"><button class="btn full" data-act="example">' + esc(t('example_cta')) + '</button>' +
+    '<button class="tbtn" data-act="tab" data-v="schedule">' + esc(t('qs_detail')) + '</button></div>' + footer();
 }
 
-function rough(seed) {
-  let x = 0; for (const ch of String(seed)) x = (x * 31 + ch.charCodeAt(0)) >>> 0;
-  const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
-  let d = '', a0 = rnd() * 6.28;
-  for (let i = 0; i <= 26; i++) {
-    const a = a0 + i / 26 * (6.28 + 0.5), r = 1 + (rnd() - .5) * .08 + i * .002;
-    const px = 50 + Math.cos(a) * 48 * r, py = 25 + Math.sin(a) * 23 * r;
-    d += (i ? ' L' : 'M') + px.toFixed(1) + ' ' + py.toFixed(1);
-  }
-  return '<svg class="rc" viewBox="0 0 100 50" preserveAspectRatio="none" aria-hidden="true"><path d="' + d + '"/></svg>';
+function blockHtml(it) {
+  const kind = KIND[it.type] || 'free', sug = SUGGEST[it.type];
+  const end = it.end || (it.dur ? it.t + it.dur : 0);
+  const hint = it.why ? '<span class="hint">' + esc(it.why) + '</span>' : '';
+  return '<div class="block ' + kind + (sug ? ' suggestion' : '') + '"><span class="ic">' + SVG(BI[ICK[it.type]] || BI.free) + '</span><span class="bd"><span class="ttl">' + esc(it.title) + (it.end ? ' <span class="time muted">· ' + fmt(it.t) + '–' + fmt(it.end) + '</span>' : '') + '</span>' + hint + '</span></div>';
 }
-function skySvg(P) {
-  const wake = P.items[0].t, bed = Math.min(P.bed, 1440), clamp = v => Math.max(0, Math.min(1, v / 1440));
-  const st = [[0, '#141b45'], [clamp(wake - 60), '#141b45'], [clamp(wake), '#f2a88a'], [clamp(wake + 150), '#9ec9f0'], [clamp(1080), '#bcd8f2'], [clamp(Math.max(1140, bed - 150)), '#e9887a'], [clamp(bed - 30), '#3a3f8f'], [clamp(bed), '#141b45'], [1, '#141b45']];
-  for (let i = 1; i < st.length; i++) if (st[i][0] < st[i - 1][0]) st[i][0] = st[i - 1][0];
-  let g = '<defs><linearGradient id="skyg" x1="0" x2="1">' + st.map(p => '<stop offset="' + p[0].toFixed(3) + '" stop-color="' + p[1] + '"/>').join('') + '</linearGradient></defs>';
-  g += '<rect x="0" y="4" width="240" height="22" rx="11" fill="url(#skyg)"/>';
-  P.items.forEach(it => { if (it.type !== 'class') g += '<circle cx="' + (Math.min(it.t, 1439) / 6).toFixed(1) + '" cy="15" r="3.2" fill="#fff" stroke="#0e1530" stroke-width="1.2"/>'; else g += '<rect x="' + (it.t / 6).toFixed(1) + '" y="24" width="' + ((it.end - it.t) / 6).toFixed(1) + '" height="3" fill="#a9b0d6"/>'; });
-  if (dayOffset === 0) { const n = new Date(), m = n.getHours() * 60 + n.getMinutes(); g += '<line x1="' + (m / 6).toFixed(1) + '" x2="' + (m / 6).toFixed(1) + '" y1="1" y2="29" stroke="#fff" stroke-width="1.2"/>'; }
-  [0, 6, 12, 18, 24].forEach(h => { g += '<text x="' + (h * 10) + '" y="38" text-anchor="' + (h === 0 ? 'start' : h === 24 ? 'end' : 'middle') + '">' + pad(h % 24) + 'h</text>'; });
-  return '<svg viewBox="0 0 240 40" role="img" aria-label="24 h">' + g + '</svg>';
-}
-function heroHtml(P) {
-  const m = V().plan, d0 = dayOffset === 0;
-  const lab = esc(d0 ? t('lights_today') : t('lights_other')), txt = esc(t('hero_txt', { w: fmt(P.wakeNext), h: fmtH(P.hours) }));
-  if (m === 'sky') return '<section class="skyh"><div class="lab">' + lab + '</div><div class="big">' + fmt(P.bed) + '</div><div class="txt">' + txt + '</div>' + skySvg(P) + '</section>';
-  if (m === 'ticket') return '<section class="bh"><div><div class="lab">' + lab + '</div><div class="big">' + fmt(P.bed) + '</div></div><div class="side"><span>' + esc(t('wake')) + '<b>' + fmt(P.wakeNext) + '</b></span></div></section>';
-  if (m === 'soft') return '<section class="ch"><div class="hand">' + esc(t('tonight_bed')) + ' <span class="circ" style="--c:var(--accent)">' + fmt(P.bed) + rough('bed' + P.bed) + '</span></div><p class="sub" style="margin:10px 0 0">' + txt + '</p></section>';
-  if (m === 'cal') return '<div class="dsum"><div><span>' + esc(t('lightsout')) + '</span><b>' + fmt(P.bed) + '</b></div><div><span>' + esc(t('wake')) + '</span><b>' + fmt(P.wakeNext) + '</b></div><div><span>' + esc(t('sleep_h')) + '</span><b>' + fmtH(P.hours) + '</b></div></div>';
-  const R = 62, C = 2 * Math.PI * R, f = Math.max(0, Math.min(1, P.hours / state.settings.sleep));
-  return '<section class="ring"><svg viewBox="0 0 150 150" role="img" aria-label="' + fmtH(P.hours) + ' h"><circle cx="75" cy="75" r="' + R + '" fill="none" stroke="var(--line)" stroke-width="12"/><circle cx="75" cy="75" r="' + R + '" fill="none" stroke="var(--accent)" stroke-width="12" stroke-linecap="round" stroke-dasharray="' + (C * f).toFixed(1) + ' ' + C.toFixed(1) + '" transform="rotate(-90 75 75)"/><text x="75" y="80" text-anchor="middle" class="n">' + fmtH(P.hours) + 'h</text><text x="75" y="100" text-anchor="middle" class="u">' + esc(t('sleep_win')) + '</text></svg><div class="rk"><div><span>' + esc(t('lightsout')) + '</span><b>' + fmt(P.bed) + '</b></div><div><span>' + esc(t('wake')) + '</span><b>' + fmt(P.wakeNext) + '</b></div></div></section>';
-}
-const DUR = { wake: 15, meal: 40, sport: 0, wind: 45 };
-function itemsHtml(P, k) {
-  const m = V().plan, tm = it => fmt(it.t) + (it.end ? '–' + fmt(it.end) : ''), idOf = it => k + '|' + it.type + it.t;
-  const why = it => it.why ? '<div class="why">' + esc(it.why) + '</div>' : '';
-  if (m === 'sky') return '<ul class="hz">' + P.items.map(it => '<li class="' + (it.type === 'class' ? 'cls' : '') + '" style="--c:var(' + it.c + ')"><span class="tm">' + fmt(it.t) + '</span><div><div class="ttl">' + esc(it.title) + (it.end ? ' · ' + fmt(it.end) : '') + '</div>' + why(it) + '</div></li>').join('') + '</ul>';
-  if (m === 'ticket') return '<div class="tix">' + P.items.map(it => {
-    if (it.type === 'class') return '<div class="tk cls" style="--c:var(' + it.c + ')"><span class="stub"><b>' + fmt(it.t) + '</b><small>' + fmt(it.end) + '</small></span><span class="bd"><span class="ttl">' + esc(it.title) + '</span></span></div>';
-    const on = !!state.done[idOf(it)];
-    return '<button class="tk' + (on ? ' on' : '') + '" style="--c:var(' + it.c + ')" data-act="tick" data-v="' + idOf(it) + '" aria-pressed="' + on + '"><span class="stub"><b>' + fmt(it.t) + '</b></span><span class="bd"><span class="ttl" style="display:block">' + esc(it.title) + '</span>' + (it.why ? '<span class="why" style="display:block">' + esc(it.why) + '</span>' : '') + '</span>' + (on ? '<span class="stamp">' + esc(t('stamp')) + ' ✓</span>' : '') + '</button>';
-  }).join('') + '</div>';
-  if (m === 'soft') {
-    const acts = P.items.filter(it => it.type !== 'class');
-    const pick = [acts.find(it => it.type === 'task'), acts.find(it => it.type === 'bed'), acts.find(it => it.type === 'sport'), acts.find(it => it.type === 'meal' && it.t >= 660 && it.t <= 900) || acts.find(it => it.type === 'meal')].filter(Boolean);
-    let h = '<h2>' + esc(t('three_t')) + '</h2><ul class="three">' + pick.map(it => { const on = !!state.done[idOf(it)]; return '<li class="' + (on ? 'on' : '') + '"><button data-act="tick" data-v="' + idOf(it) + '" aria-pressed="' + on + '" style="--c:var(' + it.c + ')"><span class="tm">' + fmt(it.t) + rough(idOf(it)) + '</span><span><span class="ttl" style="display:block">' + esc(it.title) + '</span>' + (it.why ? '<span class="why" style="display:block">' + esc(it.why) + '</span>' : '') + '</span><span class="ok">' + (on ? '✓' : '') + '</span></button></li>'; }).join('') + '</ul>';
-    h += '<p class="gentle">' + esc(t('three_note')) + '</p>';
-    h += '<details class="rest"><summary>' + esc(t('rest_day')) + '</summary><ul>' + P.items.map(it => '<li><span>' + fmt(it.t) + '</span>' + esc(it.title) + '</li>').join('') + '</ul></details>';
-    return h;
-  }
-  if (m === 'cal') {
-    const S = state.settings, PPM = 1.15, wake = P.items[0].t;
-    const start = Math.floor((wake - 30) / 60) * 60, end = Math.min(Math.ceil((P.bed + 30) / 60) * 60, 1560);
-    const y = mm => ((mm - start) * PPM).toFixed(1);
-    let h = '<div class="cal" style="height:' + ((end - start) * PPM) + 'px">';
-    for (let hh = start; hh <= end; hh += 60) h += '<div class="hr" style="top:' + y(hh) + 'px"><span>' + fmt(hh) + '</span></div>';
-    P.items.forEach(it => {
-      if (it.type === 'bed') { h += '<div class="bed" style="top:' + y(it.t) + 'px"><span>' + esc(it.title) + ' ' + fmt(it.t) + '</span></div>'; return; }
-      const dur = it.dur ? it.dur : it.type === 'class' ? it.end - it.t : it.type === 'sport' ? S.sport : (/Quick|rapide/.test(it.title) ? 20 : (DUR[it.type] || 30));
-      h += '<div class="blk ' + (it.type === 'class' ? 'cls' : 'sug') + '" style="top:' + y(it.t) + 'px;height:' + Math.max(dur * PPM - 2, 22).toFixed(1) + 'px;--c:var(' + it.c + ')"><b>' + fmt(it.t) + '</b><span>' + esc(it.title) + '</span></div>';
-    });
-    if (dayOffset === 0) { const n = new Date(), mm = n.getHours() * 60 + n.getMinutes(); if (mm > start && mm < end) h += '<div class="now" style="top:' + y(mm) + 'px"></div>'; }
-    return h + '</div><div class="dleg"><span><i style="background:#2b2b2b"></i>' + esc(t('leg_cls')) + '</span><span><i style="border:1.5px dashed var(--c-move)"></i>' + esc(t('leg_sug')) + '</span></div>';
-  }
-  let n = 0;
-  return '<ul class="seq">' + P.items.map(it => { const c = it.type === 'class'; if (!c) n++; return '<li class="' + (c ? 'cls' : '') + '" style="--c:var(' + it.c + ')"><span class="ix">' + (c ? '' : pad(n)) + '</span><span class="tm">' + fmt(it.t) + '</span><div><div class="ttl">' + esc(it.title) + '</div>' + why(it) + '</div></li>'; }).join('') + '</ul>';
-}
-function todoHtml(P, k) {
-  return '<ul class="todo">' + P.items.map(it => {
-    if (it.type === 'class') return '<li class="cls">' + fmt(it.t) + '–' + fmt(it.end) + ' · ' + esc(it.title) + '</li>';
-    const id = k + '|' + it.type + it.t, on = !!state.done[id];
-    return '<li class="' + (on ? 'on' : '') + '"><button class="t" style="--c:var(' + it.c + ')" data-act="tick" data-v="' + id + '" aria-pressed="' + on + '"><span class="box">' + (on ? '✓' : '') + '</span><span class="time">' + fmt(it.t) + '</span><span><span class="ttl">' + esc(it.title) + '</span>' + (it.why ? '<span class="why" style="display:block">' + esc(it.why) + '</span>' : '') + '</span></button></li>';
+function timeline(P, isToday) {
+  const now = new Date(), nm = now.getHours() * 60 + now.getMinutes();
+  return '<ul class="tl">' + P.items.map(it => {
+    const end = it.end || it.t + (it.dur || 0), past = isToday && end < nm;
+    return '<li class="' + (past ? 'past' : '') + '"><span class="g">' + fmt(it.t) + '</span>' + blockHtml(it) + '</li>';
   }).join('') + '</ul>';
 }
 function screenPlan() {
   if (!state.classes.length) return emptyPlan();
-  const base0 = today(), date = addDays(base0, dayOffset), P = computeDay(date), k = key(date);
-  let h = '<h1>' + esc(longDate(date)) + '</h1><p class="sub">' + (state.sample ? esc(t('example_note')) : '') + '</p>';
-  h += '<div class="pills" role="group">' + [0, 1, 2, 3, 4, 5, 6].map(i => '<button class="pill" data-act="day" data-v="' + i + '" aria-pressed="' + (dayOffset === i) + '">' + esc(i === 0 ? t('today') : dayName(addDays(base0, i), 'short')) + '</button>').join('') + '</div>';
-  h += heroHtml(P);
-  if (P.unplaced && P.unplaced.length) h += '<div class="warn">' + esc(t('tk_none', { n: P.unplaced.join(', ') })) + '</div>';
+  const t0 = today(), date = curDate, P = computeDay(date), k = key(date), isToday = k === key(t0);
+  let h = '<header class="day-header"><p class="eyebrow">' + esc(isToday ? t('today') : '') + '</p><h1>' + esc(longDate(date)) + '</h1>';
+  h += '<div class="pills" role="group" aria-label="' + esc(t('today')) + '">' + [0, 1, 2, 3, 4, 5, 6].map(i => { const d = addDays(t0, i), dk = key(d); return '<button class="chip" data-act="day" data-v="' + esc(dk) + '"' + (dk === k ? ' aria-current="date"' : '') + '>' + esc(i === 0 ? t('today') : dayName(d, 'short') + ' ' + d.getDate()) + '</button>'; }).join('') + '</div>';
+  h += '<div class="sum"><div><span>' + esc(t('bed_around')) + '</span><b>' + fmt(P.bed) + '</b></div><div><span>' + esc(t('wake_next')) + '</span><b>' + fmt(P.wakeNext) + '</b></div><div><span>' + esc(t('sleep_h')) + '</span><b>' + esc(fmtH(P.hours)) + ' h</b></div></div></header>';
+  if (state.sample) h += '<p class="sub">' + esc(t('example_note')) + '</p>';
+  if (P.unplaced.length) h += '<div class="warn">' + esc(t('tk_none', { n: P.unplaced.join(', ') })) + '</div>';
   if (P.short) h += '<div class="warn">' + esc(t('short_night', { h: fmtH(P.hours) })) + '</div>';
-  const w = state.water[k] || 0, ch = challengeFor(date, P), done = !!state.challenges[k];
-  h += '<div class="row2"><div class="card"><div class="lab">' + esc(t('water')) + '</div>' +
-    (dayOffset === 0 ? '<div class="why" style="margin:-2px 0 8px">' + esc(t('water_goal', { n: WATER_GOAL })) + '</div><div class="cnt"><button class="rb" data-act="water" data-v="-1" aria-label="-1">−</button><span class="n">' + w + '<small style="font:500 14px var(--f-body);color:var(--muted)">/' + WATER_GOAL + '</small></span><button class="rb add" data-act="water" data-v="1" aria-label="+1">+</button></div>' : '<div class="val">' + esc(t('water_goal_day', { n: WATER_GOAL })) + '</div>') + '</div></div>';
-  h += itemsHtml(P, k);
-  const dayTasks = (state.tasks || []).filter(x => x.days.includes(wdOf(date)));
-  h += '<section class="card stack" style="margin-top:14px"><h2 style="margin:0">' + esc(t('tk_card')) + '</h2>' +
-    (dayTasks.length ? '<ul class="cl" style="margin:0">' + dayTasks.map(x => '<li><div class="m"><b>' + esc(x.title) + '</b><small>' + esc(t('min', { n: x.dur })) + '</small></div><button class="x" data-act="deltask" data-v="' + x.id + '">' + esc(t('sc_remove')) + '</button></li>').join('') + '</ul>' : '<p class="why" style="margin:0">' + esc(t('tk_empty')) + '</p>') +
-    (P.items.some(x => x.type === 'morning') ? '<div class="why" style="margin:0">' + esc(t('sug_card')) + '</div><ul class="cl" style="margin:0">' + P.items.filter(x => x.type === 'morning').map(x => '<li><div class="m"><b>' + esc(x.title) + '</b></div><button class="x" data-act="hidesug" data-v="' + x.sug + '">' + esc(t('sc_remove')) + '</button></li>').join('') + '</ul>' : '') +
-    (Object.keys(state.hiddenSug || {}).length ? '<button class="x" data-act="showsug">' + esc(t('sug_restore')) + '</button>' : '') +
+  h += timeline(P, isToday);
+  const w = state.water[k] || 0;
+  h += '<section class="card"><h2>' + esc(t('water')) + '</h2>' + (isToday ? '<div class="stepper"><button class="rb" data-act="water" data-v="-1" aria-label="-1">−</button><span class="v">' + w + '</span><button class="rb" data-act="water" data-v="1" aria-label="+1">+</button></div><p class="hint">' + esc(t('water_goal', { n: 6 })) + '</p>' : '<p>' + esc(t('water_goal_day', { n: 6 })) + '</p>') + '</section>';
+  const dayTasks = state.tasks.filter(x => x.days.includes(wdOf(date)));
+  const morning = P.items.filter(x => x.type === 'morning');
+  h += '<section class="card stack"><h2>' + esc(t('tk_card')) + '</h2>' +
+    (dayTasks.length ? '<ul class="cl">' + dayTasks.map(x => '<li><div class="m"><b>' + esc(x.title) + '</b><small>' + esc(t('min', { n: x.dur })) + '</small></div><button class="x" data-act="deltask" data-v="' + esc(x.id) + '">' + esc(t('sc_remove')) + '</button></li>').join('') + '</ul>' : '<p class="hint" style="margin:0">' + esc(t('tk_empty')) + '</p>') +
+    (morning.length ? '<p class="hint" style="margin:0">' + esc(t('sug_card')) + '</p><ul class="cl">' + morning.map(x => '<li><div class="m"><b>' + esc(x.title) + '</b></div><button class="x" data-act="hidesug" data-v="' + esc(x.sug) + '">' + esc(t('sc_remove')) + '</button></li>').join('') + '</ul>' : '') +
+    (Object.keys(state.hiddenSug).length ? '<button class="tbtn" data-act="showsug">' + esc(t('sug_restore')) + '</button>' : '') +
     '<button class="btn full" data-act="addtask">' + esc(t('tk_open')) + '</button></section>';
   if (P.noSport) h += '<div class="tip">' + esc(t('sport_none')) + '</div>';
-  h += '<section class="chal"><h2 style="margin:0">' + esc(t('chal_title')) + '</h2><div class="t">' + esc(ch.text) + '</div>' +
-    '<button class="btn ' + (done ? 'done' : 'pri') + ' full" data-act="chal" data-v="' + k + '">' + esc(done ? t('chal_done') : t('chal_mark')) + '</button>' +
-    '<div class="why">' + esc(t('chal_week', { n: weekDone() })) + '</div></section>';
+  const ch = challengeFor(date, P), done = !!state.challenges[k];
+  h += '<section class="card stack"><h2>' + esc(t('chal_title')) + '</h2><p style="margin:0">' + esc(ch.text) + '</p>' +
+    '<button class="btn' + (done ? '' : ' pri') + ' full" data-act="chal" data-v="' + esc(k) + '" aria-pressed="' + done + '">' + esc(done ? t('chal_done') : t('chal_mark')) + '</button>' +
+    '<p class="hint" style="margin:0">' + esc(t('chal_week', { n: weekDone() })) + '</p></section>';
   return h + fbCard() + footer();
 }
 
@@ -757,77 +666,92 @@ function initDraft() {
   let last = null; for (let i = 1; i < 8 && last === null; i++) { const p = state.checkins[key(addDays(today(), -i))]; if (p) last = p.sleepH; }
   draft = { sleepH: last !== null ? last : state.settings.sleep, quality: 3, energy: 3 };
 }
-function seg(name, val) {
-  return '<div class="seg" role="group">' + [1, 2, 3, 4, 5].map(n => '<button data-act="seg" data-n="' + name + '" data-v="' + n + '" aria-pressed="' + (val === n) + '">' + n + '</button>').join('') + '</div><div class="ends"><span>' + esc(t('low')) + '</span><span>' + esc(t('high')) + '</span></div>';
+function seg(name, val, label) {
+  return '<div class="seg" role="group" aria-label="' + esc(label) + '">' + [1, 2, 3, 4, 5].map(n => '<button data-act="seg" data-n="' + esc(name) + '" data-v="' + n + '" aria-pressed="' + (val === n) + '">' + n + '</button>').join('') + '</div><div class="ends"><span>' + esc(t('low')) + '</span><span>' + esc(t('high')) + '</span></div>';
 }
 function screenCheckin() {
   if (!draft) initDraft();
   const k = key(today()), saved = !!state.checkins[k];
-  let h = '<h1>' + esc(t('ci_title')) + '</h1><p class="sub">' + esc(t('ci_sub')) + '</p><div class="stack">' +
-    '<div><div class="why" style="margin-bottom:6px">' + esc(t('ci_sleep')) + '</div><div class="stepper"><button class="rb" data-act="sleep" data-v="-0.5" aria-label="-0.5">−</button><span class="v">' + fmtH(draft.sleepH) + '</span><button class="rb" data-act="sleep" data-v="0.5" aria-label="+0.5">+</button></div></div>' +
-    '<div><div class="why" style="margin-bottom:6px">' + esc(t('ci_quality')) + '</div>' + seg('quality', draft.quality) + '</div>' +
-    '<div><div class="why" style="margin-bottom:6px">' + esc(t('ci_energy')) + '</div>' + seg('energy', draft.energy) + '</div>' +
-    '<button class="btn pri full" data-act="saveci">' + esc(saved ? t('ci_update') : t('ci_save')) + '</button><p class="msg' + (msgErr ? ' err' : '') + '" role="status">' + esc(msg) + '</p></div>';
-
+  let h = '<h1>' + esc(t('ci_title')) + '</h1><p class="sub">' + esc(t('ci_sub')) + '</p><section class="card stack">' +
+    '<div><h3 id="ci-sl">' + esc(t('ci_sleep')) + '</h3><div class="stepper" role="group" aria-labelledby="ci-sl"><button class="rb" data-act="sleep" data-v="-0.5" aria-label="−0.5 h">−</button><span class="v" aria-live="polite">' + esc(fmtH(draft.sleepH)) + '</span><button class="rb" data-act="sleep" data-v="0.5" aria-label="+0.5 h">+</button></div></div>' +
+    '<div><h3>' + esc(t('ci_quality')) + '</h3>' + seg('quality', draft.quality, t('ci_quality')) + '</div>' +
+    '<div><h3>' + esc(t('ci_energy')) + '</h3>' + seg('energy', draft.energy, t('ci_energy')) + '</div>' +
+    '<button class="btn pri full" data-act="saveci">' + esc(saved ? t('ci_update') : t('ci_save')) + '</button>' + msgP() + '</section>';
   const days = [6, 5, 4, 3, 2, 1, 0].map(i => addDays(today(), -i));
-  const need = state.settings.sleep, vals = days.map(d => { const c = state.checkins[key(d)]; return c ? c : null; });
+  const need = state.settings.sleep, vals = days.map(d => state.checkins[key(d)] || null);
   const sl = vals.filter(Boolean).map(c => c.sleepH), en = vals.filter(Boolean).map(c => c.energy);
   const avg = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : null;
   const aS = avg(sl), aE = avg(en), scale = 12;
-  h += '<h2>' + esc(t('ci_week')) + '</h2><div class="card"><div class="chart">' +
-    '<div class="goal" style="bottom:' + (need / scale * (100 - 15) ) + '%"></div>' +
-    vals.map(c => '<div class="b">' + (c ? '<em style="bottom:calc(' + (c.sleepH / scale * 100) + '% * .85 + 4px)">' + fmtH(c.sleepH) + '</em><i style="height:' + (c.sleepH / scale * 85) + '%"></i>' : '<i class="none" style="height:3px"></i>') + '</div>').join('') +
+  h += '<section class="card"><h2>' + esc(t('ci_week')) + '</h2><div class="chart">' +
+    '<div class="goal" style="bottom:' + (need / scale * 85) + '%"></div>' +
+    vals.map(c => '<div class="b">' + (c ? '<em style="bottom:calc(' + (c.sleepH / scale * 85) + '% + 4px)">' + esc(fmtH(c.sleepH)) + '</em><i style="height:' + (c.sleepH / scale * 85) + '%"></i>' : '<i class="none" style="height:3px"></i>') + '</div>').join('') +
     '</div><div class="days">' + days.map(d => '<span>' + esc(dayName(d, 'narrow')) + '</span>').join('') + '</div>' +
-    '<div class="why" style="margin-top:10px">' + esc(t('ci_goal', { h: fmtH(need) })) + '</div></div>';
-  h += '<div class="stats"><div><b>' + (aS === null ? '–' : fmtH(aS)) + '</b><span>' + esc(t('st_sleep')) + '</span></div><div><b>' + (aE === null ? '–' : fmtH(aE)) + '</b><span>' + esc(t('st_energy')) + '</span></div><div><b>' + sl.length + '</b><span>' + esc(t('st_count')) + '</span></div></div>';
-  const insight = sl.length < 2 ? t('in_none') : (need - aS >= 0.5 ? t('in_short', { d: fmtH(need - aS) }) : t('in_ok'));
-  h += '<p class="sub">' + esc(insight) + '</p>';
-  h += fbCard();
-  return h + footer();
+    '<p class="hint" style="margin-top:10px">' + esc(t('ci_goal', { h: fmtH(need) })) + '</p>' +
+    '<div class="stats"><div><b>' + (aS === null ? '–' : esc(fmtH(aS))) + '</b><span>' + esc(t('st_sleep')) + '</span></div><div><b>' + (aE === null ? '–' : esc(fmtH(aE))) + '</b><span>' + esc(t('st_energy')) + '</span></div><div><b>' + sl.length + '</b><span>' + esc(t('st_count')) + '</span></div></div>';
+  h += '<p class="sub" style="margin:0">' + esc(sl.length < 2 ? t('in_none') : (need - aS >= 0.5 ? t('in_short', { d: fmtH(need - aS) }) : t('in_ok'))) + '</p></section>';
+  return h + fbCard() + footer();
 }
 
-function opts(arr, cur, label) { return arr.map(v => '<option value="' + v + '"' + (String(v) === String(cur) ? ' selected' : '') + '>' + esc(label(v)) + '</option>').join(''); }
 function screenSchedule() {
-  const S = state.settings, noCl = !state.classes.length;
-  const dayChips = nm => '<div><div class="why" style="margin-bottom:6px">' + esc(t('sc_days')) + '</div><div class="chips">' + WEEK.map((d, i) => '<label><input type="checkbox" name="' + nm + '" value="' + i + '"><span>' + esc(dayName(d, 'short')) + '</span></label>').join('') + '</div></div>';
-  const sec = (id, title, body, open) => '<details class="imp" id="' + id + '"' + (open ? ' open' : '') + '><summary>' + esc(title) + '</summary><div class="stack" style="margin:12px 0 0">' + body + '</div></details>';
-  let h = '<h1>' + esc(t('sc_title')) + '</h1><p class="sub">' + esc(t('sc_sub')) + '</p>';
-  h += '<p class="msg' + (msgErr ? ' err' : '') + '" role="status">' + esc(msg) + '</p>';
-  // 1. classes first
+  const noCl = !state.classes.length;
+  const sec = (id, title, body, open) => '<details class="imp" id="' + esc(id) + '"' + (open ? ' open' : '') + '><summary>' + esc(title) + '</summary><div class="stack">' + body + '</div></details>';
+  let h = '<h1>' + esc(t('sc_title')) + '</h1><p class="sub">' + esc(t('sc_sub')) + '</p>' + msgP();
   h += '<h2>' + esc(t('sc_list')) + '</h2>';
   if (noCl) h += '<p class="sub">' + esc(t('sc_none')) + '</p><button class="btn full" data-act="example" style="margin-bottom:14px">' + esc(t('example_cta')) + '</button>';
   else {
     const list = state.classes.slice().sort((a, b) => toMin(a.start) - toMin(b.start));
-    h += '<ul class="cl">' + list.map(c => '<li><div class="m"><b>' + esc(c.title) + '</b><small>' + esc(c.start) + '–' + esc(c.end) + ' · ' + c.days.slice().sort().map(d => esc(dayName(WEEK[d], 'short'))).join(', ') + '</small></div><button class="x" data-act="del" data-v="' + c.id + '">' + esc(t('sc_remove')) + '</button></li>').join('') + '</ul>' +
-      '<div style="margin:10px 0 14px"><button class="x" data-act="clear" style="color:var(--bad,#c0392b)">' + esc(t('sc_clear')) + '</button></div>';
+    h += '<ul class="cl">' + list.map(c => '<li><div class="m"><b>' + esc(c.title) + '</b><small>' + esc(c.start) + '–' + esc(c.end) + ' · ' + c.days.slice().sort().map(d => esc(dayName(WEEK[d], 'short'))).join(', ') + '</small></div><button class="x" data-act="del" data-v="' + esc(c.id) + '" aria-label="' + esc(t('sc_remove') + ' : ' + c.title) + '">' + esc(t('sc_remove')) + '</button></li>').join('') + '</ul>' +
+      '<div style="margin:10px 0 14px"><button class="btn warnb" data-act="clear">' + esc(t('sc_clear')) + '</button></div>';
   }
-  // 2. flexible tasks list (only if any)
-  if ((state.tasks || []).length) h += '<h2>' + esc(t('tk_list')) + '</h2><ul class="cl" style="margin-bottom:14px">' + state.tasks.map(k => '<li><div class="m"><b>' + esc(k.title) + '</b><small>' + esc(t('min', { n: k.dur })) + ' · ' + k.days.slice().sort().map(d => esc(dayName(WEEK[d], 'short'))).join(', ') + '</small></div><button class="x" data-act="deltask" data-v="' + k.id + '">' + esc(t('sc_remove')) + '</button></li>').join('') + '</ul>';
-  // 3. collapsible actions
-  h += sec('s-link', t('lk_title'), linkForm(false, true) + '<div><label class="btn full" style="display:block;text-align:center" for="ics">' + esc(t('sc_import')) + '</label><input id="ics" type="file" accept=".ics,text/calendar" style="position:absolute;opacity:0;width:1px;height:1px"><div class="why" style="margin-top:6px">' + esc(t('sc_import_hint')) + '</div></div>', noCl && !!RELAY);
+  if (state.tasks.length) h += '<h2>' + esc(t('tk_list')) + '</h2><ul class="cl" style="margin-bottom:14px">' + state.tasks.map(k => '<li><div class="m"><b>' + esc(k.title) + '</b><small>' + esc(t('min', { n: k.dur })) + ' · ' + k.days.slice().sort().map(d => esc(dayName(WEEK[d], 'short'))).join(', ') + '</small></div><button class="x" data-act="deltask" data-v="' + esc(k.id) + '">' + esc(t('sc_remove')) + '</button></li>').join('') + '</ul>';
+  h += sec('s-link', t('lk_title'), linkForm() + fileImport(), noCl && !!RELAY);
   h += sec('s-class', '+ ' + t('sc_add'), '<form id="addf" class="stack" style="margin:0"><label class="f" for="cn">' + esc(t('sc_name')) + '<input id="cn" type="text" maxlength="40" placeholder="' + esc(t('sc_name_ph')) + '"></label>' +
     '<div class="grid2"><label class="f" for="cs">' + esc(t('sc_start')) + '<input id="cs" type="time" value="08:30" required></label><label class="f" for="ce">' + esc(t('sc_end')) + '<input id="ce" type="time" value="10:30" required></label></div>' +
     dayChips('cd') + '<button class="btn pri full" type="submit">' + esc(t('sc_add_btn')) + '</button></form>');
-  h += sec('s-task', '+ ' + t('tk_add'), '<form id="taskf" class="stack" style="margin:0"><div class="why">' + esc(t('tk_hint')) + '</div><label class="f" for="tn">' + esc(t('tk_name')) + '<input id="tn" type="text" maxlength="40" placeholder="' + esc(t('tk_name_ph')) + '"></label>' +
+  h += sec('s-task', '+ ' + t('tk_add'), '<form id="taskf" class="stack" style="margin:0"><p class="hint" style="margin:0">' + esc(t('tk_hint')) + '</p><label class="f" for="tn">' + esc(t('tk_name')) + '<input id="tn" type="text" maxlength="40" placeholder="' + esc(t('tk_name_ph')) + '"></label>' +
     '<label class="f" for="td">' + esc(t('tk_dur')) + '<select id="td">' + opts([15, 30, 45, 60, 90, 120, 180], 60, v => t('min', { n: v })) + '</select></label>' +
     dayChips('td-d') + '<button class="btn pri full" type="submit">' + esc(t('tk_btn')) + '</button></form>', scrollTask);
-  h += sec('s-rhythm', t('sc_rhythm'), '<label class="f" for="s-sleep">' + esc(t('set_sleep')) + '<select id="s-sleep" data-set="sleep">' + opts([7, 7.5, 8, 8.5, 9], S.sleep, v => t('hrs', { n: v })) + '</select></label>' +
-    '<label class="f" for="s-com">' + esc(t('set_commute')) + '<select id="s-com" data-set="commute">' + opts([0, 10, 15, 20, 30, 45, 60, 75, 90, 120], S.commute, v => t('min', { n: v })) + '</select></label>' +
-    '<label class="f" for="s-sp">' + esc(t('set_sport')) + '<select id="s-sp" data-set="sport">' + opts([20, 30, 45, 60], S.sport, v => t('min', { n: v })) + '</select></label>' +
-    '<label class="f" for="s-fw">' + esc(t('set_free')) + '<input id="s-fw" type="time" data-set="freeWake" value="' + esc(S.freeWake) + '"></label>');
   return h + footer();
+}
+
+function toggle(act, on, label, hint, v) {
+  return '<button class="tg" role="switch" aria-checked="' + !!on + '" data-act="' + esc(act) + '"' + (v ? ' data-v="' + esc(v) + '"' : '') + '><span class="lb">' + esc(label) + (hint ? '<span class="hint">' + esc(hint) + '</span>' : '') + '<span class="st">' + esc(on ? t('on') : t('off')) + '</span></span><span class="tr" aria-hidden="true"></span></button>';
+}
+function themeTiles() {
+  return '<fieldset style="border:0;padding:0;margin:0"><legend class="sr">' + esc(t('set_theme')) + '</legend><div class="tiles">' + THEMES.map(th =>
+    '<label class="tile" data-theme="' + esc(th) + '"><input type="radio" name="theme" value="' + esc(th) + '"' + (state.settings.theme === th ? ' checked' : '') + '>' +
+    '<span class="pv" aria-hidden="true"><b>Rythmo</b><span class="strip"><i style="background:var(--b-class)"></i><i style="background:var(--b-meal)"></i><i style="background:var(--b-sleep)"></i><i class="dot"></i></span><span class="strip"><i style="background:var(--b-sport)"></i><i style="background:var(--b-free)"></i></span></span>' +
+    '<span class="nm">' + esc(t('th_' + th)) + '</span></label>').join('') + '</div></fieldset>';
+}
+function screenSettings() {
+  const S = state.settings;
+  let h = '<h1>' + esc(t('set_title')) + '</h1>' + msgP();
+  h += '<section class="card stack"><h2>' + esc(t('set_planning')) + '</h2>' +
+    '<label class="f" for="s-sleep">' + esc(t('set_sleep')) + '<select id="s-sleep" data-set="sleep">' + opts([7, 7.5, 8, 8.5, 9], S.sleep, v => t('hrs', { n: v })) + '</select></label>' +
+    '<label class="f" for="s-fw">' + esc(t('set_free')) + '<input id="s-fw" type="time" data-set="freeWake" value="' + esc(S.freeWake) + '"></label>' +
+    '<label class="f" for="s-com">' + esc(t('set_commute')) + '<select id="s-com" data-set="commute">' + opts([0, 10, 15, 20, 30, 45, 60, 75, 90, 120], S.commute, v => t('min', { n: v })) + '</select></label>' +
+    '<label class="f" for="s-sp">' + esc(t('set_sport')) + '<select id="s-sp" data-set="sport">' + opts([20, 30, 45, 60], S.sport, v => t('min', { n: v })) + '</select></label></section>';
+  h += '<section class="card stack"><h2>' + esc(t('set_theme')) + '</h2><p class="hint" style="margin:0">' + esc(t('set_theme_hint')) + '</p>' + themeTiles() +
+    toggle('autonight', S.autoNight, t('set_auto'), t('set_auto_hint')) + '</section>';
+  h += '<section class="card stack"><h2>' + esc(t('set_lang')) + '</h2><div>' + langToggle() + '</div></section>';
+  h += '<section class="card stack"><h2>' + esc(t('set_data')) + '</h2><button class="btn full" data-act="export">' + esc(t('set_export')) + '</button>' +
+    '<button class="btn warnb full" data-act="reset">' + esc(resetArm ? t('set_reset_confirm') : t('set_reset')) + '</button></section>';
+  return h + fbCard() + footer();
 }
 
 function render() {
   if (!TABS.includes(tab)) tab = 'plan';
-  const scr = tab === 'plan' ? screenPlan() : tab === 'checkin' ? screenCheckin() : screenSchedule();
-  $app.innerHTML = vbar() + '<div class="shell">' + header() + (V().nav === 'top' ? nav() : '') + scr + '</div>' + (V().nav === 'top' ? '' : nav());
-  document.documentElement.setAttribute('data-v', state.variant);
+  const scr = tab === 'plan' ? screenPlan() : tab === 'checkin' ? screenCheckin() : tab === 'schedule' ? screenSchedule() : screenSettings();
+  const fid = document.activeElement && document.activeElement.id, y = window.scrollY;
+  $app.innerHTML = '<div class="shell">' + header() + '<main id="main">' + scr + '</main></div>' + nav();
+  document.documentElement.setAttribute('data-theme', effTheme());
   document.documentElement.lang = state.lang;
-  if (scrollTask) { scrollTask = false; const f = document.getElementById('taskf'); if (f) { const d = document.getElementById('s-task'); if (d) d.open = true; f.scrollIntoView({ block: 'center' }); } }
+  if (fid) { const el = document.getElementById(fid); if (el) el.focus({ preventScroll: true }); }
+  window.scrollTo(0, y);
+  if (scrollTask) { scrollTask = false; const d = document.getElementById('s-task'); if (d) { d.open = true; d.scrollIntoView({ block: 'center' }); } }
 }
 
-/* ---------- Calendar import ---------- */
+/* ===================== CALENDAR IMPORT ===================== */
 function icsDate(v) {
   const m = v.match(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})?(Z)?$/);
   if (!m) return null;
@@ -867,8 +791,6 @@ const EXAMPLE = [
   ['English', '10:00', '12:00', [1]], ['Machine Learning', '13:30', '16:30', [1]], ['Python lab', '08:30', '12:30', [2]],
   ['Statistics', '09:00', '11:00', [3]], ['Workshop', '14:00', '18:00', [3]], ['Business', '08:30', '10:30', [4]]
 ];
-
-const RELAY = 'https://rythmo.tao-laou-hao.workers.dev';
 async function fetchICS(u) {
   const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 12000);
   try {
@@ -879,35 +801,45 @@ async function fetchICS(u) {
     return txt;
   } finally { clearTimeout(tm); }
 }
-/* ---------- Events ---------- */
+const firstClassDate = () => { for (let i = 0; i < 7; i++) { const d = addDays(today(), i); if (classesFor(wdOf(d)).length) return d; } return today(); };
+
+/* ===================== ACTIONS ===================== */
 function say(m, err) { msg = m; msgErr = !!err; }
+const ACT = {
+  tab: v => { tab = v; msg = ''; if (v === 'checkin') draft = null; window.scrollTo(0, 0); },
+  lang: v => { state.lang = v === 'en' ? 'en' : 'fr'; save(); },
+  day: v => { const p = String(v).split('-'); curDate = new Date(+p[0], +p[1] - 1, +p[2]); },
+  water: v => { const k = key(today()); state.water[k] = Math.max(0, Math.min(20, (state.water[k] || 0) + (+v))); save(); },
+  chal: v => { state.challenges[v] = !state.challenges[v]; save(); },
+  sleep: v => { draft.sleepH = Math.max(3, Math.min(12, draft.sleepH + (+v))); },
+  seg: (v, b) => { draft[b.dataset.n] = +v; },
+  saveci: () => { state.checkins[key(today())] = { sleepH: draft.sleepH, quality: draft.quality, energy: draft.energy }; save(); say(t('ci_saved')); },
+  example: () => { state.classes = EXAMPLE.map(x => ({ id: uid(), title: x[0], start: x[1], end: x[2], days: x[3] })); state.sample = true; save(); tab = 'plan'; curDate = firstClassDate(); },
+  del: v => { state.classes = state.classes.filter(c => c.id !== v); save(); },
+  deltask: v => { state.tasks = state.tasks.filter(k => k.id !== v); save(); },
+  clear: () => { state.classes = []; state.sample = false; save(); },
+  hidesug: v => { state.hiddenSug = Object.assign({}, state.hiddenSug, { [v]: true }); save(); },
+  showsug: () => { state.hiddenSug = {}; save(); },
+  addtask: () => { tab = 'schedule'; msg = ''; scrollTask = true; },
+  autonight: () => { state.settings.autoNight = !state.settings.autoNight; save(); },
+  export: () => download('rythmo-donnees.json', JSON.stringify(state, null, 2), 'application/json'),
+  reset: () => {
+    if (!resetArm) { resetArm = true; return; }
+    const lg = state.lang, th = state.settings.theme;
+    state = freshState(); state.lang = lg; state.settings.theme = th;
+    resetArm = false; tab = 'plan'; curDate = today(); draft = null; save(); say(t('set_reset_done'));
+  }
+};
 $app.addEventListener('click', e => {
-  const b = e.target.closest('[data-act]'); if (!b) return;
-  const a = b.dataset.act, v = b.dataset.v;
-  if (a === 'var') { state.variant = v; resetArm = false; dayOffset = 0; draft = null; try { history.replaceState(null, '', '#' + v.toLowerCase()); } catch (er) {} save(); }
-  else if (a === 'reset') { if (!resetArm) resetArm = true; else { const lg = state.lang, vr = state.variant; state = Object.assign({}, JSON.parse(JSON.stringify(base)), { lang: lg, variant: vr }); resetArm = false; tab = 'plan'; dayOffset = 0; draft = null; msg = ''; save(); } }
-  else if (a === 'tick') { state.done[v] = !state.done[v]; save(); }
-  else if (a === 'hidesug') { state.hiddenSug = Object.assign({}, state.hiddenSug, { [v]: true }); save(); }
-  else if (a === 'showsug') { state.hiddenSug = {}; save(); }
-  else if (a === 'addtask') { tab = 'schedule'; msg = ''; scrollTask = true; }
-  else if (a === 'tab') { tab = v; msg = ''; if (v === 'checkin') draft = null; }
-  else if (a === 'lang') { state.lang = v; save(); }
-  else if (a === 'day') dayOffset = +v;
-  else if (a === 'water') { const k = key(today()); state.water[k] = Math.max(0, Math.min(20, (state.water[k] || 0) + (+v))); save(); }
-  else if (a === 'chal') { state.challenges[v] = !state.challenges[v]; save(); }
-  else if (a === 'sleep') draft.sleepH = Math.max(3, Math.min(12, draft.sleepH + (+v)));
-  else if (a === 'seg') draft[b.dataset.n] = +v;
-  else if (a === 'saveci') { state.checkins[key(today())] = { sleepH: draft.sleepH, quality: draft.quality, energy: draft.energy }; save(); say(t('ci_saved')); }
-  else if (a === 'example') { state.classes = EXAMPLE.map(x => ({ id: uid(), title: x[0], start: x[1], end: x[2], days: x[3] })); state.sample = true; save(); tab = 'plan'; dayOffset = firstClassDay(); }
-  else if (a === 'del') { state.classes = state.classes.filter(c => c.id !== v); save(); }
-  else if (a === 'deltask') { state.tasks = (state.tasks || []).filter(k => k.id !== v); save(); }
-  else if (a === 'clear') { state.classes = []; state.sample = false; save(); }
+  const b = e.target.closest('[data-act]'); if (!b || !$app.contains(b)) return;
+  const a = b.dataset.act, f = ACT[a]; if (!f) return;
   if (a !== 'reset') resetArm = false;
+  f(b.dataset.v, b, e);
   render();
 });
 $app.addEventListener('submit', e => {
-  if (e.target.id === 'quickf') {
-    e.preventDefault();
+  const id = e.target.id; e.preventDefault();
+  if (id === 'quickf') {
     const s = document.getElementById('qs-s').value, en = document.getElementById('qs-e').value;
     const days = Array.from(document.querySelectorAll('input[name=qd]:checked')).map(x => +x.value);
     if (!s || !en || toMin(en) <= toMin(s)) { say(t('sc_bad_time'), true); render(); return; }
@@ -917,37 +849,34 @@ $app.addEventListener('submit', e => {
     state.classes = (S0 < 720 && E0 > 810)
       ? [{ id: uid(), title: t('qs_am'), start: s, end: '12:00', days }, { id: uid(), title: t('qs_pm'), start: '13:30', end: en, days }]
       : [{ id: uid(), title: t('sc_default'), start: s, end: en, days }];
-    state.sample = false; msg = ''; tab = 'plan'; dayOffset = firstClassDay(); save(); render(); return;
+    state.sample = false; msg = ''; tab = 'plan'; curDate = firstClassDate(); save(); render(); return;
   }
-  if (e.target.id === 'urlf') {
-    e.preventDefault();
+  if (id === 'urlf') {
     const urls = (document.getElementById('icsurl').value || '').split(/[\s,;]+/).filter(Boolean).map(x => x.replace(/^webcals?:\/\//i, 'https://'));
     if (!urls.length || urls.some(x => !/^https?:\/\/\S+$/i.test(x))) { say(t('sc_url_bad'), true); render(); return; }
-    const lc = document.getElementById('lk-com'); if (lc) state.settings.commute = +lc.value;
     busy = true; say(''); render();
     Promise.allSettled(urls.slice(0, 6).map(fetchICS)).then(rs => {
       const res = rs.filter(r => r.status === 'fulfilled').flatMap(r => importICS(r.value));
       if (!res.length) { say(t(rs.some(r => r.status === 'fulfilled') ? 'lk_empty' : 'lk_fail'), true); return; }
-      state.classes = res; state.sample = false; msg = ''; tab = 'plan'; dayOffset = firstClassDay(); save();
+      state.classes = res; state.sample = false; msg = ''; tab = 'plan'; curDate = firstClassDate(); save();
     }).finally(() => { busy = false; render(); });
     return;
   }
-  if (e.target.id === 'taskf') {
-    e.preventDefault();
-    const title = document.getElementById('tn').value.trim() || t('tk_default'), dur = +document.getElementById('td').value;
+  if (id === 'taskf') {
+    const title = document.getElementById('tn').value.trim().slice(0, 40) || t('tk_default'), dur = +document.getElementById('td').value;
     const days = Array.from(document.querySelectorAll('input[name=td-d]:checked')).map(x => +x.value);
     if (!days.length) { say(t('sc_need_day'), true); render(); return; }
-    state.tasks = (state.tasks || []).concat([{ id: uid(), title, dur, days }]); save(); say(t('tk_added')); render(); return;
+    state.tasks = state.tasks.concat([{ id: uid(), title, dur, days }]); save(); say(t('tk_added')); render(); return;
   }
-  if (e.target.id !== 'addf') return;
-  e.preventDefault();
-  const title = document.getElementById('cn').value.trim() || t('sc_default');
-  const start = document.getElementById('cs').value, end = document.getElementById('ce').value;
-  const days = Array.from(document.querySelectorAll('input[name=cd]:checked')).map(x => +x.value);
-  if (!start || !end || toMin(end) <= toMin(start)) { say(t('sc_bad_time'), true); render(); return; }
-  if (!days.length) { say(t('sc_need_day'), true); render(); return; }
-  if (state.sample) { state.classes = []; state.sample = false; }
-  state.classes.push({ id: uid(), title, start, end, days }); save(); say(t('sc_added')); render();
+  if (id === 'addf') {
+    const title = document.getElementById('cn').value.trim().slice(0, 40) || t('sc_default');
+    const start = document.getElementById('cs').value, end = document.getElementById('ce').value;
+    const days = Array.from(document.querySelectorAll('input[name=cd]:checked')).map(x => +x.value);
+    if (!start || !end || toMin(end) <= toMin(start)) { say(t('sc_bad_time'), true); render(); return; }
+    if (!days.length) { say(t('sc_need_day'), true); render(); return; }
+    if (state.sample) { state.classes = []; state.sample = false; }
+    state.classes.push({ id: uid(), title, start, end, days }); save(); say(t('sc_added')); render();
+  }
 });
 $app.addEventListener('change', e => {
   const el = e.target;
@@ -960,14 +889,23 @@ $app.addEventListener('change', e => {
     }).catch(() => { say(t('sc_import_err'), true); render(); });
     return;
   }
+  if (el.name === 'theme' && THEMES.includes(el.value)) { state.settings.theme = el.value; state.settings.themePicked = true; save(); render(); return; }
   const k = el.dataset && el.dataset.set; if (!k) return;
-  state.settings[k] = k === 'freeWake' ? (el.value || '08:00') : +el.value; save(); render();
+  state.settings[k] = k === 'freeWake' ? (HHMM.test(el.value) ? el.value : '08:00') : +el.value; save(); render();
 });
-window.addEventListener('hashchange', () => { const h = hashVar(); if (h) { state.variant = h; save(); render(); } });
-if (state.classes.length) dayOffset = firstClassDay();
+
+/* ===================== BOOT ===================== */
+(function legacyHash() {
+  const h = String(location.hash || '').slice(1).toLowerCase();
+  if (LEGACY[h]) {
+    if (!state.settings.themePicked) state.settings.theme = LEGACY[h];
+    try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+  }
+})();
+save();
+if (state.classes.length) curDate = firstClassDate();
 render();
 })();
 </script>
-
 </body>
 </html>
