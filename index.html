@@ -310,7 +310,9 @@ en: {
   sug_card:'Morning suggestions (remove any you do not want):', sug_restore:'Restore removed suggestions',
   tk_card:'Flexible tasks', tk_empty:'No tasks. That\'s perfectly fine.', tk_open:'+ Add a task',
   tk_add:'Add a flexible task', tk_hint:'Something without a fixed hour (study, project, errands). Rythmo finds a free slot on the days you pick.', tk_name:'Task name', tk_name_ph:'e.g. Group project', tk_dur:'How long', tk_btn:'Add task', tk_added:'Task added.', tk_list:'Your flexible tasks', tk_why:'Placed in a free slot ({m} min).', tk_none:'No room today for: {n}. Try another day or a shorter task.', tk_default:'Task',
-  set_title:'Settings', set_planning:'Planning', set_sleep:'Sleep you need', set_commute:'Travel time to school (one way)', set_sport:'Sport length', set_free:'Wake-up on free days',
+  meal_soft:'around {t} – suggestion', lunch_free_why:'No class today: eat when it suits you.', lunch_after_why:'After your classes, calmly.',
+  sp_title:'Sport (optional)', sp_intro:'Sport is optional. We\'ll only suggest a small one if you want.', sp_toggle:'Suggest some sport', sp_dur:'How long', sp_when:'When', sp_morning:'Morning', sp_evening:'Evening', sp_any:'Any time',
+  set_title:'Settings', set_planning:'Planning', set_sleep:'Sleep you need', set_commute:'Travel time to school (one way)', set_free:'Wake-up on free days',
   set_theme:'Theme', set_theme_hint:'Pick the look you find easiest to read.', set_auto:'Automatic: Night in the evening', set_auto_hint:'Switches to Night between 21:00 and 6:00, without changing your choice.',
   th_horizon:'Horizon', th_nuit:'Night', th_doux:'Soft', th_clair:'Clear',
   set_lang:'Language', set_data:'Your data', set_reset:'Erase all my data', set_reset_confirm:'Tap again to erase everything', set_reset_done:'Everything was erased.',
@@ -360,7 +362,9 @@ fr: {
   sug_card:'Suggestions du matin (retire celles dont tu ne veux pas) :', sug_restore:'Remettre les suggestions retirées',
   tk_card:'Tâches flexibles', tk_empty:'Pas de tâche. C\'est très bien comme ça.', tk_open:'+ Ajouter une tâche',
   tk_add:'Ajouter une tâche flexible', tk_hint:"Quelque chose sans heure fixe (révisions, projet, courses). Rythmo trouve un créneau libre les jours choisis.", tk_name:'Nom de la tâche', tk_name_ph:'ex. Projet de groupe', tk_dur:'Durée', tk_btn:'Ajouter la tâche', tk_added:'Tâche ajoutée.', tk_list:'Tes tâches flexibles', tk_why:'Placée dans un créneau libre ({m} min).', tk_none:"Pas de place aujourd'hui pour : {n}. Essaie un autre jour ou une tâche plus courte.", tk_default:'Tâche',
-  set_title:'Réglages', set_planning:'Planning', set_sleep:'Sommeil dont tu as besoin', set_commute:'Temps de trajet vers l\'école (aller)', set_sport:'Durée du sport', set_free:'Réveil les jours sans cours',
+  meal_soft:'vers {t} – suggestion', lunch_free_why:'Pas de cours aujourd\'hui : mange quand ça te va.', lunch_after_why:'Après tes cours, tranquillement.',
+  sp_title:'Sport (facultatif)', sp_intro:'Le sport, c\'est facultatif. On t\'en propose juste un petit si tu veux.', sp_toggle:'Me proposer du sport', sp_dur:'Durée', sp_when:'Moment', sp_morning:'Le matin', sp_evening:'Le soir', sp_any:'Peu importe',
+  set_title:'Réglages', set_planning:'Planning', set_sleep:'Sommeil dont tu as besoin', set_commute:'Temps de trajet vers l\'école (aller)', set_free:'Réveil les jours sans cours',
   set_theme:'Thème', set_theme_hint:'Choisis l\'apparence la plus facile à lire pour toi.', set_auto:'Automatique : Nuit le soir', set_auto_hint:'Passe en Nuit entre 21 h et 6 h, sans changer ton choix.',
   th_horizon:'Horizon', th_nuit:'Nuit', th_doux:'Doux', th_clair:'Clair',
   set_lang:'Langue', set_data:'Tes données', set_reset:'Effacer toutes mes données', set_reset_confirm:'Touche encore pour tout effacer', set_reset_done:'Tout a été effacé.',
@@ -375,11 +379,13 @@ const KEY = 'rythmo.v1';
 let storageOk = true;
 function load() { try { const s = localStorage.getItem(KEY); return s ? JSON.parse(s) : null; } catch (e) { storageOk = false; return null; } }
 function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { storageOk = false; } }
+const snapSport = m => { m = +m || 30; return m <= 30 ? 30 : m <= 45 ? 45 : 60; };
 const isObj = o => !!o && typeof o === 'object' && !Array.isArray(o);
 const HHMM = /^([01]\d|2[0-3]):[0-5]\d$/;
 function freshState() {
   return { v: SCHEMA, lang: (navigator.language || 'en').toLowerCase().startsWith('fr') ? 'fr' : 'en', sample: false,
-    settings: { sleep: 8, commute: 30, sport: 30, freeWake: '08:00', theme: 'horizon', themePicked: false, autoNight: false },
+    settings: { sleep: 8, commute: 30, sport: 30, freeWake: '08:00', theme: 'horizon', themePicked: false, autoNight: false,
+      sportOn: false, sportMin: 30, sportWhen: 'any' }, // new users: no sport until they opt in
     classes: [], tasks: [], checkins: {}, challenges: {}, water: {}, done: {}, hiddenSug: {} };
 }
 /* One-time upgrades. Never delete old keys: an older build reading the same storage keeps working. */
@@ -388,6 +394,8 @@ function migrate(s) {
   s.settings = isObj(s.settings) ? s.settings : {};
   if (v < 2) {
     if (!THEMES.includes(s.settings.theme)) s.settings.theme = LEGACY[String(s.variant || 'a').toLowerCase()] || 'horizon';
+    // Existing testers always had sport: keep it on (no silent change), snap old 20 min to 30.
+    if (s.settings.sportOn === undefined) { s.settings.sportOn = true; s.settings.sportMin = snapSport(s.settings.sport); }
   }
   s.v = SCHEMA;
   return s;
@@ -405,6 +413,8 @@ function sanitize(s) {
     .map(k => ({ id: String(k.id || uid()), title: String(k.title || '').slice(0, 40), dur: Math.min(600, +k.dur), days: okDays(k.days) }));
   if (!THEMES.includes(out.settings.theme)) out.settings.theme = 'horizon';
   if (!HHMM.test(out.settings.freeWake)) out.settings.freeWake = '08:00';
+  out.settings.sportOn = !!out.settings.sportOn; out.settings.sportMin = snapSport(out.settings.sportMin);
+  if (!['morning', 'evening', 'any'].includes(out.settings.sportWhen)) out.settings.sportWhen = 'any';
   ['sleep', 'commute', 'sport'].forEach(k => { out.settings[k] = +out.settings[k]; if (!isFinite(out.settings[k])) out.settings[k] = b.settings[k]; });
   if (out.lang !== 'fr' && out.lang !== 'en') out.lang = b.lang;
   return out;
@@ -420,6 +430,7 @@ const t = (k, v) => { let s = (T[state.lang] || T.en)[k] || T.en[k] || k; if (v)
 const pad = n => String(n).padStart(2, '0');
 const toMin = s => { const p = String(s).split(':'); return (+p[0]) * 60 + (+p[1] || 0); };
 const fmt = m => { m = ((Math.round(m) % 1440) + 1440) % 1440; return pad(Math.floor(m / 60)) + ':' + pad(m % 60); };
+const fmtL = m => state.lang === 'fr' ? fmt(m).replace(':', 'h') : fmt(m); // 12h30 in French
 const fmtH = n => String(Math.round(n * 10) / 10);
 const key = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
 const today = () => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), d.getDate()); };
@@ -472,7 +483,7 @@ function computeDay(date) {
   const items = []; const meals = [];
   items.push({ t: w.wake, type: 'wake', title: t('wake'), why: w.first ? (w.calm ? t('wake_calm', { c: fmt(w.first.s) }) : t('wake_class', { c: fmt(w.first.s), m: S.commute + 60 })) : t('wake_free') });
   const bf = w.wake + 20; meals.push([bf, bf + 20]);
-  items.push({ t: bf, dur: 20, type: 'meal', title: t('breakfast'), why: t('breakfast_why') });
+  items.push({ t: bf, dur: 20, type: 'meal', soft: true, title: t('breakfast'), why: t('breakfast_why') });
   cl.forEach(c => items.push({ t: c.s, end: c.e, type: 'class', title: c.title }));
   const trips = [];
   if (cl.length && S.commute > 0) {
@@ -493,7 +504,7 @@ function computeDay(date) {
     }
   }
   let lt = null, tight = false, tightAfter = null;
-  if (!cl.length) lt = 750;
+  if (!cl.length) lt = Math.max(750, Math.ceil((bf + 150) / 15) * 15);
   else {
     let best = null;
     for (let x = 690; x <= 840; x += 15) {
@@ -505,22 +516,28 @@ function computeDay(date) {
     else { tight = true; const after = cl.find(c => c.e >= 690 && c.e <= 900); tightAfter = after || cl[cl.length - 1]; lt = tightAfter.e + 10; }
   }
   meals.push([lt, lt + (tight ? 20 : 45)]);
-  items.push(tight ? { t: lt, dur: 20, type: 'meal', title: t('lunch_tight'), why: t('lunch_tight_why', { c: tightAfter.title }) }
-                   : { t: lt, dur: 45, type: 'meal', title: t('lunch'), why: t('lunch_why') });
+  items.push(tight ? { t: lt, dur: 20, type: 'meal', soft: true, title: t('lunch_tight'), why: t('lunch_tight_why', { c: tightAfter.title }) }
+                   : { t: lt, dur: 45, type: 'meal', soft: true, title: t('lunch'), why: !cl.length ? t('lunch_free_why') : lt >= lastEnd ? t('lunch_after_why') : t('lunch_why') });
   let dinner = Math.max(Math.min(1170, bed - 180), 1080), late = false;
   if (lastEnd && lastEnd + S.commute + 15 > dinner) { dinner = lastEnd + S.commute + 15; late = true; }
   if (dinner > bed - 90) late = true;
   meals.push([dinner, dinner + 45]);
-  items.push({ t: dinner, dur: 45, type: 'meal', title: late ? t('dinner_late') : t('dinner'), why: late ? t('dinner_late_why') : t('dinner_why') });
+  items.push({ t: dinner, dur: 45, type: 'meal', soft: true, title: late ? t('dinner_late') : t('dinner'), why: late ? t('dinner_late_why') : t('dinner_why') });
+  // Sport (optional). Fix: the old code kept the slot closest to 17:30, so a day ending at 10:30 still got
+  // 17:30. Now: the FIRST free slot after classes + travel home, in the moment the user prefers.
   let sportT = null;
-  const from = Math.max(w.wake + 45, 420), to = Math.min(1260, bed - 120);
-  for (let x = from; x + S.sport <= to; x += 15) {
-    if (cl.some(c => overlaps(x, x + S.sport, c.s - 15, c.e + 15))) continue;
-    if (trips.some(r => overlaps(x, x + S.sport, r[0] - 10, r[1] + 10))) continue;
-    if (meals.some(m => overlaps(x, x + S.sport, m[0] - 30, m[1] + 30))) continue;
-    if (sportT === null || Math.abs(x - 1050) < Math.abs(sportT - 1050)) sportT = x;
+  if (S.sportOn) {
+    const dur = S.sportMin, to = Math.min(1260, bed - 120);
+    const anchor = cl.length ? lastEnd + S.commute + 15 : w.wake + 60;
+    const free = x => !cl.some(c => overlaps(x, x + dur, c.s - 15, c.e + 15)) &&
+      !trips.some(r => overlaps(x, x + dur, r[0] - 10, r[1] + 10)) &&
+      !meals.some(m => overlaps(x, x + dur, m[0] - 30, m[1] + 30));
+    const first = (a, b) => { for (let x = Math.ceil(a / 15) * 15; x + dur <= b; x += 15) if (free(x)) return x; return null; };
+    if (S.sportWhen === 'morning') sportT = first(Math.max(w.wake + 45, 360), Math.min(720, to));
+    else if (S.sportWhen === 'evening') sportT = first(Math.max(anchor, 1020), to);
+    if (sportT === null) sportT = first(Math.max(anchor, w.wake + 45), to);
+    if (sportT !== null) items.push({ t: sportT, dur, type: 'sport', title: t('sport', { m: dur }), why: t('sport_why') });
   }
-  if (sportT !== null) items.push({ t: sportT, dur: S.sport, type: 'sport', title: t('sport', { m: S.sport }), why: t('sport_why') });
   const unplaced = [];
   const tasks = (state.tasks || []).filter(k => k.days.includes(wd)).sort((a, b) => b.dur - a.dur);
   if (tasks.length) {
@@ -539,7 +556,7 @@ function computeDay(date) {
   items.push({ t: bed - 45, dur: 45, type: 'wind', title: t('winddown'), why: t('winddown_why') });
   items.push({ t: bed, type: 'bed', title: t('lightsout'), why: capped && bed === BED_CAP ? t('lightsout_reg') : t('lightsout_why') });
   items.sort((a, b) => a.t - b.t);
-  return { items, bed, wake: w.wake, wakeNext: wn.wake, hours, short, noSport: sportT === null, unplaced };
+  return { items, bed, wake: w.wake, wakeNext: wn.wake, hours, short, noSport: S.sportOn && sportT === null, unplaced };
 }
 function challengeFor(date, P) {
   const y = addDays(date, -1), ci = state.checkins[key(y)];
@@ -623,14 +640,14 @@ function emptyPlan() {
 function blockHtml(it) {
   const kind = KIND[it.type] || 'free', sug = SUGGEST[it.type];
   const end = it.end || (it.dur ? it.t + it.dur : 0);
-  const hint = it.why ? '<span class="hint">' + esc(it.why) + '</span>' : '';
+  const hint = (it.soft ? '<span class="tag">' + esc(t('meal_soft', { t: fmtL(it.t) })) + '</span>' : '') + (it.why ? '<span class="hint">' + esc(it.why) + '</span>' : '');
   return '<div class="block ' + kind + (sug ? ' suggestion' : '') + '"><span class="ic">' + SVG(BI[ICK[it.type]] || BI.free) + '</span><span class="bd"><span class="ttl">' + esc(it.title) + (it.end ? ' <span class="time muted">· ' + fmt(it.t) + '–' + fmt(it.end) + '</span>' : '') + '</span>' + hint + '</span></div>';
 }
 function timeline(P, isToday) {
   const now = new Date(), nm = now.getHours() * 60 + now.getMinutes();
   return '<ul class="tl">' + P.items.map(it => {
     const end = it.end || it.t + (it.dur || 0), past = isToday && end < nm;
-    return '<li class="' + (past ? 'past' : '') + '"><span class="g">' + fmt(it.t) + '</span>' + blockHtml(it) + '</li>';
+    return '<li class="' + (past ? 'past' : '') + '"><span class="g">' + (it.soft ? '~' : '') + fmt(it.t) + '</span>' + blockHtml(it) + '</li>';
   }).join('') + '</ul>';
 }
 function screenPlan() {
@@ -723,14 +740,23 @@ function themeTiles() {
     '<span class="pv" aria-hidden="true"><b>Rythmo</b><span class="strip"><i style="background:var(--b-class)"></i><i style="background:var(--b-meal)"></i><i style="background:var(--b-sleep)"></i><i class="dot"></i></span><span class="strip"><i style="background:var(--b-sport)"></i><i style="background:var(--b-free)"></i></span></span>' +
     '<span class="nm">' + esc(t('th_' + th)) + '</span></label>').join('') + '</div></fieldset>';
 }
+function chipRow(label, act, values, cur, lab) {
+  return '<div role="group" aria-label="' + esc(label) + '"><p class="hint" style="margin:0 0 6px">' + esc(label) + '</p><div class="chips">' + values.map(v => '<button class="chip" data-act="' + esc(act) + '" data-v="' + esc(v) + '" aria-pressed="' + (String(cur) === String(v)) + '">' + esc(lab(v)) + '</button>').join('') + '</div></div>';
+}
+function sportControls() {
+  const S = state.settings;
+  return '<p class="hint" style="margin:0">' + esc(t('sp_intro')) + '</p>' + toggle('sporton', S.sportOn, t('sp_toggle')) +
+    (S.sportOn ? chipRow(t('sp_dur'), 'sportmin', [30, 45, 60], S.sportMin, v => v === 60 ? t('hrs', { n: 1 }) : t('min', { n: v })) +
+      chipRow(t('sp_when'), 'sportwhen', ['morning', 'evening', 'any'], S.sportWhen, v => t('sp_' + v)) : '');
+}
 function screenSettings() {
   const S = state.settings;
   let h = '<h1>' + esc(t('set_title')) + '</h1>' + msgP();
   h += '<section class="card stack"><h2>' + esc(t('set_planning')) + '</h2>' +
     '<label class="f" for="s-sleep">' + esc(t('set_sleep')) + '<select id="s-sleep" data-set="sleep">' + opts([7, 7.5, 8, 8.5, 9], S.sleep, v => t('hrs', { n: v })) + '</select></label>' +
     '<label class="f" for="s-fw">' + esc(t('set_free')) + '<input id="s-fw" type="time" data-set="freeWake" value="' + esc(S.freeWake) + '"></label>' +
-    '<label class="f" for="s-com">' + esc(t('set_commute')) + '<select id="s-com" data-set="commute">' + opts([0, 10, 15, 20, 30, 45, 60, 75, 90, 120], S.commute, v => t('min', { n: v })) + '</select></label>' +
-    '<label class="f" for="s-sp">' + esc(t('set_sport')) + '<select id="s-sp" data-set="sport">' + opts([20, 30, 45, 60], S.sport, v => t('min', { n: v })) + '</select></label></section>';
+    '<label class="f" for="s-com">' + esc(t('set_commute')) + '<select id="s-com" data-set="commute">' + opts([0, 10, 15, 20, 30, 45, 60, 75, 90, 120], S.commute, v => t('min', { n: v })) + '</select></label></section>';
+  h += '<section class="card stack"><h2>' + esc(t('sp_title')) + '</h2>' + sportControls() + '</section>';
   h += '<section class="card stack"><h2>' + esc(t('set_theme')) + '</h2><p class="hint" style="margin:0">' + esc(t('set_theme_hint')) + '</p>' + themeTiles() +
     toggle('autonight', S.autoNight, t('set_auto'), t('set_auto_hint')) + '</section>';
   h += '<section class="card stack"><h2>' + esc(t('set_lang')) + '</h2><div>' + langToggle() + '</div></section>';
@@ -821,6 +847,9 @@ const ACT = {
   hidesug: v => { state.hiddenSug = Object.assign({}, state.hiddenSug, { [v]: true }); save(); },
   showsug: () => { state.hiddenSug = {}; save(); },
   addtask: () => { tab = 'schedule'; msg = ''; scrollTask = true; },
+  sporton: () => { state.settings.sportOn = !state.settings.sportOn; save(); },
+  sportmin: v => { state.settings.sportMin = snapSport(v); save(); },
+  sportwhen: v => { if (['morning', 'evening', 'any'].includes(v)) state.settings.sportWhen = v; save(); },
   autonight: () => { state.settings.autoNight = !state.settings.autoNight; save(); },
   export: () => download('rythmo-donnees.json', JSON.stringify(state, null, 2), 'application/json'),
   reset: () => {
