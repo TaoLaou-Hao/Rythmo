@@ -160,8 +160,10 @@ input[type=text],input[type=time],input[type=url],select,textarea{width:100%;max
 textarea{resize:vertical;line-height:1.4}
 input[type=time]{display:block;text-align:left;line-height:1.3}
 input[type=time]::-webkit-date-and-time-value{text-align:left;margin:0}
-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23888' stroke-width='2'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:12px 8px;padding-right:32px;text-overflow:ellipsis}
+select{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 19px) 52%,calc(100% - 14px) 52%;background-size:5px 5px;background-repeat:no-repeat;padding-right:34px;text-overflow:ellipsis} /* chevron from a theme token (visible in Nuit) */
 label.f>*{min-width:0}
+.stack,.ob-card,label.f{grid-template-columns:minmax(0,1fr)}
+.stack>*,.ob-card>*,.acc-b>*,.grid2>*{min-width:0}
 .grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--s-3)}
 .grid2>*{min-width:0}
 input[type=time]{min-width:0}
