@@ -334,7 +334,15 @@ button.block:hover{border-color:var(--c)}
 .ob-card{background:var(--surface);border:var(--card-border);border-radius:var(--r-lg);box-shadow:var(--shadow-1);padding:var(--s-5) var(--s-4);display:grid;gap:var(--s-3)}
 .ob-card .card{box-shadow:none;margin:0}
 .ob-list{margin:0;padding-left:1.2em;display:grid;gap:6px}
-.ob-nav{display:grid;grid-template-columns:1fr 1.4fr;gap:var(--s-3);position:sticky;bottom:0;background:var(--bg);padding:var(--s-3) 0 calc(var(--s-3) + env(safe-area-inset-bottom,0px))}
+.ob-shell{padding-bottom:calc(150px + env(safe-area-inset-bottom,0px))}
+.ob-nav{position:fixed;left:0;right:0;bottom:0;z-index:5;max-width:560px;margin:0 auto;display:grid;grid-template-columns:1fr 1.4fr;grid-template-areas:"back next" "skip skip";gap:4px var(--s-3);background:var(--bg);padding:var(--s-3) 16px calc(var(--s-2) + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line)}
+.ob-back{grid-area:back}.ob-nav #ob-next{grid-area:next}.ob-skip{grid-area:skip;justify-self:center}
+@media (max-height:700px){.ob-shell{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}.ob-nav{grid-template-columns:auto auto 1fr;grid-template-areas:"back skip next"}}
+.kb-open .ob-nav{display:none}
+.ob-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.ob-card{background:none!important;box-shadow:none!important;border:0!important;padding:var(--s-2) 0 0!important}
+.ob h1:focus{outline:none}
+.ob h1:focus-visible{outline:3px solid var(--focus);outline-offset:4px}
 
 .w-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .w-big{margin:0;color:var(--muted)}
@@ -596,7 +604,7 @@ en: {
   ob2_t:'When do you wake up, and when would you like to sleep?', ob2_p:'On class days, Rythmo adapts the wake-up to your first class.',
   ob3_t:'Your commute', ob3_p:'Rythmo adds it before your first class and after your last one.',
   ob4_t:'What about sport?',
-  ob5_t:'Classes first, everything else fits around them.', ob5_p:'Import your calendar, or describe a usual day in 30 seconds.', ob5_later:'You can also add your classes later in the Classes tab.',
+  ob5_t:'Classes first, everything else fits around them.', ob5_p:'Import your calendar, or describe a usual day in 30 seconds.', ob5_link:'Import my calendar (link)', ob5_file:'Import a calendar file (.ics)', ob5_hand:'Describe a usual day by hand', ob5_later:'You can also add your classes later in Week › My classes.',
   set_bedcap:'Latest bedtime', set_bedcap_hint:'Between 20:00 and 01:30. Default 23:30.',
   nav_week:'Week', now:'Now', prev_day:'Previous day', next_day:'Next day', pick_day:'Pick a day', close:'Close',
   edit_block:'Edit: {b}, {t}', tap_hint:'Tap a block to move it or remove it for this day.', today_empty:'Nothing planned. Enjoy it, or add one small thing.',
@@ -709,7 +717,7 @@ fr: {
   ob2_t:'À quelle heure te lèves-tu, et quand aimerais-tu dormir ?', ob2_p:'Les jours de cours, Rythmo adapte le réveil à ton premier cours.',
   ob3_t:'Tes trajets', ob3_p:'Rythmo les ajoute avant ton premier cours et après le dernier.',
   ob4_t:'Et le sport ?',
-  ob5_t:'Tes cours d\'abord, le reste s\'organise autour.', ob5_p:'Importe ton agenda, ou décris une journée type en 30 secondes.', ob5_later:'Tu peux aussi ajouter tes cours plus tard dans l\'onglet Cours.',
+  ob5_t:'Tes cours d\'abord, le reste s\'organise autour.', ob5_p:'Importe ton agenda, ou décris une journée type en 30 secondes.', ob5_link:'Importer mon agenda (lien)', ob5_file:'Importer un fichier agenda (.ics)', ob5_hand:'Décrire une journée type à la main', ob5_later:'Tu peux aussi ajouter tes cours plus tard dans Semaine › Mes cours.',
   set_bedcap:'Coucher au plus tard', set_bedcap_hint:'Entre 20:00 et 01:30. Par défaut 23:30.',
   nav_week:'Semaine', now:'Maintenant', prev_day:'Jour précédent', next_day:'Jour suivant', pick_day:'Choisir un jour', close:'Fermer',
   edit_block:'Modifier : {b}, {t}', tap_hint:'Touche un bloc pour le déplacer ou le retirer ce jour-là.', today_empty:'Rien de prévu. Profites-en, ou ajoute une petite chose.',
@@ -1272,6 +1280,8 @@ function sheetWrap(eyebrow, title, body) {
 function sheetHtml() {
   if (sheet && sheet.panel) {
     const P = computeDay(curDate);
+    if (sheet.panel === 'oblink') return sheetWrap('', t('lk_title'), msgP('link') + linkForm());
+    if (sheet.panel === 'obquick') return sheetWrap('', t('qs_title'), quickForm().replace('class="card stack"', 'class="stack"'));
     if (sheet.panel === 'notes') return sheetWrap('', t('act_notes'), notesPanel());
     if (sheet.panel === 'todos') return sheetWrap('', t('act_todos'), todosPanel());
     return sheetWrap(longDate(curDate) + ' · ' + dayTypeLabel(P), t('de_title'), msgP() + dayEditCard(P, key(curDate)));
@@ -1480,21 +1490,24 @@ const OB_N = 5;
 function screenOnboarding() {
   const S = state.settings;
   const steps = [
-    () => '<h1>' + esc(t('ob1_t')) + '</h1><p class="sub">' + esc(t('ob1_p')) + '</p><ul class="ob-list"><li>' + esc(t('ob1_a')) + '</li><li>' + esc(t('ob1_b')) + '</li><li>' + esc(t('ob1_c')) + '</li></ul><div class="stack"><p class="hint" style="margin:0">' + esc(t('set_lang')) + '</p>' + langToggle() + '<p class="hint" style="margin:0">' + esc(t('set_theme')) + '</p>' + themeTiles() + '</div>',
-    () => '<h1>' + esc(t('ob2_t')) + '</h1><p class="sub">' + esc(t('ob2_p')) + '</p><div class="stack">' +
+    () => '<h1 id="ob-h" tabindex="-1">' + esc(t('ob1_t')) + '</h1><p class="sub">' + esc(t('ob1_p')) + '</p><ul class="ob-list"><li>' + esc(t('ob1_a')) + '</li><li>' + esc(t('ob1_b')) + '</li><li>' + esc(t('ob1_c')) + '</li></ul><div class="stack"><div class="ob-row"><span class="hint">' + esc(t('set_lang')) + '</span>' + langToggle() + '</div>' + themeTiles() + '</div>',
+    () => '<h1 id="ob-h" tabindex="-1">' + esc(t('ob2_t')) + '</h1><p class="sub">' + esc(t('ob2_p')) + '</p><div class="stack">' +
       '<label class="f" for="ob-fw">' + esc(t('set_free')) + '<input id="ob-fw" type="time" data-set="freeWake" value="' + esc(S.freeWake) + '"></label>' + bedCapSel('ob-bc') +
       '<label class="f" for="ob-sl">' + esc(t('set_sleep')) + '<select id="ob-sl" data-set="sleep">' + opts(SLEEPS, S.sleep, v => fmtHM(v)) + '</select></label></div>',
-    () => '<h1>' + esc(t('ob3_t')) + '</h1><p class="sub">' + esc(t('ob3_p')) + '</p><label class="f" for="ob-com">' + esc(t('trv_label')) + '<select id="ob-com" data-set="commute">' + opts(COMMUTES, S.commute, v => fmtMin(v)) + '</select><span class="hint">' + esc(t('trv_hint')) + '</span></label>',
-    () => '<h1>' + esc(t('ob4_t')) + '</h1><div class="stack">' + sportControls() + '</div>',
-    () => '<h1>' + esc(t('ob5_t')) + '</h1><p class="sub">' + esc(t('ob5_p')) + '</p>' + msgP() + '<section class="card stack">' + linkForm() + fileImport() + '</section>' + quickForm() +
-      '<div class="stack"><button class="btn full" data-act="example">' + esc(t('example_cta')) + '</button><p class="hint" style="margin:0">' + esc(t('ob5_later')) + '</p></div>'
+    () => '<h1 id="ob-h" tabindex="-1">' + esc(t('ob3_t')) + '</h1><p class="sub">' + esc(t('ob3_p')) + '</p><label class="f" for="ob-com">' + esc(t('trv_label')) + '<select id="ob-com" data-set="commute">' + opts(COMMUTES, S.commute, v => fmtMin(v)) + '</select><span class="hint">' + esc(t('trv_hint')) + '</span></label>',
+    () => '<h1 id="ob-h" tabindex="-1">' + esc(t('ob4_t')) + '</h1><div class="stack">' + sportControls() + '</div>',
+    () => '<h1 id="ob-h" tabindex="-1">' + esc(t('ob5_t')) + '</h1><p class="sub">' + esc(t('ob5_p')) + '</p>' + msgP() + msgP('link') + '<div class="stack ob-choices">' +
+      '<button class="btn pri full" data-act="panel" data-v="oblink" id="act-oblink">' + esc(t('ob5_link')) + '</button>' +
+      '<label class="btn full" for="ics">' + esc(t('ob5_file')) + '</label><input id="ics" class="sr" type="file" accept=".ics,text/calendar">' +
+      '<button class="btn full" data-act="panel" data-v="obquick" id="act-obquick">' + esc(t('ob5_hand')) + '</button>' +
+      '<button class="tbtn" data-act="example">' + esc(t('example_cta')) + '</button><p class="hint" style="margin:0">' + esc(t('ob5_later')) + '</p></div>'
   ];
   const last = ob === OB_N - 1;
-  return '<div class="ob"><div class="ob-top"><ol class="dots" aria-label="' + esc(t('ob_step', { a: ob + 1, b: OB_N })) + '">' + steps.map((_, i) => '<li class="' + (i === ob ? 'on' : i < ob ? 'done' : '') + '"></li>').join('') + '</ol>' +
-    '<button class="tbtn" data-act="obskip">' + esc(t('ob_skip')) + '</button></div>' +
+  return '<div class="ob"><div class="ob-top"><ol class="dots" aria-label="' + esc(t('ob_step', { a: ob + 1, b: OB_N })) + '">' + steps.map((_, i) => '<li class="' + (i === ob ? 'on' : i < ob ? 'done' : '') + '"></li>').join('') + '</ol></div>' +
     '<section class="ob-card" aria-live="polite">' + steps[ob]() + '</section>' +
-    '<div class="ob-nav">' + (ob > 0 ? '<button class="btn" data-act="obback">' + esc(t('ob_back')) + '</button>' : '<span></span>') +
-    '<button class="btn pri" data-act="' + (last ? 'obdone' : 'obnext') + '" id="ob-next">' + esc(last ? t('ob_done') : t('ob_next')) + '</button></div></div>';
+    '<div class="ob-nav">' + (ob > 0 ? '<button class="btn ob-back" data-act="obback">' + esc(t('ob_back')) + '</button>' : '<span class="ob-back"></span>') +
+    '<button class="btn pri" data-act="' + (last ? 'obdone' : 'obnext') + '" id="ob-next">' + esc(last ? t('ob_done') : t('ob_next')) + '</button>' +
+    (last ? '' : '<button class="tbtn ob-skip" data-act="obskip">' + esc(t('ob_skip')) + '</button>') + '</div></div>';
 }
 function finishOb() { obOn = false; ob = 0; state.onboarded = true; save(); tab = 'plan'; }
 function acc(id, title, summary, body) {
@@ -1524,11 +1537,13 @@ function screenSettings() {
 
 function render() {
   if (!TABS.includes(tab)) tab = 'plan';
-  if (tab !== 'plan' && tab !== 'week') sheet = null;
+  if (tab !== 'plan' && tab !== 'week' && !obOn) sheet = null;
   if (obOn) {
-    $app.innerHTML = '<div class="shell"><div class="top"><div class="brand"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" fill="var(--accent)"/></svg>Rythmo</div></div><main id="main">' + screenOnboarding() + '</main></div>';
+    const fid0 = document.activeElement && document.activeElement.id;
+    $app.innerHTML = '<div class="shell ob-shell"' + (sheet ? ' inert' : '') + '><main id="main">' + screenOnboarding() + '</main></div>' + sheetHtml();
     document.documentElement.setAttribute('data-theme', effTheme()); document.documentElement.lang = state.lang;
-    if (obFocus) { obFocus = false; const n = document.getElementById('ob-next'); if (n) n.focus(); }
+    if (sheet) { const f = document.getElementById(fid0); if (f && f.closest('.sheet')) f.focus({ preventScroll: true }); else { const c = document.getElementById('sh-close'); if (c) c.focus(); } }
+    else if (obFocus) { obFocus = false; const h = document.getElementById('ob-h'); if (h) h.focus(); }
     return;
   }
   const scr = tab === 'plan' ? screenPlan() : tab === 'week' ? (weekSub === 'courses' ? screenCourses() : screenWeek()) : tab === 'checkin' ? screenCheckin() : screenSettings();
@@ -1923,6 +1938,9 @@ function formError(form, text, fieldId) {
 }
 function closeSheet() { if (!sheet) return; const back = sheet.panel ? sheet.ret : bid(sheet.d, sheet.k); sheet = null; setTimeout(() => { const el = document.getElementById(back); if (el) el.focus(); }, 0); }
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && sheet) { closeSheet(); render(); } });
+const isTextField = el => el && (el.tagName === 'TEXTAREA' || (el.tagName === 'INPUT' && /^(text|url|search|email|number)$/i.test(el.type)));
+document.addEventListener('focusin', e => { document.documentElement.classList.toggle('kb-open', isTextField(e.target)); });
+document.addEventListener('focusout', () => { setTimeout(() => document.documentElement.classList.toggle('kb-open', isTextField(document.activeElement)), 0); });
 const ACT = {
   tab: v => { if (v === 'schedule' || v === 'courses') { v = 'week'; weekSub = 'courses'; } else if (v === 'week') weekSub = 'week'; tab = v; msg = ''; sheet = null; if (v === 'checkin') draft = null; if (v === 'week') weekJump = key(curDate); window.scrollTo(0, 0); },
   wksub: v => { weekSub = v === 'courses' ? 'courses' : 'week'; msg = ''; window.scrollTo(0, 0); },
