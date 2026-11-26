@@ -376,6 +376,7 @@ details.help .steps{padding:0 var(--s-3) var(--s-3) 2.2em}
 .todo .box{flex:0 0 24px;width:24px;height:24px;border-radius:6px;border:2px solid var(--line-strong);display:grid;place-items:center;font-weight:800;color:var(--on-accent)}
 .todo li.on .box{background:var(--accent);border-color:var(--accent)}
 .todo li.on .tx{text-decoration:line-through;color:var(--muted)}
+.todo .tx small{display:block;font-size:.8125rem;color:var(--muted);text-decoration:none}
 .todo-add{display:flex;gap:8px}
 .todo-add input{flex:1}
 
@@ -564,7 +565,7 @@ en: {
   mo_prep:'Pack your bag', mo_prep_why:'Bag, charger, water bottle, lunch: ten minutes now saves stress later.',
   sug_card:'Morning suggestions (remove any you do not want):', sug_restore:'Restore removed suggestions',
   tk_card:'Flexible tasks', tk_empty:'No tasks. That\'s perfectly fine.', tk_open:'+ Add a task',
-  tk_add:'Add a flexible task', tk_hint:'Something without a fixed hour (study, project, errands). Rythmo finds a free slot on the days you pick.', tk_name:'Task name', tk_name_ph:'e.g. Group project', tk_dur:'How long', tk_btn:'Add task', tk_added:'Task added.', tk_list:'Your flexible tasks', tk_why:'Placed in a free slot ({m} min).', tk_none:'No room today for: {n}. Try another day or a shorter task.', tk_default:'Task',
+  tk_add:'Add a routine', tk_hint:'Something that comes back every week without a fixed hour (study, project). Rythmo finds a free slot on the days you pick. For a one-off thing, use To-do on Today.', tk_name:'Routine name', tk_name_ph:'e.g. Group project', tk_dur:'How long', tk_btn:'Add routine', tk_added:'Routine added.', tk_list:'Your routines', tk_why:'Placed in a free slot ({m} min).', tk_none:'No room today for: {n}. Try another day or a shorter task.', tk_default:'Task',
   rm_before_short:'{n} min before', set_sleep_short:'Sleep need', set_bedcap_short:'Bed at the latest', set_free_short:'Wake-up, free days', set_auto_hint_short:'21:00 to 6:00, your choice is kept.',
   rm_s_bed:'bedtime', rm_s_checkin:'check-in', rm_s_water:'water', rm_s_screens:'screens off', rm_s_none:'none', rm_s_live:'notifications on', rm_chosen_short:'Chosen', rm_chosen_note:'Chosen reminders work once added to your calendar or with notifications (below).',
   sum_bed:'bed by {t}', sum_trv:'commute {n} min', sum_water:'{n} glasses a day', sum_water_one:'1 glass a day', sum_auto:'auto night', sum_data:'export, tutorial, erase', set_data_help:'Data and help', set_export_short:'Export data', set_commute_short:'Commute (one way)',
@@ -580,6 +581,7 @@ en: {
   sport_fb_morning:'No free morning slot that day: here is the first free one.', sport_fb_evening:'No free evening slot that day: here is the first free one.',
   imp_ok:'{n} classes imported over {w}.', imp_ok_one:'1 class imported over {w}.', weeks:'{n} weeks', weeks_one:'1 week', imp_past:'This calendar only has past events: {n} classes copied as a weekly timetable.',
   other:'Other', rm_before_label:'Minutes before lights out', floor_note:'About {h} of sleep possible tonight.', st_bed_soon:'Bedtime soon', bedcap_range:'Choose a time between 20:00 and 01:30.',
+  todo_dur:'How long (optional)', todo_dur_on:'Rythmo puts it in your first free slot today. It won\'t move by itself.', todo_dur_off:'No duration: a simple checklist item.', todo_placed:'Placed today at {t}.', todo_noslot:'No free slot today for {m}.', todo_tomorrow:'Tomorrow', todo_notime:'No time', todo_placed_tm:'Planned for tomorrow at {t}.', todo_full_tm:'Tomorrow is full too: kept with no time.', todo_kept:'Kept with no time.', todo_place:'Place', todo_place_aria:'Place today: {n}', todo_today_at:'today {t}', todo_tm_at:'tomorrow {t}', todo_why:'Your to-do ({m}), placed when you added it. It never moves by itself.', todo_clash:'Something now overlaps: {n}. Open To-do to place it again.', todo_done:'Done', todo_done_msg:'Done: {n}.', todo_unpin:'Remove from the day', todo_max:'The list is full (30). Remove something first.',
   rules_title:'Regular days', badge_rep:'repeats', rule_every:'Every {d}', rule_is:'Regular day: every {d}', rule_today_normal:'Today only: a usual day', rule_today_only:'Today only: changed.', rule_remove:'Remove this regular day', rule_removed:'Regular day removed ({d}).', rule_add:'Internship or work every week', rule_add_btn:'Add this regular day', rule_hint:'Replaces that day\'s classes and imported events, every week from today.', rule_day:'Day', rule_saved:'Regular day saved.', undo:'Undo', edit:'Edit',
   imp_rep:'Including {n} monthly or yearly repeats (shown for the next 6 months).', imp_rep_one:'Including 1 monthly or yearly repeat (shown for the next 6 months).', imp_bad:'{n} repeats could not be read: only their first date was kept.', imp_bad_one:'One repeat could not be read: only its first date was kept.',
   imp_card:'Imported calendar', imp_until:'Until {d}.', imp_exact:'Each date shows its real classes: cancelled sessions, one-off events and alternate weeks stay exact. Import again to refresh.', imp_remove:'Remove the imported calendar', imp_removed:'Imported calendar removed.',
@@ -679,7 +681,7 @@ fr: {
   mo_prep:'Prépare ton sac', mo_prep_why:"Sac, chargeur, gourde, repas : dix minutes maintenant évitent du stress plus tard.",
   sug_card:'Suggestions du matin (retire celles dont tu ne veux pas) :', sug_restore:'Remettre les suggestions retirées',
   tk_card:'Tâches flexibles', tk_empty:'Pas de tâche. C\'est très bien comme ça.', tk_open:'+ Ajouter une tâche',
-  tk_add:'Ajouter une tâche flexible', tk_hint:"Quelque chose sans heure fixe (révisions, projet, courses). Rythmo trouve un créneau libre les jours choisis.", tk_name:'Nom de la tâche', tk_name_ph:'ex. Projet de groupe', tk_dur:'Durée', tk_btn:'Ajouter la tâche', tk_added:'Tâche ajoutée.', tk_list:'Tes tâches flexibles', tk_why:'Placée dans un créneau libre ({m} min).', tk_none:"Pas de place aujourd'hui pour : {n}. Essaie un autre jour ou une tâche plus courte.", tk_default:'Tâche',
+  tk_add:'Ajouter une routine', tk_hint:"Quelque chose qui revient chaque semaine sans heure fixe (révisions, projet). Rythmo trouve un créneau libre les jours choisis. Pour une chose à faire une seule fois, utilise « À faire » dans Aujourd'hui.", tk_name:'Nom de la routine', tk_name_ph:'ex. Projet de groupe', tk_dur:'Durée', tk_btn:'Ajouter la routine', tk_added:'Routine ajoutée.', tk_list:'Tes routines', tk_why:'Placée dans un créneau libre ({m} min).', tk_none:"Pas de place aujourd'hui pour : {n}. Essaie un autre jour ou une tâche plus courte.", tk_default:'Tâche',
   rm_before_short:'{n} min avant', set_sleep_short:'Sommeil', set_bedcap_short:'Coucher au plus tard', set_free_short:'Réveil sans cours', set_auto_hint_short:'De 21 h à 6 h, ton choix est gardé.',
   rm_s_bed:'coucher', rm_s_checkin:'bilan', rm_s_water:'eau', rm_s_screens:'écrans', rm_s_none:'aucun', rm_s_live:'notifications', rm_chosen_short:'Choisi', rm_chosen_note:'Les rappels choisis marchent une fois ajoutés à ton agenda ou avec les notifications (ci-dessous).',
   sum_bed:'coucher ≤ {t}', sum_trv:'trajet {n} min', sum_water:'{n} verres par jour', sum_water_one:'1 verre par jour', sum_auto:'nuit auto', sum_data:'export, tutoriel, effacer', set_data_help:'Données et aide', set_export_short:'Exporter', set_commute_short:'Trajet (aller)',
@@ -695,6 +697,7 @@ fr: {
   sport_fb_morning:'Pas de créneau libre le matin ce jour-là : voici le premier créneau libre.', sport_fb_evening:'Pas de créneau libre le soir ce jour-là : voici le premier créneau libre.',
   imp_ok:'{n} cours importés sur {w}.', imp_ok_one:'1 cours importé sur {w}.', weeks:'{n} semaines', weeks_one:'1 semaine', imp_past:'Cet agenda ne contient que des événements passés : {n} cours copiés comme emploi du temps hebdomadaire.',
   other:'Autre', rm_before_label:'Minutes avant l\'extinction', floor_note:'Environ {h} de sommeil possibles cette nuit.', st_bed_soon:'Bientôt au lit', bedcap_range:'Choisis une heure entre 20:00 et 01:30.',
+  todo_dur:'Durée (facultatif)', todo_dur_on:'Rythmo la place dans ton premier créneau libre aujourd\'hui. Elle ne bouge plus toute seule.', todo_dur_off:'Sans durée : une simple case à cocher.', todo_placed:'Placé aujourd\'hui à {t}.', todo_noslot:'Pas de créneau libre aujourd\'hui pour {m}.', todo_tomorrow:'Demain', todo_notime:'Sans heure', todo_placed_tm:'Prévu demain à {t}.', todo_full_tm:'Demain est plein aussi : gardé sans heure.', todo_kept:'Gardé sans heure.', todo_place:'Placer', todo_place_aria:'Placer aujourd\'hui : {n}', todo_today_at:'aujourd\'hui {t}', todo_tm_at:'demain {t}', todo_why:'Ta chose à faire ({m}), placée quand tu l\'as ajoutée. Elle ne bouge jamais toute seule.', todo_clash:'Quelque chose chevauche maintenant : {n}. Ouvre « À faire » pour la replacer.', todo_done:'C\'est fait', todo_done_msg:'Fait : {n}.', todo_unpin:'Retirer de la journée', todo_max:'La liste est pleine (30). Retire quelque chose d\'abord.',
   rules_title:'Jours réguliers', badge_rep:'se répète', rule_every:'Chaque {d}', rule_is:'Jour régulier : chaque {d}', rule_today_normal:'Aujourd\'hui seulement : journée habituelle', rule_today_only:'Aujourd\'hui seulement : modifié.', rule_remove:'Retirer ce jour régulier', rule_removed:'Jour régulier retiré ({d}).', rule_add:'Stage ou travail chaque semaine', rule_add_btn:'Ajouter ce jour régulier', rule_hint:'Remplace les cours et événements importés de ce jour, chaque semaine à partir d\'aujourd\'hui.', rule_day:'Jour', rule_saved:'Jour régulier enregistré.', undo:'Annuler', edit:'Modifier',
   imp_rep:'Dont {n} répétitions mensuelles ou annuelles (affichées sur les 6 prochains mois).', imp_rep_one:'Dont 1 répétition mensuelle ou annuelle (affichée sur les 6 prochains mois).', imp_bad:'{n} répétitions n\'ont pas pu être lues : seule la première date est gardée.', imp_bad_one:'Une répétition n\'a pas pu être lue : seule la première date est gardée.',
   imp_card:'Agenda importé', imp_until:'Jusqu\'au {d}.', imp_exact:'Chaque date affiche ses vrais cours : séances annulées, événements ponctuels et semaines alternées restent exacts. Réimporte pour mettre à jour.', imp_remove:'Retirer l\'agenda importé', imp_removed:'Agenda importé retiré.',
@@ -793,6 +796,12 @@ function migrate(s) {
   if (v < 4) {
     // v4: weekly work/internship days (state.rules) and an explicit per-date "usual day" (kind:'normal')
     if (!Array.isArray(s.rules)) s.rules = [];
+    // One "À faire" list: one-off flexible tasks (no weekday) become to-dos; weekly ones stay as "Routines".
+    const n0 = new Date(), tk = n0.getFullYear() + '-' + String(n0.getMonth() + 1).padStart(2, '0') + '-' + String(n0.getDate()).padStart(2, '0'), snap = d => [15, 30, 60].reduce((a, b) => Math.abs(b - d) < Math.abs(a - d) ? b : a, 30);
+    if (!Array.isArray(s.todos)) s.todos = [];
+    s.todos.forEach(x => { if (isObj(x)) { if (x.dur === undefined) x.dur = 0; if (x.date === undefined) x.date = null; if (x.doneOn === undefined) x.doneOn = x.done ? tk : null; } });
+    if (Array.isArray(s.tasks)) s.tasks.forEach(k => { if (isObj(k) && Array.isArray(k.days) && !k.days.length && k.title && s.todos.length < 30) s.todos.push({ id: String(k.id || ('o' + s.todos.length)), text: String(k.title), done: false, dur: snap(+k.dur || 30), date: null, at: null, doneOn: null }); });
+    if (Array.isArray(s.tasks)) s.tasks = s.tasks.filter(k => !(isObj(k) && Array.isArray(k.days) && !k.days.length && k.title));
   }
   s.v = SCHEMA;
   return s;
@@ -813,7 +822,10 @@ function sanitize(s) {
     const sl = raw.sleep == null ? 8 : Math.round(+raw.sleep * 4) / 4; out.settings.sleep = sl >= 6 && sl <= 11 ? sl : 8; // 15-min steps, 6–11 h
     out.settings.commute = raw.commute == null ? 30 : inRange5(raw.commute, 0, 180, 30); }
   out.note = String(typeof out.note === 'string' ? out.note : '').slice(0, 2000);
-  out.todos = (Array.isArray(out.todos) ? out.todos : []).filter(x => isObj(x) && x.text).slice(0, 30).map(x => ({ id: String(x.id || uid()).slice(0, 20), text: String(x.text).slice(0, 80), done: !!x.done }));
+  out.todos = (Array.isArray(out.todos) ? out.todos : []).filter(x => isObj(x) && x.text).slice(0, 30).map(x => {
+    const dur = +x.dur > 0 ? inRange5(x.dur, 5, 240, 30) : 0, date = DATEK.test(x.date || '') ? x.date : null;
+    return { id: String(x.id || uid()).slice(0, 20), text: String(x.text).slice(0, 80), done: !!x.done, dur, date: dur ? date : null, at: dur && date && HHMM.test(x.at || '') ? x.at : null, doneOn: DATEK.test(x.doneOn || '') ? x.doneOn : null };
+  });
   const R0 = b.reminders, R = isObj(s.reminders) ? s.reminders : {}, sub = k => Object.assign({}, R0[k], isObj(R[k]) ? R[k] : {});
   out.reminders = { enabled: !!R.enabled, bed: sub('bed'), checkin: sub('checkin'), water: sub('water'), screens: sub('screens') };
   ['bed', 'checkin', 'water', 'screens'].forEach(k => { out.reminders[k].on = !!out.reminders[k].on; });
@@ -1075,10 +1087,18 @@ function computeDay(date) {
       items.push({ k: bk, t: best, dur: k.dur, type: 'task', moved: !!at[bk], title: k.title, why: t('tk_why', { m: k.dur }) });
     });
   }
+  // To-dos with a duration: start PINNED when added (todo.at). A clash with a class/appointment/trip is reported, never moved.
+  const clash = [], dk0 = key(date);
+  state.todos.forEach(x => {
+    if (x.done || !x.dur || x.date !== dk0 || !x.at) return;
+    const s0 = toMin(x.at), e0 = s0 + x.dur;
+    if (all.some(c => overlaps(s0, e0, c.s, c.e)) || trips.some(r => overlaps(s0, e0, r[0], r[1]))) { clash.push(x); return; }
+    items.push({ k: 'todo:' + x.id, t: s0, dur: x.dur, type: 'task', todo: x.id, title: x.text, why: t('todo_why', { m: fmtMin(x.dur) }) });
+  });
   if (!skip.wind) items.push({ k: 'wind', t: mv('wind', bed - 45), dur: 45, type: 'wind', moved: !!at.wind, title: t('winddown'), why: t('winddown_why') });
   items.push({ k: 'bed', t: bed, type: 'bed', title: t('lightsout'), why: bedManual ? t('edited_day') : capped && bed === CAP ? t('lightsout_reg') : t('lightsout_why') });
   items.sort((a, b) => a.t - b.t);
-  return { date, items, floored: floored && !bedManual, bed, wake: w.wake, wakeNext: wn.wake, hours, short, noSport: sportWanted && sportT === null, unplaced, ov, cl: all };
+  return { date, items, floored: floored && !bedManual, bed, wake: w.wake, wakeNext: wn.wake, hours, short, noSport: sportWanted && sportT === null, unplaced, clash, ov, cl: all };
 }
 function challengeFor(date, P) {
   const y = addDays(date, -1), ci = state.checkins[key(y)];
@@ -1299,6 +1319,7 @@ function screenPlan() {
   if (!storageOk) h += '<div class="warn">' + esc(t('nostore')) + '</div>';
   if (state.sample) h += '<p class="hint">' + esc(t('example_note')) + '</p>';
   if (P.unplaced.length) h += '<div class="warn">' + esc(t('tk_none', { n: P.unplaced.join(', ') })) + '</div>';
+  if (P.clash.length) h += '<div class="warn">' + esc(t('todo_clash', { n: P.clash.map(x => x.text).join(', ') })) + '</div>';
   if (P.short) h += '<div class="warn">' + esc(t('short_night', { h: fmtH(P.hours) })) + '</div>';
   else if (P.floored) h += '<p class="hint">' + esc(t('floor_note', { h: fmtHM(P.hours) })) + '</p>';
   if (!P.cl.length && P.items.length <= 5) h += '<p class="hint">' + esc(t('today_empty')) + '</p>';
@@ -1307,10 +1328,35 @@ function screenPlan() {
   h += '<p class="tipline"><b>' + esc(t('tip_label')) + '</b> ' + esc(challengeFor(date, P).text) + '</p>';
   return h;
 }
+function todoSlot(date, dur, from) {
+  const P = computeDay(date), busy = P.items.filter(it => it.type !== 'bed').map(it => [it.t, it.end || it.t + (it.dur || (it.type === 'wake' ? 15 : 0))]);
+  const end = P.items.some(it => it.k === 'wind') ? P.items.find(it => it.k === 'wind').t : P.bed - 45;
+  for (let x = Math.ceil(Math.max(from, P.wake + 60) / 15) * 15; x + dur <= end; x += 15) if (!busy.some(b => overlaps(x, x + dur, b[0] - 10, b[1] + 10))) return x;
+  return null;
+}
+let todoDur = 0, todoDraft = '', todoAsk = null;
+/* Place a to-do today (first free slot from now + 15 min); no room -> ask "Demain" / "Sans heure", never silently */
+function placeTodo(x) {
+  const s = todoSlot(today(), x.dur, nowMin() + 15);
+  if (s !== null) { x.date = key(today()); x.at = fmt(s); todoAsk = null; say(t('todo_placed', { t: fmt(s) }), false, 'todof'); }
+  else { x.date = null; x.at = null; todoAsk = x.id; say(t('todo_noslot', { m: fmtMin(x.dur) }), true, 'todof'); }
+}
+const todoWhen = x => { const tk = key(today()), tm = key(addDays(today(), 1)); return !x.dur ? '' : x.date === tk && x.at ? t('todo_today_at', { t: x.at }) : x.date === tm && x.at ? t('todo_tm_at', { t: x.at }) : t('todo_notime'); };
 function todosPanel() {
   const L = state.todos;
-  let h = L.length ? '<ul class="todo">' + L.map(x => '<li class="' + (x.done ? 'on' : '') + '"><button class="tick" data-act="todotoggle" data-v="' + esc(x.id) + '" role="checkbox" aria-checked="' + x.done + '"><span class="box" aria-hidden="true">' + (x.done ? '✓' : '') + '</span><span class="tx">' + esc(x.text) + '</span></button><button class="x" data-act="tododel" data-v="' + esc(x.id) + '" aria-label="' + esc(t('sc_remove') + ' : ' + x.text) + '">✕</button></li>').join('') + '</ul>' : '<p class="hint" style="margin:0">' + esc(t('nt_empty')) + '</p>';
-  h += '<form id="todof" class="todo-add"><label class="sr" for="todo-in">' + esc(t('nt_add_label')) + '</label><input id="todo-in" type="text" maxlength="80" placeholder="' + esc(t('nt_add_ph')) + '" autocomplete="off"><button class="btn" type="submit">' + esc(t('nt_add')) + '</button></form>';
+  const P = computeDay(today()), clashIds = P.clash.map(x => x.id), tk = key(today());
+  let h = L.length ? '<ul class="todo">' + L.map(x => {
+    const when = x.done ? '' : todoWhen(x), canPlace = !x.done && x.dur && (!x.at || (x.date || '') < tk || clashIds.includes(x.id));
+    return '<li class="' + (x.done ? 'on' : '') + '"><button class="tick" data-act="todotoggle" data-v="' + esc(x.id) + '" role="checkbox" aria-checked="' + x.done + '"><span class="box" aria-hidden="true">' + (x.done ? '✓' : '') + '</span><span class="tx">' + esc(x.text) +
+      (x.dur ? '<small>' + esc(fmtMin(x.dur) + (when ? ' · ' + when : '')) + '</small>' : '') + '</span></button>' +
+      (canPlace ? '<button class="x" data-act="todoplace" data-v="' + esc(x.id) + '" aria-label="' + esc(t('todo_place_aria', { n: x.text })) + '">' + esc(t('todo_place')) + '</button>' : '') +
+      '<button class="x" data-act="tododel" data-v="' + esc(x.id) + '" aria-label="' + esc(t('sc_remove') + ' : ' + x.text) + '">✕</button></li>'; }).join('') + '</ul>' : '<p class="hint" style="margin:0">' + esc(t('nt_empty')) + '</p>';
+  const ask = todoAsk && L.find(x => x.id === todoAsk && !x.done);
+  h += '<form id="todof" class="stack" style="margin:0"><label class="f" for="todo-in">' + esc(t('nt_add_label')) + '<input id="todo-in" type="text" maxlength="80" placeholder="' + esc(t('nt_add_ph')) + '" autocomplete="off" value="' + esc(todoDraft) + '"></label>' +
+    durChips('tododur', todoDur, [15, 30, 60], 5, 240, t('todo_dur'), false) +
+    '<p class="hint" style="margin:0">' + esc(todoDur ? t('todo_dur_on') : t('todo_dur_off')) + '</p>' +
+    msgP('todof') + (ask ? '<div class="chips" role="group" aria-label="' + esc(t('todo_noslot', { m: fmtMin(ask.dur) })) + '"><button type="button" class="chip" data-act="todotm" data-v="' + esc(ask.id) + '">' + esc(t('todo_tomorrow')) + '</button><button type="button" class="chip" data-act="todonotime" data-v="' + esc(ask.id) + '">' + esc(t('todo_notime')) + '</button></div>' : '') +
+    '<button class="btn pri full" type="submit">' + esc(t('nt_add')) + '</button></form>';
   if (L.some(x => x.done)) h += '<button class="tbtn" data-act="todoclear">' + esc(t('nt_clear')) + '</button>';
   return h;
 }
@@ -1347,6 +1393,9 @@ function sheetHtml() {
       '<button class="btn pri full" type="submit">' + esc(t('sh_save_day')) + '</button></form>' +
       '<button class="btn warnb full" data-act="sheetrmclass">' + esc(it.src === 'work' ? t('sh_not_work') : t('sh_rm_class')) + '</button>' +
       (it.src === 'pattern' ? '<p class="hint" style="margin:0">' + esc(t('sh_class_hint')) + '</p>' : '');
+  } else if (it.todo) {
+    body = '<form id="sheetf" class="stack" style="margin:0">' + timeIn('sh-t', t('sh_time'), fmt(it.t)) + '<button class="btn pri full" type="submit">' + esc(t('sh_save_day')) + '</button></form>' +
+      '<button class="btn full" data-act="tododone">' + esc(t('todo_done')) + '</button><button class="btn warnb full" data-act="todounpin">' + esc(t('todo_unpin')) + '</button>';
   } else if (it.type === 'wake' || it.type === 'bed') {
     const manual = it.type === 'wake' ? !!o.wake : !!o.bed;
     body = '<form id="sheetf" class="stack" style="margin:0">' + timeIn('sh-t', it.type === 'wake' ? t('sh_wake') : t('sh_bed'), fmt(it.t)) +
@@ -1525,17 +1574,19 @@ function chipRow(label, act, values, cur, lab, quiet) {
 }
 /* Duration chips + "Autre" -> native select (wheel on iPhone) with the precise value */
 function durChips(act, cur, presets, lo, hi, label, quiet) {
-  const other = state.ui['other_' + act] || !presets.includes(+cur), id = 'dur-' + act;
+  const other = state.ui['other_' + act] || (+cur > 0 || presets.includes(0)) && !presets.includes(+cur), id = 'dur-' + act;
   return '<div class="chiprow' + (quiet ? ' quiet' : '') + '" role="group" aria-label="' + esc(label) + '">' + (quiet ? '' : '<p class="hint">' + esc(label) + '</p>') + '<div class="chips">' +
-    presets.map(v => '<button class="chip" data-act="durchip" data-k="' + esc(act) + '" data-v="' + v + '" aria-pressed="' + (!other && +cur === v) + '">' + esc(fmtMin(v)) + '</button>').join('') +
-    '<button class="chip" data-act="durchip" data-k="' + esc(act) + '" data-v="other" aria-pressed="' + other + '">' + esc(t('other')) + (other ? ' · ' + esc(fmtMin(+cur)) : '') + '</button>' +
+    presets.map(v => '<button type="button" class="chip" data-act="durchip" data-k="' + esc(act) + '" data-v="' + v + '" aria-pressed="' + (!other && +cur === v) + '">' + esc(fmtMin(v)) + '</button>').join('') +
+    '<button type="button" class="chip" data-act="durchip" data-k="' + esc(act) + '" data-v="other" aria-pressed="' + other + '">' + esc(t('other')) + (other ? ' · ' + esc(fmtMin(+cur)) : '') + '</button>' +
     (other ? '<label class="sr" for="' + id + '">' + esc(label) + '</label><select id="' + id + '" class="dur-sel" data-durfor="' + esc(act) + '">' + opts(range(lo, hi, 5), +cur, v => fmtMin(v)) + '</select>' : '') + '</div></div>';
 }
 const DUR_SETTERS = {
   sportmin: v => { state.settings.sportMin = inRange5(v, 15, 180, state.settings.sportMin); },
   rmbed: v => { state.reminders.bed.before = inRange5(v, 0, 90, state.reminders.bed.before); },
-  rmscr: v => { state.reminders.screens.before = inRange5(v, 15, 120, state.reminders.screens.before); }
+  rmscr: v => { state.reminders.screens.before = inRange5(v, 15, 120, state.reminders.screens.before); },
+  tododur: v => { keepTodoDraft(); todoDur = +v === todoDur ? 0 : inRange5(v, 5, 240, 30); } // tap the chosen chip again = no duration
 };
+function keepTodoDraft() { const el = document.getElementById('todo-in'); if (el) todoDraft = el.value; }
 function sportControls() {
   const S = state.settings;
   return (obOn ? '<p class="hint" style="margin:0">' + esc(t('sp_intro')) + '</p>' : '') + toggle('sporton', S.sportOn, t('sp_toggle')) +
@@ -2059,7 +2110,7 @@ const ACT = {
   showsug: () => { state.hiddenSug = {}; save(); },
   addtask: () => { tab = 'week'; weekSub = 'courses'; msg = ''; scrollTask = true; },
   sporton: () => { state.settings.sportOn = !state.settings.sportOn; save(); },
-  durchip: (v, b) => { const k = b.dataset.k; if (!DUR_SETTERS[k]) return; if (v === 'other') state.ui['other_' + k] = true; else { state.ui['other_' + k] = false; DUR_SETTERS[k](v); } save(); },
+  durchip: (v, b) => { const k = b.dataset.k; if (!DUR_SETTERS[k]) return; if (k === 'tododur') keepTodoDraft(); if (v === 'other') { state.ui['other_' + k] = true; if (k === 'tododur' && !todoDur) todoDur = 45; } else { state.ui['other_' + k] = false; DUR_SETTERS[k](v); } save(); },
   sportwhen: v => { if (['morning', 'evening', 'any'].includes(v)) state.settings.sportWhen = v; save(); },
   obnext: () => { ob = Math.min(OB_N - 1, ob + 1); msg = ''; obFocus = true; window.scrollTo(0, 0); },
   obback: () => { ob = Math.max(0, ob - 1); msg = ''; obFocus = true; window.scrollTo(0, 0); },
@@ -2072,8 +2123,14 @@ const ACT = {
   icsrem: () => { const n = computeReminders(7).length; if (!n) { say(t('rm_none'), true); return; } download('rythmo-rappels.ics', remindersICS(), 'text/calendar;charset=utf-8'); say(t('rm_cal_done', { n })); },
   icsplan: () => { download('rythmo-planning.ics', planICS(), 'text/calendar;charset=utf-8'); say(t('rm_plan_done')); },
   install: () => { if (installEvt) { installEvt.prompt(); installEvt.userChoice.finally(() => { installEvt = null; render(); }); } },
-  todotoggle: v => { state.todos = state.todos.map(x => x.id === v ? Object.assign({}, x, { done: !x.done }) : x); save(); },
-  tododel: v => { state.todos = state.todos.filter(x => x.id !== v); save(); },
+  todotoggle: v => { keepTodoDraft(); state.todos = state.todos.map(x => x.id === v ? Object.assign({}, x, { done: !x.done, doneOn: x.done ? null : key(today()) }) : x); save(); },
+  todoplace: v => { keepTodoDraft(); const x = state.todos.find(y => y.id === v); if (!x) return; placeTodo(x); save(); },
+  todotm: v => { keepTodoDraft(); const x = state.todos.find(y => y.id === v); if (!x) return; todoAsk = null; const tm = addDays(today(), 1), s = todoSlot(tm, x.dur, 0);
+    if (s !== null) { x.date = key(tm); x.at = fmt(s); say(t('todo_placed_tm', { t: fmt(s) }), false, 'todof'); } else { x.date = null; x.at = null; say(t('todo_full_tm'), false, 'todof'); } save(); },
+  todonotime: v => { keepTodoDraft(); const x = state.todos.find(y => y.id === v); if (!x) return; todoAsk = null; x.date = null; x.at = null; save(); say(t('todo_kept'), false, 'todof'); },
+  todounpin: () => { const it = sheetItem(); const x = it && state.todos.find(y => y.id === it.todo); if (!x) return; x.date = null; x.at = null; save(); closeSheet(); say(t('todo_kept')); },
+  tododone: () => { const it = sheetItem(); const x = it && state.todos.find(y => y.id === it.todo); if (!x) return; x.done = true; x.doneOn = key(today()); save(); closeSheet(); say(t('todo_done_msg', { n: x.text })); },
+  tododel: v => { keepTodoDraft(); state.todos = state.todos.filter(x => x.id !== v); save(); },
   todoclear: () => { state.todos = state.todos.filter(x => !x.done); save(); },
   autonight: () => { state.settings.autoNight = !state.settings.autoNight; save(); },
   export: () => download('rythmo-donnees.json', JSON.stringify(state, null, 2), 'application/json'),
@@ -2141,13 +2198,20 @@ $app.addEventListener('submit', e => {
       });
     } else {
       const x = v('sh-t'); if (!HHMM.test(x)) { render(); return; }
+      if (it.todo) { const td = state.todos.find(y => y.id === it.todo); if (td) { td.at = x; td.date = dk; save(); } say(t('edited_day')); closeSheet(); render(); return; }
       setOv(dk, o => { if (it.k === 'wake') o.wake = x; else if (it.k === 'bed') o.bed = x; else { o.at = o.at || {}; o.at[it.k] = x; if (o.skip) delete o.skip[it.k]; } });
     }
     say(t('edited_day')); closeSheet(); render(); return;
   }
   if (id === 'todof') {
     const el = document.getElementById('todo-in'), v = el.value.trim().slice(0, 80);
-    if (v && state.todos.length < 30) { state.todos = state.todos.concat([{ id: uid(), text: v, done: false }]); save(); }
+    if (v && state.todos.length >= 30) { formError(form, t('todo_max'), 'todo-in'); return; }
+    if (v) {
+      const x = { id: uid(), text: v, done: false, dur: todoDur, date: null, at: null, doneOn: null };
+      state.todos = state.todos.concat([x]); todoDraft = ''; todoAsk = null;
+      if (x.dur) placeTodo(x);
+      todoDur = 0; state.ui.other_tododur = false; save();
+    }
     render(); const n = document.getElementById('todo-in'); if (n) n.focus(); return;
   }
   if (id === 'rulef') {
