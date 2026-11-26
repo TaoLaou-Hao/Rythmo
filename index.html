@@ -11,17 +11,18 @@
 <meta name="description" content="Rythmo : un planning calme qui suit ta vraie journée d'étudiant (sommeil, repas, cours).">
 <script>
 /* Theme before first paint (no flash). Old links #a-#e and the old saved variant still open the matching theme. */
+window.RYTHMO_DEFAULT_THEME = 'horizon'; // default theme (user decision pending): change this one line
 (function () {
-  var T = ['horizon', 'nuit', 'doux', 'clair'], M = { a: 'horizon', b: 'horizon', c: 'doux', d: 'clair', e: 'nuit' }, th = 'horizon';
+  var D = window.RYTHMO_DEFAULT_THEME, T = ['horizon', 'nuit', 'doux', 'clair'], M = { a: 'horizon', b: 'horizon', c: 'doux', d: 'clair', e: 'nuit' }, th = D;
   try {
     var s = JSON.parse(localStorage.getItem('rythmo.v1') || 'null') || {}, st = s.settings || {};
-    th = st.theme || M[String(s.variant || '').toLowerCase()] || 'horizon';
+    th = st.theme || M[String(s.variant || '').toLowerCase()] || D;
     var h = String(location.hash || '').slice(1).toLowerCase();
     if (M[h] && !st.themePicked) th = M[h];
     var hr = new Date().getHours();
-    if (st.autoNight && (hr >= 21 || hr < 6)) th = 'nuit';
+    if (th === 'auto' || st.autoNight) th = (hr >= 21 || hr < 6) ? 'nuit' : D; // Auto: decided at launch only
   } catch (e) {}
-  document.documentElement.setAttribute('data-theme', T.indexOf(th) >= 0 ? th : 'horizon');
+  document.documentElement.setAttribute('data-theme', T.indexOf(th) >= 0 ? th : D);
 })();
 </script>
 <link rel="manifest" href="./manifest.json">
@@ -245,7 +246,8 @@ nav.tabs button[aria-current="page"] svg{stroke-width:2.4}
 .empty p{color:var(--muted);margin:0}
 
 /* Settings: theme picker */
-.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--s-2)}
+.tiles{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.tile-auto .pv{background:linear-gradient(135deg,#f4f3fb 0 50%,#17141f 50% 100%)!important}
 .tile{position:relative;display:block;cursor:pointer;border-radius:var(--r-md)}
 .tile input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
 .tile .pv{display:grid;gap:4px;height:64px;padding:6px;border-radius:var(--r-md);background:var(--bg);color:var(--ink);border:2px solid var(--line);font-family:var(--f-body);overflow:hidden}
@@ -504,6 +506,8 @@ details.acc>summary{min-height:60px!important}
 const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSc82fZq4bbi5RvtrHeVOebLYmaa5w0WAXumdykyZkfqkQtn4A/viewform';
 const RELAY = 'https://rythmo.tao-laou-hao.workers.dev';
 const THEMES = ['horizon', 'nuit', 'doux', 'clair'];
+const DEFAULT_THEME = window.RYTHMO_DEFAULT_THEME || 'horizon';
+const THEME_CHOICES = THEMES.concat(['auto']); // Auto = Nuit 21:00-06:00, else the default theme
 const LEGACY = { a: 'horizon', b: 'horizon', c: 'doux', d: 'clair', e: 'nuit' }; // old variants A-E
 const SCHEMA = 3;
 const range = (a, b, s) => { const r = []; for (let x = a; x <= b + 1e-9; x += s) r.push(Math.round(x * 100) / 100); return r; };
@@ -620,6 +624,7 @@ en: {
   sp_title:'Sport (optional)', sp_intro:'Sport is optional. We\'ll only suggest a small one if you want.', sp_toggle:'Suggest some sport', sp_dur:'How long', sp_when:'When', sp_morning:'Morning', sp_evening:'Evening', sp_any:'Any time',
   set_title:'Settings', set_planning:'Planning', set_sleep:'Sleep you need', set_commute:'Travel time to school (one way)', set_free:'Wake-up on free days',
   set_theme:'Theme', set_theme_hint:'Pick the look you find easiest to read.', set_auto:'Automatic: Night in the evening', set_auto_hint:'Switches to Night between 21:00 and 6:00, without changing your choice.',
+  th_auto:'Auto', th_auto_aria:'Auto: Night from 21:00 to 6:00', th_auto_hint:'Auto: Night from 21:00 to 6:00, the default theme the rest of the day. It changes when you open the app, never while you use it.',
   th_horizon:'Horizon', th_nuit:'Night', th_doux:'Soft', th_clair:'Clear',
   set_lang:'Language', set_data:'Your data', set_reset:'Erase all my data', set_reset_confirm:'Tap again to erase everything', set_reset_done:'Everything was erased.',
   set_export:'Download my data (.json)', on:'On', off:'Off',
@@ -733,6 +738,7 @@ fr: {
   sp_title:'Sport (facultatif)', sp_intro:'Le sport, c\'est facultatif. On t\'en propose juste un petit si tu veux.', sp_toggle:'Me proposer du sport', sp_dur:'Durée', sp_when:'Moment', sp_morning:'Le matin', sp_evening:'Le soir', sp_any:'Peu importe',
   set_title:'Réglages', set_planning:'Planning', set_sleep:'Sommeil dont tu as besoin', set_commute:'Temps de trajet vers l\'école (aller)', set_free:'Réveil les jours sans cours',
   set_theme:'Thème', set_theme_hint:'Choisis l\'apparence la plus facile à lire pour toi.', set_auto:'Automatique : Nuit le soir', set_auto_hint:'Passe en Nuit entre 21 h et 6 h, sans changer ton choix.',
+  th_auto:'Auto', th_auto_aria:'Auto : Nuit de 21 h à 6 h', th_auto_hint:'Auto : Nuit de 21 h à 6 h, le thème par défaut le reste du temps. Il change à l\'ouverture de l\'app, jamais pendant que tu l\'utilises.',
   th_horizon:'Horizon', th_nuit:'Nuit', th_doux:'Doux', th_clair:'Clair',
   set_lang:'Langue', set_data:'Tes données', set_reset:'Effacer toutes mes données', set_reset_confirm:'Touche encore pour tout effacer', set_reset_done:'Tout a été effacé.',
   set_export:'Télécharger mes données (.json)', on:'Activé', off:'Désactivé',
@@ -753,7 +759,7 @@ const isObj = o => !!o && typeof o === 'object' && !Array.isArray(o);
 const HHMM = /^([01]\d|2[0-3]):[0-5]\d$/;
 function freshState() {
   return { v: SCHEMA, onboarded: false, lang: (navigator.language || 'en').toLowerCase().startsWith('fr') ? 'fr' : 'en', sample: false,
-    settings: { sleep: 8, commute: 30, sport: 30, freeWake: '08:00', bedCap: '23:30', theme: 'horizon', themePicked: false, autoNight: false,
+    settings: { sleep: 8, commute: 30, sport: 30, freeWake: '08:00', bedCap: '23:30', theme: DEFAULT_THEME, themePicked: false, autoNight: false,
       sportOn: false, sportMin: 30, sportWhen: 'any', waterGoal: 8 }, // new users: no sport until they opt in
     classes: [], tasks: [], checkins: {}, challenges: {}, water: {}, done: {}, hiddenSug: {}, cal: null, overrides: {}, ui: {}, note: '', todos: [],
     reminders: { enabled: false, bed: { on: true, before: 15 }, checkin: { on: true, time: '21:30' }, water: { on: false }, screens: { on: false, before: 45 } } };
@@ -808,7 +814,8 @@ function sanitize(s) {
   out.cal = cleanCal(out.cal);
   out.tasks = (Array.isArray(out.tasks) ? out.tasks : []).filter(k => isObj(k) && +k.dur > 0)
     .map(k => ({ id: String(k.id || uid()), title: String(k.title || '').slice(0, 40), dur: Math.min(600, +k.dur), days: okDays(k.days) }));
-  if (!THEMES.includes(out.settings.theme)) out.settings.theme = 'horizon';
+  if (out.settings.autoNight === true) { out.settings.theme = 'auto'; out.settings.autoNight = false; } // old "Nuit le soir" switch -> Auto tile
+  if (!THEME_CHOICES.includes(out.settings.theme)) out.settings.theme = DEFAULT_THEME;
   if (!HHMM.test(out.settings.freeWake)) out.settings.freeWake = '08:00';
   if (!bedCapOk(out.settings.bedCap)) out.settings.bedCap = '23:30';
   out.onboarded = !!out.onboarded;
@@ -872,11 +879,18 @@ const wdOf = d => (d.getDay() + 6) % 7; // Monday = 0
 const dayName = (d, style) => new Intl.DateTimeFormat(state.lang, { weekday: style || 'short' }).format(d);
 const longDate = d => new Intl.DateTimeFormat(state.lang, { weekday: 'long', day: 'numeric', month: 'long' }).format(d);
 const WEEK = [0, 1, 2, 3, 4, 5, 6].map(i => new Date(2024, 0, 1 + i)); // a real Monday-to-Sunday week, for day labels
+/* Auto theme: resolved at launch and when the app comes back to the foreground, never in the middle of a session */
+const resolveAuto = () => { const h = new Date().getHours(); return (h >= 21 || h < 6) ? 'nuit' : DEFAULT_THEME; };
+let autoTheme = resolveAuto();
 function effTheme() {
-  const S = state.settings, h = new Date().getHours();
-  if (S.autoNight && (h >= 21 || h < 6)) return 'nuit';
-  return THEMES.includes(S.theme) ? S.theme : 'horizon';
+  const th = state.settings.theme;
+  if (th === 'auto') return autoTheme;
+  return THEMES.includes(th) ? th : DEFAULT_THEME;
 }
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState !== 'visible') return;
+  autoTheme = resolveAuto(); document.documentElement.setAttribute('data-theme', effTheme()); syncThemeColor(); // no re-render
+});
 function syncThemeColor() {
   const m = document.querySelector('meta[name=theme-color]'); if (!m) return;
   try { const c = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim(); if (c) m.setAttribute('content', c); } catch (e) {}
@@ -1454,8 +1468,8 @@ function toggle(act, on, label, hint, v, onWord) {
   return '<button class="tg" role="switch" aria-checked="' + !!on + '" data-act="' + esc(act) + '"' + (v ? ' data-v="' + esc(v) + '"' : '') + '><span class="lb">' + esc(label) + (hint ? '<span class="hint">' + esc(hint) + '</span>' : '') + '<span class="st">' + esc(on ? (onWord || t('on')) : t('off')) + '</span></span><span class="tr" aria-hidden="true"></span></button>';
 }
 function themeTiles() {
-  return '<fieldset style="border:0;padding:0;margin:0"><legend class="sr">' + esc(t('set_theme')) + '</legend><div class="tiles">' + THEMES.map(th =>
-    '<label class="tile" data-theme="' + esc(th) + '"><input type="radio" name="theme" value="' + esc(th) + '"' + (state.settings.theme === th ? ' checked' : '') + '>' +
+  return '<fieldset style="border:0;padding:0;margin:0"><legend class="sr">' + esc(t('set_theme')) + '</legend><div class="tiles">' + THEME_CHOICES.map(th =>
+    '<label class="tile' + (th === 'auto' ? ' tile-auto' : '') + '" data-theme="' + esc(th === 'auto' ? 'nuit' : th) + '"><input type="radio" name="theme" value="' + esc(th) + '"' + (state.settings.theme === th ? ' checked' : '') + (th === 'auto' ? ' aria-label="' + esc(t('th_auto_aria')) + '"' : '') + '>' +
     '<span class="pv" aria-hidden="true"><b>Rythmo</b><span class="strip"><i style="background:var(--b-class)"></i><i style="background:var(--b-meal)"></i><i style="background:var(--b-sleep)"></i><i class="dot"></i></span><span class="strip"><i style="background:var(--b-sport)"></i><i style="background:var(--b-free)"></i></span></span>' +
     '<span class="nm">' + esc(t('th_' + th)) + '</span></label>').join('') + '</div></fieldset>';
 }
@@ -1528,7 +1542,7 @@ function screenSettings() {
   h += acc('set-sport', t('sp_title'), S.sportOn ? fmtMin(S.sportMin) + ' · ' + t('sp_' + S.sportWhen).toLowerCase() : t('off').toLowerCase(), sportControls());
   h += acc('set-water', t('water'), tp('sum_water', S.waterGoal, { n: S.waterGoal }),
     '<div class="stepper" role="group" aria-label="' + esc(t('w_goal_label')) + '"><button class="rb" data-act="wgoal" data-v="-1" aria-label="' + esc(t('w_less')) + '"' + (S.waterGoal <= 4 ? ' disabled' : '') + '>−</button><span class="v" aria-live="polite">' + S.waterGoal + '</span><button class="rb" data-act="wgoal" data-v="1" aria-label="' + esc(t('w_more')) + '"' + (S.waterGoal >= 12 ? ' disabled' : '') + '>+</button><span class="hint">' + esc(t('w_goal_label')) + '</span></div><p class="hint" style="margin:0">' + esc(t('w_explain')) + '</p>');
-  h += acc('set-theme', t('set_theme'), t('th_' + S.theme) + (S.autoNight ? ' · ' + t('sum_auto') : ''), themeTiles() + toggle('autonight', S.autoNight, t('set_auto') + ' (' + t('set_auto_hint_short') + ')'));
+  h += acc('set-theme', t('set_theme'), t('th_' + S.theme), themeTiles() + '<p class="hint" style="margin:0">' + esc(t('th_auto_hint')) + '</p>');
   h += acc('set-data', t('set_data_help'), t('sum_data'),
     '<div class="grid2"><button class="btn" data-act="export">' + esc(t('set_export_short')) + '</button><button class="btn" data-act="obreplay">' + esc(t('ob_replay')) + '</button></div>' +
     '<button class="btn warnb full" data-act="reset">' + esc(resetArm ? t('set_reset_confirm') : t('set_reset')) + '</button>');
@@ -2115,7 +2129,7 @@ $app.addEventListener('change', e => {
     else R.before = inRange5(el.value, 0, 120, R.before);
     save(); render(); return;
   }
-  if (el.name === 'theme' && THEMES.includes(el.value)) { state.settings.theme = el.value; state.settings.themePicked = true; save(); render(); return; }
+  if (el.name === 'theme' && THEME_CHOICES.includes(el.value)) { state.settings.theme = el.value; state.settings.autoNight = false; state.settings.themePicked = true; autoTheme = resolveAuto(); save(); render(); return; }
   const k = el.dataset && el.dataset.set; if (!k) return;
   if (k === 'bedCap') { if (bedCapOk(el.value)) state.settings.bedCap = el.value; else { formError(el.closest('label') || el.parentNode, t('bedcap_range'), el.id); return; } }
   else state.settings[k] = k === 'freeWake' ? (HHMM.test(el.value) ? el.value : '08:00') : +el.value;
