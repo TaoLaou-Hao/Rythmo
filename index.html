@@ -487,6 +487,11 @@ details.acc>summary{min-height:60px!important}
 .sheet label.f,.ob-card label.f,.acc-b label.f{gap:8px}
 .rm-row{border-top:0!important}
 
+.ideas{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.ideas li{display:grid;gap:2px;padding:12px;border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface)}
+.ideas li span{color:var(--ink)}
+.ideas li small{color:var(--muted)}
+.ideas .ik{font-size:.8125rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
 .rule-line{background:var(--sunk);border-radius:var(--r-md);padding:12px;display:grid;gap:8px}
 .toast{position:fixed;left:16px;right:16px;bottom:calc(57px + 12px + env(safe-area-inset-bottom,0px));z-index:30;max-width:528px;margin:0 auto;display:none;align-items:center;justify-content:space-between;gap:12px;padding:8px 8px 8px 16px;border-radius:var(--r-md);background:var(--ink);color:var(--bg);box-shadow:var(--shadow-2);font-weight:600}
 .toast.on{display:flex}
@@ -584,6 +589,7 @@ en: {
   other:'Other', rm_before_label:'Minutes before lights out', floor_note:'About {h} of sleep possible tonight.', st_bed_soon:'Bedtime soon', bedcap_range:'Choose a time between 20:00 and 01:30.',
   todo_dur:'How long (optional)', todo_dur_on:'Rythmo puts it in your first free slot today. It won\'t move by itself.', todo_dur_off:'No duration: a simple checklist item.', todo_placed:'Placed today at {t}.', todo_noslot:'No free slot today for {m}.', todo_tomorrow:'Tomorrow', todo_notime:'No time', todo_placed_tm:'Planned for tomorrow at {t}.', todo_full_tm:'Tomorrow is full too: kept with no time.', todo_kept:'Kept with no time.', todo_place:'Place', todo_place_aria:'Place today: {n}', todo_today_at:'today {t}', todo_tm_at:'tomorrow {t}', todo_why:'Your to-do ({m}), placed when you added it. It never moves by itself.', todo_clash:'Something now overlaps: {n}. Open To-do to place it again.', todo_done:'Done', todo_done_msg:'Done: {n}.', todo_unpin:'Remove from the day', todo_max:'The list is full (30). Remove something first.',
   cp_btn:'Copy this day to…', cp_title:'Copy to…', cp_hint:'Copies this day\'s changes (work day, classes added or removed, sport, times). Not your to-dos. Replaces what is already changed on those days.', cp_this:'This week', cp_next:'Next week', cp_apply:'Copy', cp_none_sel:'Pick at least one day.', cp_done:'Copied to {n} days.', cp_done_one:'Copied to 1 day.', cp_nothing:'Nothing to copy: this day follows your usual timetable.',
+  free_row:'Free', free_aria:'Free time {s}–{e}: ideas', free_title:'What if…', free_hint:'Just ideas, nothing required. This time is yours.', fk_B:'Move', fk_D:'Unwind', fk_S:'See people', ideas_meal:'Meal ideas', ideas_plate:'A plate that works: some vegetables, a starchy food (pasta, rice, bread, potatoes…) and a protein source (egg, legumes, fish, poultry, tofu…). No strict rule: what\'s doable today counts.', ideas_sport:'Before sport, something light; after, a proper meal.', ideas_ru:'No time? The uni canteen counts too.', ideas_adapt:'Adapt to your tastes, allergies and eating habits.', eq_M:'microwave', eq_P:'stove',
   rules_title:'Regular days', badge_rep:'repeats', rule_every:'Every {d}', rule_is:'Regular day: every {d}', rule_today_normal:'Today only: a usual day', rule_today_only:'Today only: changed.', rule_remove:'Remove this regular day', rule_removed:'Regular day removed ({d}).', rule_add:'Internship or work every week', rule_add_btn:'Add this regular day', rule_hint:'Replaces that day\'s classes and imported events, every week from today.', rule_day:'Day', rule_saved:'Regular day saved.', undo:'Undo', edit:'Edit',
   imp_rep:'Including {n} monthly or yearly repeats (shown for the next 6 months).', imp_rep_one:'Including 1 monthly or yearly repeat (shown for the next 6 months).', imp_bad:'{n} repeats could not be read: only their first date was kept.', imp_bad_one:'One repeat could not be read: only its first date was kept.',
   imp_card:'Imported calendar', imp_until:'Until {d}.', imp_exact:'Each date shows its real classes: cancelled sessions, one-off events and alternate weeks stay exact. Import again to refresh.', imp_remove:'Remove the imported calendar', imp_removed:'Imported calendar removed.',
@@ -701,6 +707,7 @@ fr: {
   other:'Autre', rm_before_label:'Minutes avant l\'extinction', floor_note:'Environ {h} de sommeil possibles cette nuit.', st_bed_soon:'Bientôt au lit', bedcap_range:'Choisis une heure entre 20:00 et 01:30.',
   todo_dur:'Durée (facultatif)', todo_dur_on:'Rythmo la place dans ton premier créneau libre aujourd\'hui. Elle ne bouge plus toute seule.', todo_dur_off:'Sans durée : une simple case à cocher.', todo_placed:'Placé aujourd\'hui à {t}.', todo_noslot:'Pas de créneau libre aujourd\'hui pour {m}.', todo_tomorrow:'Demain', todo_notime:'Sans heure', todo_placed_tm:'Prévu demain à {t}.', todo_full_tm:'Demain est plein aussi : gardé sans heure.', todo_kept:'Gardé sans heure.', todo_place:'Placer', todo_place_aria:'Placer aujourd\'hui : {n}', todo_today_at:'aujourd\'hui {t}', todo_tm_at:'demain {t}', todo_why:'Ta chose à faire ({m}), placée quand tu l\'as ajoutée. Elle ne bouge jamais toute seule.', todo_clash:'Quelque chose chevauche maintenant : {n}. Ouvre « À faire » pour la replacer.', todo_done:'C\'est fait', todo_done_msg:'Fait : {n}.', todo_unpin:'Retirer de la journée', todo_max:'La liste est pleine (30). Retire quelque chose d\'abord.',
   cp_btn:'Copier ce jour vers…', cp_title:'Copier vers…', cp_hint:'Copie les changements de ce jour (stage, cours ajoutés ou retirés, sport, horaires). Pas tes choses à faire. Remplace ce qui est déjà modifié ces jours-là.', cp_this:'Cette semaine', cp_next:'Semaine prochaine', cp_apply:'Copier', cp_none_sel:'Choisis au moins un jour.', cp_done:'Copié vers {n} jours.', cp_done_one:'Copié vers 1 jour.', cp_nothing:'Rien à copier : ce jour suit ton emploi du temps habituel.',
+  free_row:'Libre', free_aria:'Temps libre {s}–{e} : idées', free_title:'Et si…', free_hint:'Juste des idées, rien d\'obligatoire. Ce temps est à toi.', fk_B:'Bouger', fk_D:'Se détendre', fk_S:'Voir du monde', ideas_meal:'Idées de repas', ideas_plate:'Une assiette qui tient : des légumes, un féculent (pâtes, riz, pain, pommes de terre…) et une source de protéines (œuf, légumineuses, poisson, volaille, tofu…). Pas de règle stricte : ce qui est faisable aujourd\'hui compte.', ideas_sport:'Avant le sport, plutôt quelque chose de léger ; après, un vrai repas.', ideas_ru:'Pas le temps ? Resto U, ça compte aussi.', ideas_adapt:'Adapte selon tes goûts, allergies et habitudes alimentaires.', eq_M:'micro-ondes', eq_P:'plaque',
   rules_title:'Jours réguliers', badge_rep:'se répète', rule_every:'Chaque {d}', rule_is:'Jour régulier : chaque {d}', rule_today_normal:'Aujourd\'hui seulement : journée habituelle', rule_today_only:'Aujourd\'hui seulement : modifié.', rule_remove:'Retirer ce jour régulier', rule_removed:'Jour régulier retiré ({d}).', rule_add:'Stage ou travail chaque semaine', rule_add_btn:'Ajouter ce jour régulier', rule_hint:'Remplace les cours et événements importés de ce jour, chaque semaine à partir d\'aujourd\'hui.', rule_day:'Jour', rule_saved:'Jour régulier enregistré.', undo:'Annuler', edit:'Modifier',
   imp_rep:'Dont {n} répétitions mensuelles ou annuelles (affichées sur les 6 prochains mois).', imp_rep_one:'Dont 1 répétition mensuelle ou annuelle (affichée sur les 6 prochains mois).', imp_bad:'{n} répétitions n\'ont pas pu être lues : seule la première date est gardée.', imp_bad_one:'Une répétition n\'a pas pu être lue : seule la première date est gardée.',
   imp_card:'Agenda importé', imp_until:'Jusqu\'au {d}.', imp_exact:'Chaque date affiche ses vrais cours : séances annulées, événements ponctuels et semaines alternées restent exacts. Réimporte pour mettre à jour.', imp_remove:'Retirer l\'agenda importé', imp_removed:'Agenda importé retiré.',
@@ -1134,7 +1141,7 @@ const BI = { // block icons
   wind: '<rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/>'
 };
 const KIND = { appt: 'class', wake: 'sleep', bed: 'sleep', wind: 'sleep', meal: 'meal', class: 'class', travel: 'travel', sport: 'sport', task: 'task', morning: 'free' };
-const ICK = { appt: 'task', wake: 'wake', bed: 'sleep', wind: 'wind', meal: 'meal', class: 'class', travel: 'travel', sport: 'sport', task: 'task', morning: 'free' };
+const ICK = { free: 'free', appt: 'task', wake: 'wake', bed: 'sleep', wind: 'wind', meal: 'meal', class: 'class', travel: 'travel', sport: 'sport', task: 'task', morning: 'free' };
 const SUGGEST = { meal: 1, sport: 1, morning: 1, task: 1 };
 
 let msgAt = null, openSec = {}, ruleEditId = null;
@@ -1277,10 +1284,12 @@ function rowHtml(it, dk, past) {
   const inner = '<span class="tm time">' + time + (past ? '<span class="sr"> (' + esc(t('past')) + ')</span>' : '') + '</span><span class="ic">' + SVG(BI[ICK[it.type]] || BI.free) + '</span><span class="tt"><span class="ttl">' + esc(it.title) + '</span>' + extra + '</span>';
   const cls = 'row block ' + kind + ' t-' + it.type + (sug ? ' suggestion' : '') + (it.moved ? ' moved' : '') + (it.type === 'class' || it.type === 'appt' ? ' tall' : '');
   if (it.type === 'travel') return '<div class="' + cls + '">' + inner + '</div>';
+  if (it.type === 'free') return '<button class="' + cls + '" id="free-' + esc(dk) + '" data-act="freeidea" data-v="' + it.t + '-' + it.end + '" aria-haspopup="dialog" aria-label="' + esc(t('free_aria', { s: fmt(it.t), e: fmt(it.end) })) + '">' + inner + '<span class="chev" aria-hidden="true">›</span></button>';
   return '<button class="' + cls + '" id="' + esc(bid(dk, it.k)) + '" data-act="edit" data-d="' + esc(dk) + '" data-k="' + esc(it.k) + '" aria-haspopup="dialog" aria-label="' + esc(t('edit_block', { b: it.title, t: fmt(it.t) })) + '">' + inner + '<span class="chev" aria-hidden="true">›</span></button>';
 }
 function timeline(P, dk, isToday) {
-  const nm = nowMin(), L = P.items;
+  const nm = nowMin(), gp = gaps(P, isToday ? nm : 0);
+  const L = gp ? P.items.concat([{ k: 'free', t: gp[0], end: gp[1], type: 'free', title: t('free_row') }]).sort((a, b) => a.t - b.t) : P.items;
   const isPast = it => isToday && it.type !== 'bed' && it.t + durOf(it) <= nm;
   const past = L.filter(isPast), rest = L.filter(it => !isPast(it));
   let h = '<ul class="tl2" aria-label="' + esc(t('tl_label')) + '">';
@@ -1331,6 +1340,85 @@ function screenPlan() {
   if (P.noSport) h += '<p class="hint">' + esc(t('sport_none')) + '</p>';
   h += '<p class="tipline"><b>' + esc(t('tip_label')) + '</b> ' + esc(challengeFor(date, P).text) + '</p>';
   return h;
+}
+/* ---------- F4/F5 "Idées": content data (fr/en in one array; never shown as rules, no numbers on food) ---------- */
+// s: pd petit-déj, de déjeuner, di dîner · m: minutes · q: M micro-ondes / P plaque · p: 1 € / 2 €€ (never shown first)
+const MEALS = [
+  { s: 'pd', m: 10, q: 'M', p: 1, fr: 'Porridge micro-ondes banane', en: 'Microwave banana oatmeal', ifr: "flocons d'avoine, lait ou boisson végétale, banane", ien: 'oats, milk or plant drink, banana' },
+  { s: 'pd', m: 10, q: 'M', p: 1, fr: 'Tartines beurre de cacahuète-banane', en: 'Peanut butter banana toast', ifr: 'pain, beurre de cacahuète, banane', ien: 'bread, peanut butter, banana' },
+  { s: 'pd', m: 10, q: 'M', p: 1, fr: 'Yaourt, fruit et muesli', en: 'Yogurt, fruit and muesli', ifr: 'yaourt, fruit de saison, muesli ou flocons', ien: 'yogurt, seasonal fruit, muesli or oats' },
+  { s: 'pd', m: 10, q: 'M', p: 1, fr: 'Œufs brouillés micro-ondes + pain', en: 'Microwave scrambled eggs + bread', ifr: 'œufs, pain, un peu de fromage, tomate', ien: 'eggs, bread, a little cheese, tomato' },
+  { s: 'de', m: 10, q: 'M', p: 1, fr: 'Salade carottes–pois chiches', en: 'Carrot and chickpea salad', ifr: 'carottes râpées, pois chiches, citron, huile', ien: 'grated carrots, chickpeas, lemon, oil' },
+  { s: 'de', m: 10, q: 'M', p: 2, fr: 'Wrap thon-crudités', en: 'Tuna veggie wrap', ifr: 'tortilla, thon, salade, tomate, yaourt nature', ien: 'tortilla, tuna, lettuce, tomato, plain yogurt' },
+  { s: 'de', m: 10, q: 'M', p: 1, fr: 'Croque-monsieur micro-ondes', en: 'Microwave ham-cheese toastie', ifr: 'pain de mie, jambon, fromage, salade', ien: 'sandwich bread, ham, cheese, salad' },
+  { s: 'de', m: 10, q: 'M', p: 1, fr: 'Taboulé de semoule aux légumes', en: 'Couscous veg salad', ifr: 'semoule, tomate, concombre, pois chiches, citron', ien: 'couscous, tomato, cucumber, chickpeas, lemon' },
+  { s: 'de', m: 20, q: 'M', p: 1, fr: 'Potimarron ou patate douce au micro-ondes + fromage blanc', en: 'Microwave squash or sweet potato + fromage blanc', ifr: 'potimarron ou patate douce, fromage blanc, herbes', ien: 'squash or sweet potato, fromage blanc, herbs' },
+  { s: 'de', m: 20, q: 'P', p: 1, fr: 'Pâtes, thon, tomates', en: 'Pasta, tuna, tomatoes', ifr: 'pâtes, thon, tomates en boîte, ail', ien: 'pasta, tuna, canned tomatoes, garlic' },
+  { s: 'di', m: 20, q: 'P', p: 1, fr: 'Curry de lentilles corail', en: 'Red lentil curry', ifr: 'lentilles corail, lait de coco ou tomate, oignon, épices, riz', ien: 'red lentils, coconut milk or tomato, onion, spices, rice' },
+  { s: 'di', m: 20, q: 'P', p: 1, fr: 'Riz sauté aux œufs et légumes surgelés', en: 'Egg fried rice with frozen veg', ifr: 'riz cuit, œufs, légumes surgelés, sauce soja', ien: 'cooked rice, eggs, frozen veg, soy sauce' },
+  { s: 'di', m: 20, q: 'P', p: 1, fr: 'Shakshuka', en: 'Shakshuka', ifr: 'tomates en boîte, œufs, poivron, oignon, pain', ien: 'canned tomatoes, eggs, pepper, onion, bread' },
+  { s: 'di', m: 20, q: 'P', p: 2, fr: 'Poêlée poulet, légumes, semoule', en: 'Chicken veg stir-fry with couscous', ifr: 'poulet, légumes de saison, semoule, ail', ien: 'chicken, seasonal veg, couscous, garlic' },
+  { s: 'di', m: 10, q: 'M', p: 1, fr: 'Omelette aux légumes + pain', en: 'Veg omelette + bread', ifr: 'œufs, légumes surgelés ou restes, pain', ien: 'eggs, frozen or leftover veg, bread' },
+  { s: 'di', m: 20, q: 'P', p: 1, fr: 'Soupe de légumes + tartines fromage', en: 'Veg soup + cheese toast', ifr: 'légumes surgelés, bouillon, pain, fromage', ien: 'frozen veg, stock, bread, cheese' },
+  { s: 'di', m: 20, q: 'P', p: 1, fr: 'Pommes de terre sautées, œuf, salade', en: 'Pan potatoes, egg, salad', ifr: 'pommes de terre, œuf, salade, oignon', ien: 'potatoes, egg, salad, onion' },
+  { s: 'di', m: 20, q: 'P', p: 2, fr: 'Poisson pané, riz, haricots verts', en: 'Fish fillet, rice, green beans', ifr: 'poisson (surgelé), riz, haricots verts, citron', ien: 'frozen fish fillet, rice, green beans, lemon' }
+];
+// k: B bouger, D se détendre, S voir du monde · all free, no intensity numbers
+const FREE_IDEAS = [
+  { m: 10, k: 'D', fr: 'Respirer calmement 10 fois', en: 'Ten slow breaths' },
+  { m: 10, k: 'B', fr: 'Étirements doux, au sol ou debout', en: 'Gentle stretching' },
+  { m: 10, k: 'B', fr: 'Un tour du pâté de maisons', en: 'A walk round the block' },
+  { m: 10, k: 'D', fr: 'Écouter un morceau les yeux fermés', en: 'Listen to one song, eyes closed' },
+  { m: 10, k: 'S', fr: "Envoyer un message à quelqu'un", en: 'Message a friend' },
+  { m: 10, k: 'D', fr: "Prendre l'air à la fenêtre ou au balcon", en: 'Fresh air at the window' },
+  { m: 10, k: 'D', fr: 'Noter trois choses du jour', en: 'Jot three things from today' },
+  { m: 20, k: 'B', fr: "Marche au parc ou au bord de l'eau", en: 'Walk in a park or by the water' },
+  { m: 20, k: 'B', fr: 'Petite séance au poids du corps, à ton rythme', en: 'Short bodyweight session, at your pace' },
+  { m: 20, k: 'D', fr: 'Dessiner ou gribouiller', en: 'Doodle or sketch' },
+  { m: 20, k: 'S', fr: 'Appeler un proche', en: 'Call someone close' },
+  { m: 20, k: 'D', fr: 'Lire quelques pages', en: 'Read a few pages' },
+  { m: 20, k: 'B', fr: 'Danser sur sa playlist', en: 'Dance to a playlist' },
+  { m: 20, k: 'S', fr: 'Balade avec un ami', en: 'A stroll with a friend' },
+  { m: 45, k: 'B', fr: 'Footing ou vélo, à ton rythme', en: 'Easy jog or bike ride, at your pace' },
+  { m: 45, k: 'S', fr: 'Jeu de société ou jeu vidéo à plusieurs', en: 'Board game or co-op game' },
+  { m: 45, k: 'D', fr: 'Sieste courte ou repos sans écran', en: 'Short nap or screen-free rest' },
+  { m: 45, k: 'B', fr: 'Grande balade, nouveau quartier', en: 'Longer walk, new neighbourhood' },
+  { m: 45, k: 'S', fr: 'Cuisiner à plusieurs', en: 'Cook with others' }
+];
+const L10 = o => state.lang === 'fr' ? o.fr : o.en;
+const dayNo = d => Math.floor(new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime() / 86400000);
+const rot = (L, n) => L.length ? L.slice(n % L.length).concat(L.slice(0, n % L.length)) : L;
+/* 3 meal ideas for a slot; a tight slot (20 min) only gets 10-min ideas; cheaper ones first, rotating by day */
+function mealIdeas(slot, tight, date) {
+  const L = rot(MEALS.filter(x => x.s === slot && (!tight || x.m <= 10)), dayNo(date));
+  return L.filter(x => x.p === 1).concat(L.filter(x => x.p > 1)).slice(0, 3);
+}
+/* One idea per kind; "bouger" never first (rotates between se détendre and voir du monde) */
+function freeIdeas(mins, date) {
+  const n = dayNo(date), order = n % 2 ? ['D', 'S', 'B'] : ['S', 'D', 'B'];
+  return order.map(k => rot(FREE_IDEAS.filter(x => x.k === k && x.m <= mins), n)[0]).filter(Boolean);
+}
+/* View-only: the largest free gap (>= 30 min) between wake + 60 (or now) and wind-down. Not used by reminders or .ics. */
+function gaps(P, from) {
+  const wind = P.items.find(it => it.k === 'wind'), end = wind ? wind.t : P.bed - 45;
+  const busy = P.items.filter(it => it.type !== 'bed').map(it => [it.t, it.t + durOf(it)]).sort((a, b) => a[0] - b[0]);
+  let cur = Math.ceil(Math.max(from, P.wake + 60) / 5) * 5, best = null;
+  const take = (s, e) => { if (e - s >= 30 && (!best || e - s > best[1] - best[0])) best = [s, e]; };
+  busy.forEach(b => { if (b[0] > cur) take(cur, Math.min(b[0], end)); cur = Math.max(cur, b[1]); });
+  take(cur, end);
+  return best;
+}
+function freePanel(mins) {
+  const L = freeIdeas(mins, curDate);
+  return '<p style="margin:0">' + esc(t('free_hint')) + '</p><ul class="ideas">' + L.map(x => '<li><span class="ik">' + esc(t('fk_' + x.k)) + '</span><b>' + esc(L10(x)) + '</b><small>' + esc(fmtMin(x.m)) + '</small></li>').join('') + '</ul>';
+}
+function mealPanel(it, date) {
+  const slot = { bf: 'pd', lunch: 'de', dinner: 'di' }[it.k]; if (!slot) return '';
+  const P = computeDay(date), L = mealIdeas(slot, it.dur <= 20 && slot !== 'pd', date), sport = P.items.some(x => x.type === 'sport');
+  return '<details class="imp" id="meal-ideas" style="margin:0"' + (openSec['meal-ideas'] ? ' open' : '') + '><summary>' + esc(t('ideas_meal')) + '</summary><div class="stack">' +
+    '<ul class="ideas">' + L.map(x => '<li><b>' + esc(L10(x)) + '</b><span>' + esc(state.lang === 'fr' ? x.ifr : x.ien) + '</span><small>' + esc(fmtMin(x.m) + ' · ' + t('eq_' + x.q)) + '</small></li>').join('') + '</ul>' +
+    '<p class="hint" style="margin:0">' + esc(t('ideas_plate')) + '</p>' + (sport ? '<p class="hint" style="margin:0">' + esc(t('ideas_sport')) + '</p>' : '') +
+    (slot === 'de' ? '<p class="hint" style="margin:0">' + esc(t('ideas_ru')) + '</p>' : '') + '<p class="hint" style="margin:0">' + esc(t('ideas_adapt')) + '</p></div></details>';
 }
 function copyPanel(src) {
   const tk = key(today()), w0 = weekStartOf(parseKey(src));
@@ -1393,6 +1481,7 @@ function sheetHtml() {
     if (sheet.panel === 'oblink') return sheetWrap('', t('lk_title'), msgP('link') + linkForm());
     if (sheet.panel === 'obquick') return sheetWrap('', t('qs_title'), quickForm().replace('class="card stack"', 'class="stack"'));
     if (sheet.panel === 'notes') return sheetWrap('', t('act_notes'), notesPanel());
+    if (sheet.panel === 'free') return sheetWrap(fmt(sheet.s) + '–' + fmt(sheet.e) + ' · ' + t('free_row'), t('free_title'), freePanel(sheet.e - sheet.s));
     if (sheet.panel === 'copy') return sheetWrap(longDate(parseKey(sheet.src)), t('cp_title'), copyPanel(sheet.src));
     if (sheet.panel === 'todos') return sheetWrap('', t('act_todos'), todosPanel());
     return sheetWrap(longDate(curDate) + ' · ' + dayTypeLabel(P), t('de_title'), msgP() + dayEditCard(P, key(curDate)));
@@ -1424,6 +1513,7 @@ function sheetHtml() {
   }
   const info = (it.soft ? '<p class="tag" style="margin:0">' + esc(t('meal_soft', { t: fmtL(it.t) })) + '</p>' : '') + (it.why ? '<p style="margin:0">' + esc(it.why) + '</p>' : '');
   if (it.type === 'travel') body = '<button class="tbtn" data-act="tab" data-v="settings">' + esc(t('set_commute')) + '</button>';
+  if (it.type === 'meal') body += mealPanel(it, d);
   if (it.type === 'morning') body += '<button class="tbtn" data-act="hidesug" data-v="' + esc(it.sug) + '">' + esc(t('sug_never')) + '</button>';
   return sheetWrap(longDate(d) + ' · ' + fmt(it.t) + (it.end ? '–' + fmt(it.end) : ''), it.title, info + '<p class="hint" style="margin:0">' + esc(t('sh_only_day')) + '</p>' + body);
 }
@@ -2085,6 +2175,7 @@ const ACT = {
   lang: v => { state.lang = v === 'en' ? 'en' : 'fr'; save(); },
   openday: v => { curDate = parseKey(v); tab = 'plan'; msg = ''; sheet = null; showPast = false; window.scrollTo(0, 0); },
   edit: (v, b) => { sheet = { d: b.dataset.d, k: b.dataset.k }; msg = ''; },
+  freeidea: (v, b) => { const p = String(v).split('-'); sheet = { panel: 'free', s: +p[0], e: +p[1], ret: b.id || '' }; msg = ''; },
   copyday: (v, b) => { sheet = { panel: 'copy', src: v, ret: b.id || '' }; msg = ''; },
   panel: (v, b) => { sheet = { panel: v, ret: b.id || '' }; msg = ''; },
   showpast: () => { showPast = !showPast; },
