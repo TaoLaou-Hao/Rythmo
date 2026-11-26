@@ -11,18 +11,18 @@
 <meta name="description" content="Rythmo : un planning calme qui suit ta vraie journée d'étudiant (sommeil, repas, cours).">
 <script>
 /* Theme before first paint (no flash). Old links #a-#e and the old saved variant still open the matching theme. */
-window.RYTHMO_DEFAULT_THEME = 'horizon'; // default theme (user decision pending): change this one line
+window.RYTHMO_DEFAULT_THEME = 'auto'; // new users / skipped tutorial: Auto = Horizon by day, Nuit 21:00–06:00 (existing users keep theirs)
 (function () {
-  var D = window.RYTHMO_DEFAULT_THEME, T = ['horizon', 'nuit', 'doux', 'clair'], M = { a: 'horizon', b: 'horizon', c: 'doux', d: 'clair', e: 'nuit' }, th = D;
+  var D = window.RYTHMO_DEFAULT_THEME, DAY = 'horizon', T = ['horizon', 'nuit', 'doux', 'clair'], M = { a: 'horizon', b: 'horizon', c: 'doux', d: 'clair', e: 'nuit' }, th = D;
   try {
     var s = JSON.parse(localStorage.getItem('rythmo.v1') || 'null') || {}, st = s.settings || {};
-    th = st.theme || M[String(s.variant || '').toLowerCase()] || D;
+    th = st.theme || M[String(s.variant || '').toLowerCase()] || (s.onboarded ? DAY : D);
     var h = String(location.hash || '').slice(1).toLowerCase();
     if (M[h] && !st.themePicked) th = M[h];
     var hr = new Date().getHours();
-    if (th === 'auto' || st.autoNight) th = (hr >= 21 || hr < 6) ? 'nuit' : D; // Auto: decided at launch only
+    if (th === 'auto' || st.autoNight) th = (hr >= 21 || hr < 6) ? 'nuit' : DAY; // Auto: decided at launch only
   } catch (e) {}
-  document.documentElement.setAttribute('data-theme', T.indexOf(th) >= 0 ? th : D);
+  document.documentElement.setAttribute('data-theme', T.indexOf(th) >= 0 ? th : DAY);
 })();
 </script>
 <link rel="manifest" href="./manifest.json">
@@ -528,7 +528,7 @@ details.acc>summary{min-height:60px!important}
 const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSc82fZq4bbi5RvtrHeVOebLYmaa5w0WAXumdykyZkfqkQtn4A/viewform';
 const RELAY = 'https://rythmo.tao-laou-hao.workers.dev';
 const THEMES = ['horizon', 'nuit', 'doux', 'clair'];
-const DEFAULT_THEME = window.RYTHMO_DEFAULT_THEME || 'horizon';
+const DEFAULT_THEME = window.RYTHMO_DEFAULT_THEME || 'auto', DAY_THEME = 'horizon'; // Auto shows DAY_THEME by day
 const THEME_CHOICES = THEMES.concat(['auto']); // Auto = Nuit 21:00-06:00, else the default theme
 const LEGACY = { a: 'horizon', b: 'horizon', c: 'doux', d: 'clair', e: 'nuit' }; // old variants A-E
 const SCHEMA = 4;
@@ -636,7 +636,7 @@ en: {
   ob1_a:'Your evening bedtime, based on tomorrow.', ob1_b:'Meals and breaks around your classes.', ob1_c:'Edit any day: internship, day off, late night.',
   ob2_t:'When do you wake up, and when would you like to sleep?', ob2_p:'On class days, Rythmo adapts the wake-up to your first class.',
   ob3_t:'Your commute', ob3_p:'Rythmo adds it before your first class and after your last one.',
-  ob4_t:'What about sport?',
+  ob4_t:'What about sport?', obth_t:'Pick your look', obth_p:'Auto follows the time: Horizon by day, Nuit from 9 pm to 6 am.', obth_hint:'You can change it any time in Settings.',
   ob5_t:'Classes first, everything else fits around them.', ob5_p:'Import your calendar, or describe a usual day in 30 seconds.', ob5_link:'Import my calendar (link)', ob5_file:'Import a calendar file (.ics)', ob5_hand:'Add my classes by hand', ob5_later:'You can also add your classes later in Week › My classes.',
   set_bedcap:'Latest bedtime', set_bedcap_hint:'Between 21:30 and 01:30. Default 23:30.',
   nav_week:'Week', now:'Now', prev_day:'Previous day', next_day:'Next day', pick_day:'Pick a day', close:'Close',
@@ -756,7 +756,7 @@ fr: {
   ob1_a:'Ton heure de coucher, calculée sur demain.', ob1_b:'Repas et pauses autour de tes cours.', ob1_c:'Chaque jour se modifie : stage, jour off, soirée tardive.',
   ob2_t:'À quelle heure te lèves-tu, et quand aimerais-tu dormir ?', ob2_p:'Les jours de cours, Rythmo adapte le réveil à ton premier cours.',
   ob3_t:'Tes trajets', ob3_p:'Rythmo les ajoute avant ton premier cours et après le dernier.',
-  ob4_t:'Et le sport ?',
+  ob4_t:'Et le sport ?', obth_t:'Choisis ton style', obth_p:'Auto suit l\'heure : Horizon le jour, Nuit de 21 h à 6 h.', obth_hint:'Tu pourras le changer à tout moment dans Réglages.',
   ob5_t:'Tes cours d\'abord, le reste s\'organise autour.', ob5_p:'Importe ton agenda, ou décris une journée type en 30 secondes.', ob5_link:'Importer mon agenda (lien)', ob5_file:'Importer un fichier agenda (.ics)', ob5_hand:'Ajouter mes cours à la main', ob5_later:'Tu peux aussi ajouter tes cours plus tard dans Semaine › Mes cours.',
   set_bedcap:'Coucher au plus tard', set_bedcap_hint:'Entre 21:30 et 01:30. Par défaut 23:30.',
   nav_week:'Semaine', now:'Maintenant', prev_day:'Jour précédent', next_day:'Jour suivant', pick_day:'Choisir un jour', close:'Fermer',
@@ -864,7 +864,8 @@ function sanitize(s) {
   out.tasks = (Array.isArray(out.tasks) ? out.tasks : []).filter(k => isObj(k) && +k.dur > 0)
     .map(k => ({ id: String(k.id || uid()), title: String(k.title || '').slice(0, 40), dur: Math.min(600, +k.dur), days: okDays(k.days) }));
   if (out.settings.autoNight === true) { out.settings.theme = 'auto'; out.settings.autoNight = false; } // old "Nuit le soir" switch -> Auto tile
-  if (!THEME_CHOICES.includes(out.settings.theme)) out.settings.theme = DEFAULT_THEME;
+  { const rawTh = isObj(s.settings) ? s.settings.theme : undefined; // existing users keep their look: a stored state without a valid theme stays Horizon
+    if (!THEME_CHOICES.includes(rawTh) || !THEME_CHOICES.includes(out.settings.theme)) out.settings.theme = s.onboarded ? DAY_THEME : DEFAULT_THEME; }
   if (!HHMM.test(out.settings.freeWake)) out.settings.freeWake = '08:00';
   if (!bedCapOk(out.settings.bedCap)) out.settings.bedCap = HHMM.test(out.settings.bedCap || '') && toMin0(out.settings.bedCap) >= 1080 ? '21:30' : '23:30'; // 18:00–21:29 (old range) -> the floor
   out.onboarded = !!out.onboarded;
@@ -939,12 +940,12 @@ const dayName = (d, style) => new Intl.DateTimeFormat(state.lang, { weekday: sty
 const longDate = d => new Intl.DateTimeFormat(state.lang, { weekday: 'long', day: 'numeric', month: 'long' }).format(d);
 const WEEK = [0, 1, 2, 3, 4, 5, 6].map(i => new Date(2024, 0, 1 + i)); // a real Monday-to-Sunday week, for day labels
 /* Auto theme: resolved at launch and when the app comes back to the foreground, never in the middle of a session */
-const resolveAuto = () => { const h = new Date().getHours(); return (h >= 21 || h < 6) ? 'nuit' : DEFAULT_THEME; };
+const resolveAuto = () => { const h = new Date().getHours(); return (h >= 21 || h < 6) ? 'nuit' : DAY_THEME; };
 let autoTheme = resolveAuto();
 function effTheme() {
   const th = state.settings.theme;
   if (th === 'auto') return autoTheme;
-  return THEMES.includes(th) ? th : DEFAULT_THEME;
+  return THEMES.includes(th) ? th : autoTheme;
 }
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState !== 'visible') return;
@@ -1765,7 +1766,7 @@ function bedCapSel(id) {
 }
 /* ---------- Onboarding / tutorial (first run, skippable, replayable) ---------- */
 let ob = 0, obOn = false, obFocus = false;
-const OB_N = 5;
+const OB_N = 6;
 function screenOnboarding() {
   const S = state.settings;
   const steps = [
@@ -1775,6 +1776,7 @@ function screenOnboarding() {
       '<label class="f" for="ob-sl">' + esc(t('set_sleep')) + '<select id="ob-sl" data-set="sleep">' + opts(SLEEPS, S.sleep, v => fmtHM(v)) + '</select></label></div>',
     () => '<h1 id="ob-h" tabindex="-1">' + esc(t('ob3_t')) + '</h1><p class="sub">' + esc(t('ob3_p')) + '</p><label class="f" for="ob-com">' + esc(t('trv_label')) + '<select id="ob-com" data-set="commute">' + opts(COMMUTES, S.commute, v => fmtMin(v)) + '</select><span class="hint">' + esc(t('trv_hint')) + '</span></label>',
     () => '<h1 id="ob-h" tabindex="-1">' + esc(t('ob4_t')) + '</h1><div class="stack">' + sportControls() + '</div>',
+    () => '<h1 id="ob-h" tabindex="-1">' + esc(t('obth_t')) + '</h1><p class="sub">' + esc(t('obth_p')) + '</p>' + themeTiles() + '<p class="hint" style="margin:0">' + esc(t('obth_hint')) + '</p>',
     () => '<h1 id="ob-h" tabindex="-1">' + esc(t('ob5_t')) + '</h1><p class="sub">' + esc(t('ob5_p')) + '</p>' + msgP() + msgP('link') + '<div class="stack ob-choices">' +
       '<button class="btn pri full" data-act="panel" data-v="oblink" id="act-oblink">' + esc(t('ob5_link')) + '</button>' +
       '<label class="btn full" for="ics">' + esc(t('ob5_file')) + '</label><input id="ics" class="sr" type="file" accept=".ics,text/calendar">' +
