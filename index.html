@@ -543,6 +543,7 @@ en: {
   past:'past', chal_week_one:'1 of the last 7 days', rm_chosen:'Chosen: active once exported to your calendar or notifications are allowed', imp_sec:'Import my calendar (Google, Apple, Outlook, school)',
   sport_fb_morning:'No free morning slot that day: here is the first free one.', sport_fb_evening:'No free evening slot that day: here is the first free one.',
   imp_ok:'{n} classes imported over {w}.', imp_ok_one:'1 class imported over {w}.', weeks:'{n} weeks', weeks_one:'1 week', imp_past:'This calendar only has past events: {n} classes copied as a weekly timetable.',
+  imp_rep:'Including {n} monthly or yearly repeats (shown for the next 6 months).', imp_rep_one:'Including 1 monthly or yearly repeat (shown for the next 6 months).', imp_bad:'{n} repeats could not be read: only their first date was kept.', imp_bad_one:'One repeat could not be read: only its first date was kept.',
   imp_card:'Imported calendar', imp_until:'Until {d}.', imp_exact:'Each date shows its real classes: cancelled sessions, one-off events and alternate weeks stay exact. Import again to refresh.', imp_remove:'Remove the imported calendar', imp_removed:'Imported calendar removed.',
   imp_legacy:'Did these classes come from an older import? Import your calendar again so each week follows the real dates (cancelled sessions, alternate weeks).', imp_hint_ok:'Got it',
   sc_list_weekly:'Classes every week (added by hand)', sc_none_weekly:'None. Your imported calendar is used.',
@@ -654,6 +655,7 @@ fr: {
   past:'passé', chal_week_one:'1 jour sur les 7 derniers', rm_chosen:'Choisi : actif après l\'export vers l\'agenda ou avec les notifications', imp_sec:'Importer mon agenda (Google, Apple, Outlook, école)',
   sport_fb_morning:'Pas de créneau libre le matin ce jour-là : voici le premier créneau libre.', sport_fb_evening:'Pas de créneau libre le soir ce jour-là : voici le premier créneau libre.',
   imp_ok:'{n} cours importés sur {w}.', imp_ok_one:'1 cours importé sur {w}.', weeks:'{n} semaines', weeks_one:'1 semaine', imp_past:'Cet agenda ne contient que des événements passés : {n} cours copiés comme emploi du temps hebdomadaire.',
+  imp_rep:'Dont {n} répétitions mensuelles ou annuelles (affichées sur les 6 prochains mois).', imp_rep_one:'Dont 1 répétition mensuelle ou annuelle (affichée sur les 6 prochains mois).', imp_bad:'{n} répétitions n\'ont pas pu être lues : seule la première date est gardée.', imp_bad_one:'Une répétition n\'a pas pu être lue : seule la première date est gardée.',
   imp_card:'Agenda importé', imp_until:'Jusqu\'au {d}.', imp_exact:'Chaque date affiche ses vrais cours : séances annulées, événements ponctuels et semaines alternées restent exacts. Réimporte pour mettre à jour.', imp_remove:'Retirer l\'agenda importé', imp_removed:'Agenda importé retiré.',
   imp_legacy:'Ces cours viennent d\'un ancien import ? Réimporte ton agenda pour que chaque semaine suive les vraies dates (séances annulées, semaines alternées).', imp_hint_ok:'Compris',
   sc_list_weekly:'Cours chaque semaine (ajoutés à la main)', sc_none_weekly:'Aucun. Ton agenda importé est utilisé.',
@@ -1695,6 +1697,7 @@ const BYDAY = { MO: 0, TU: 1, WE: 2, TH: 3, FR: 4, SA: 5, SU: 6 };
 /* Expand every timed event into concrete instances [{s: Date, e: Date, title}] up to `horizon`. */
 function eventsFromICS(text, horizon) {
   const raw = parseICS(text), out = [], moved = {};
+  out.stats = { rep: 0, bad: 0 }; // monthly/yearly series kept, rules that could not be read (first date only)
   const one = (ev, n) => ev[n] && ev[n][0];
   raw.forEach(ev => { const r = one(ev, 'RECURRENCE-ID'), u = one(ev, 'UID'); if (r && u) { const d = parseDT(r.value, r.params); if (d) moved[u.value + '|' + wallToDate(d.w, d.z).getTime()] = true; } });
   raw.forEach(ev => {
@@ -1723,17 +1726,64 @@ function eventsFromICS(text, horizon) {
       const R = {}; String(rr.value).split(';').forEach(p => { const i = p.indexOf('='); if (i > 0) R[p.slice(0, i).toUpperCase()] = p.slice(i + 1); });
       const freq = (R.FREQ || '').toUpperCase(), interval = Math.max(1, +R.INTERVAL || 1), count = +R.COUNT || 0;
       let until = null; if (R.UNTIL) { const u = parseDT(R.UNTIL, ''); if (u) until = u.dateOnly ? wallToDate(Object.assign({}, u.w, { h: 23, mi: 59, s: 59 }), st.z) : wallToDate(u.w, u.z || st.z); }
-      if (freq !== 'WEEKLY' && freq !== 'DAILY') { push(st.w); return; } // other frequencies: first instance only
       const days = (R.BYDAY || '').split(',').map(x => BYDAY[x.trim().slice(-2).toUpperCase()]).filter(x => x !== undefined);
       const startWd = (new Date(Date.UTC(st.w.y, st.w.mo, st.w.d)).getUTCDay() + 6) % 7;
       let n = 0, guard = 0;
       const emit = w => { const s = wallToDate(w, st.z); if (s < s0) return true; if (until && s > until) return false; if (s > horizon) return false; n++; if (count && n > count) return false; push(w); return true; };
-      if (freq === 'DAILY') {
-        for (let k = 0; guard++ < 800; k += interval) { const w = addWallDays(st.w, k); if (days.length && !days.includes((startWd + k) % 7)) continue; if (!emit(w)) break; }
-      } else {
-        const wd = days.length ? days.slice().sort((a, b) => a - b) : [startWd];
-        const mon = addWallDays(st.w, -startWd);
-        outer: for (let wk = 0; guard++ < 400; wk += interval) for (const d of wd) { if (!emit(addWallDays(mon, wk * 7 + d))) break outer; }
+      const nums = v => String(v || '').split(',').filter(Boolean).map(x => +x);
+      if (freq === 'DAILY' || freq === 'WEEKLY') {
+        // Fast-forward close to today when the series has no COUNT, so an old DTSTART (years ago) still yields
+        // this year's dates (before: the step-by-step guard ran out after ~2.2 / ~7.7 years and nothing was imported).
+        let ffDays = 0;
+        if (!count) {
+          let target = addDays(today(), -60); if (until && until < target) target = addDays(until, -60);
+          const diff = Math.floor((Date.UTC(target.getFullYear(), target.getMonth(), target.getDate()) - Date.UTC(st.w.y, st.w.mo, st.w.d)) / 86400000);
+          const step = (freq === 'DAILY' ? 1 : 7) * interval;
+          if (diff > step) ffDays = Math.floor(diff / step) * step;
+        }
+        if (freq === 'DAILY') {
+          for (let k = ffDays; guard++ < 800; k += interval) { const w = addWallDays(st.w, k); if (days.length && !days.includes((startWd + k) % 7)) continue; if (!emit(w)) break; }
+        } else {
+          const wd = days.length ? days.slice().sort((x, y) => x - y) : [startWd];
+          const mon = addWallDays(st.w, -startWd);
+          outer: for (let wk = ffDays / 7; guard++ < 400; wk += interval) for (const d of wd) { if (!emit(addWallDays(mon, wk * 7 + d))) break outer; }
+        }
+        return;
+      }
+      if (freq !== 'MONTHLY' && freq !== 'YEARLY') { push(st.w); if (freq) out.stats.bad++; return; }
+      // MONTHLY / YEARLY: BYMONTH, BYMONTHDAY (+/-, invalid dates skipped), BYDAY with ordinals (2TU, -1FR),
+      // intersection of both, then BYSETPOS on each period's sorted set. DTSTART is always the first instance.
+      const byday = R.BYDAY ? R.BYDAY.split(',').map(x => { const m = x.trim().toUpperCase().match(/^([+-]?\d{1,2})?(MO|TU|WE|TH|FR|SA|SU)$/); return m ? { n: m[1] ? +m[1] : 0, wd: BYDAY[m[2]] } : null; }) : null;
+      const bymd = R.BYMONTHDAY ? nums(R.BYMONTHDAY) : null, bym = R.BYMONTH ? nums(R.BYMONTH) : null, bysp = R.BYSETPOS ? nums(R.BYSETPOS) : null;
+      const unsupported = R.BYWEEKNO || R.BYYEARDAY || (byday && byday.some(x => !x)) || (bymd && bymd.some(x => !x || Math.abs(x) > 31)) ||
+        (bym && bym.some(x => !(x >= 1 && x <= 12))) || (bysp && bysp.some(x => !x)) || (freq === 'YEARLY' && byday && !bym && byday.some(x => x.n));
+      if (unsupported) { push(st.w); out.stats.bad++; return; }
+      out.stats.rep++;
+      const dim = (y, mo) => new Date(Date.UTC(y, mo + 1, 0)).getUTCDate();
+      const daysIn = (y, mo) => { // candidate days of month mo (0-based) in year y
+        const D = dim(y, mo); let A = null, B = null;
+        if (bymd) A = bymd.map(x => x > 0 ? x : D + x + 1).filter(x => x >= 1 && x <= D);
+        if (byday) { B = []; byday.forEach(({ n: k, wd }) => {
+          const all = []; for (let d = 1; d <= D; d++) if ((new Date(Date.UTC(y, mo, d)).getUTCDay() + 6) % 7 === wd) all.push(d);
+          if (!k) B.push(...all); else { const p = k > 0 ? all[k - 1] : all[all.length + k]; if (p) B.push(p); } }); }
+        if (!A && !B) return st.w.d <= D ? [st.w.d] : []; // e.g. the 31st skips short months, 29 Feb only in leap years
+        return [...new Set(A && B ? A.filter(x => B.includes(x)) : (A || B))].sort((x, y) => x - y);
+      };
+      const stKey = st.w.y * 10000 + st.w.mo * 100 + st.w.d;
+      if (!emit(st.w)) return;
+      for (let k = 0; guard++ < 1200; k += interval) {
+        let periods; // list of [y, mo] in this period
+        if (freq === 'MONTHLY') { const t0 = st.w.mo + k, y = st.w.y + Math.floor(t0 / 12), mo = ((t0 % 12) + 12) % 12; if (bym && !bym.includes(mo + 1)) continue; periods = [[y, mo]]; }
+        else { const y = st.w.y + k; periods = (bym || [st.w.mo + 1]).slice().sort((x, z) => x - z).map(m => [y, m - 1]); }
+        if (wallToDate({ y: periods[0][0], mo: periods[0][1], d: 1, h: 0, mi: 0, s: 0 }, st.z) > horizon) break;
+        let set = []; periods.forEach(([y, mo]) => daysIn(y, mo).forEach(d => set.push([y, mo, d])));
+        if (bysp) set = bysp.map(p => p > 0 ? set[p - 1] : set[set.length + p]).filter(Boolean).sort((x, z) => (x[0] - z[0]) || (x[1] - z[1]) || (x[2] - z[2]));
+        let stop = false;
+        for (const [y, mo, d] of set) {
+          if (y * 10000 + mo * 100 + d <= stKey) continue; // DTSTART already emitted
+          if (!emit({ y, mo, d, h: st.w.h, mi: st.w.mi, s: st.w.s })) { stop = true; break; }
+        }
+        if (stop) break;
       }
     } catch (e) { /* odd event: skip it, never crash the import */ }
   });
@@ -1765,8 +1815,8 @@ const hashId = s => { let h = 5381; for (const ch of String(s)) h = ((h * 33) ^ 
    EXDATE removes only that date, a one-off event stays one-off, INTERVAL=2 shows on the right weeks.
    Identical events (same date, title and times, e.g. the same calendar pasted twice) are kept once. */
 function calFromICS(texts) {
-  const from = weekStartOf(today()), horizon = addDays(from, 7 * 26), days = {}, seen = {};
-  texts.flatMap(tx => eventsFromICS(tx, horizon))
+  const from = weekStartOf(today()), horizon = addDays(from, 7 * 26), days = {}, seen = {}, stats = { rep: 0, bad: 0 };
+  texts.flatMap(tx => { const l = eventsFromICS(tx, horizon); stats.rep += l.stats.rep; stats.bad += l.stats.bad; return l; })
     .filter(x => x.s >= from && x.s < horizon && x.s.toDateString() === new Date(x.e.getTime() - 1).toDateString())
     .sort((a, b) => a.s - b.s)
     .forEach(x => {
@@ -1776,13 +1826,21 @@ function calFromICS(texts) {
     });
   const ks = Object.keys(days).sort(); if (!ks.length) return null;
   const weeks = new Set(ks.map(k => key(weekStartOf(parseKey(k))))).size;
-  return { from: key(from), to: ks[ks.length - 1], n: ks.reduce((n, k) => n + days[k].length, 0), weeks, days };
+  const cal = { from: key(from), to: ks[ks.length - 1], n: ks.reduce((n, k) => n + days[k].length, 0), weeks, days };
+  Object.defineProperty(cal, 'stats', { value: stats, enumerable: false }); // summary only, not stored
+  return cal;
 }
 /* Apply one or more calendar texts. Classes typed by hand are kept; an older import (or the sample week) is replaced. */
 function applyImport(texts) {
   const cal = calFromICS(texts);
   const keep = state.classes.filter(c => c.origin === 'manual');
-  if (cal) { state.cal = cal; state.classes = keep; state.sample = false; return { ok: true, text: tp('imp_ok', cal.n, { n: cal.n, w: tp('weeks', cal.weeks, { n: cal.weeks }) }) }; }
+  if (cal) {
+    state.cal = cal; state.classes = keep; state.sample = false;
+    let text = tp('imp_ok', cal.n, { n: cal.n, w: tp('weeks', cal.weeks, { n: cal.weeks }) });
+    if (cal.stats.rep) text += ' ' + tp('imp_rep', cal.stats.rep, { n: cal.stats.rep });
+    if (cal.stats.bad) text += ' ' + tp('imp_bad', cal.stats.bad, { n: cal.stats.bad });
+    return { ok: true, text };
+  }
   // Only past events: fall back to the weekly pattern of the last week (as before), clearly labelled.
   const tpl = texts.flatMap(importICS);
   if (tpl.length) { state.cal = null; state.classes = keep.concat(tpl.map(c => Object.assign(c, { origin: 'legacy' }))); state.sample = false; return { ok: true, text: t('imp_past', { n: tpl.length }) }; }
