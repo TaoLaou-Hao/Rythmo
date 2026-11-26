@@ -465,6 +465,16 @@ details.acc[open]>summary::after{transform:rotate(90deg)}
 details.acc>summary{min-height:52px}
 .fb{gap:var(--s-2)}
 .note{font-size:.8125rem;line-height:1.4}
+/* E4: more air in onboarding, sheets and Réglages (never on Aujourd'hui, whose timeline stays compact) */
+.ob-card input:not([type=checkbox]):not([type=radio]),.ob-card select,.sheet input:not([type=checkbox]):not([type=radio]),.sheet select,.acc-b input:not([type=checkbox]):not([type=radio]),.acc-b select{min-height:52px}
+.ob-card .stack,.ob-card form.stack,.sheet .stack,.sheet form.stack{gap:20px}
+.acc-b{gap:20px!important;padding:6px var(--s-4) var(--s-5)!important;line-height:1.55}
+details.acc{margin-bottom:10px!important}
+details.acc>summary{min-height:60px!important}
+.sheet{padding:20px 20px calc(24px + env(safe-area-inset-bottom,0px))!important}
+.sheet>.stack{gap:20px;line-height:1.55}
+.sheet label.f,.ob-card label.f,.acc-b label.f{gap:8px}
+.rm-row{border-top:0!important}
 @media (prefers-reduced-motion: no-preference) {
   .btn,.chip,.tg .tr,.tg .tr::after,.glass{transition:background-color .18s ease,border-color .18s ease,left .18s ease,transform .12s ease}
   .btn:active{transform:translateY(1px)}
