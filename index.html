@@ -338,6 +338,8 @@ button.block:hover{border-color:var(--c)}
 .ob-list{margin:0;padding-left:1.2em;display:grid;gap:6px}
 .ob-shell{padding-bottom:calc(150px + env(safe-area-inset-bottom,0px))}
 .ob-nav{position:fixed;left:0;right:0;bottom:0;z-index:5;max-width:560px;margin:0 auto;display:grid;grid-template-columns:1fr 1.4fr;grid-template-areas:"back next" "skip skip";gap:4px var(--s-3);background:var(--bg);padding:var(--s-3) 16px calc(var(--s-2) + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line)}
+.ob-sk-s{display:none}
+@media (max-height:700px){.ob-sk-l{display:none}.ob-sk-s{display:inline}}
 .ob-back{grid-area:back}.ob-nav #ob-next{grid-area:next}.ob-skip{grid-area:skip;justify-self:center}
 @media (max-height:700px){.ob-shell{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}.ob-nav{grid-template-columns:auto auto 1fr;grid-template-areas:"back skip next"}}
 .kb-open .ob-nav{display:none}
@@ -430,6 +432,7 @@ div.row{grid-template-columns:52px 22px minmax(0,1fr)}
 .row .tt{min-width:0;display:flex;flex-wrap:wrap;align-items:baseline;column-gap:8px}
 .row .ttl{font-weight:600;overflow-wrap:anywhere}
 .row small{color:var(--muted);font-size:var(--fs-small)}
+.row.fold small{display:block;width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .row .chev{color:var(--muted);font-size:1.25rem;line-height:1}
 .row.t-travel,.row.t-wind{background:none;border-color:transparent;border-left-color:var(--c)}
 .row.t-travel .ttl,.row.t-wind .ttl{font-weight:500}
@@ -444,8 +447,8 @@ div.row{grid-template-columns:52px 22px minmax(0,1fr)}
 .wr-txt .time{font-weight:600}
 .wr-state{display:block;color:var(--muted);font-size:var(--fs-small)}
 .wrow.done .wr-state{color:var(--ink);font-weight:600}
-.wrow .drops{display:flex;flex-wrap:wrap;gap:2px;max-width:90px;flex:0 0 auto}
-.wrow .drops i{width:7px;height:9px;border-radius:50% 50% 45% 45%;border:1px solid var(--b-free)}
+.wrow .drops{display:flex;flex-wrap:nowrap;gap:2px;flex:0 1 auto;min-width:0;overflow:hidden}
+.wrow .drops i{flex:0 1 7px;min-width:3px;height:9px;border-radius:50% 50% 45% 45%;border:1px solid var(--b-free)}
 .wrow .drops i.on{background:var(--b-free)}
 .wrow .rb{width:44px;height:44px;flex:0 0 44px}
 .wrow .rb.add{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
@@ -492,11 +495,16 @@ details.acc>summary{min-height:60px!important}
 .ideas li span{color:var(--ink)}
 .ideas li small{color:var(--muted)}
 .ideas .ik{font-size:.8125rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.rm-row .ferr{grid-column:1/-1;margin:0}
+.qe-row{border:1px solid var(--line);border-radius:var(--r-md);padding:12px;margin:0;display:grid;gap:12px;min-width:0}
+.qe-row>legend{font-weight:700;padding:0 4px}
 .qe-done{margin:0;padding:10px 12px;border-radius:var(--r-md);background:var(--sunk)}
 .rule-line{background:var(--sunk);border-radius:var(--r-md);padding:12px;display:grid;gap:8px}
 .toast{position:fixed;left:16px;right:16px;bottom:calc(57px + 12px + env(safe-area-inset-bottom,0px));z-index:30;max-width:528px;margin:0 auto;display:none;align-items:center;justify-content:space-between;gap:12px;padding:8px 8px 8px 16px;border-radius:var(--r-md);background:var(--ink);color:var(--bg);box-shadow:var(--shadow-2);font-weight:600}
 .toast.on{display:flex}
-.wr-cp{margin:2px 0 4px 12px}
+.wr-top{display:flex;align-items:center}
+.wr-top .wr-b{flex:1;min-width:0}
+.wr-cp{flex:0 0 44px;width:44px;height:44px;margin-right:6px}
 .toast .tbtn{color:var(--bg);min-height:44px;padding:0 12px}
 .toast .tbtn:focus-visible{outline-color:var(--bg)}
 @media (prefers-reduced-motion: no-preference) {
@@ -527,8 +535,9 @@ const SCHEMA = 4;
 const range = (a, b, s) => { const r = []; for (let x = a; x <= b + 1e-9; x += s) r.push(Math.round(x * 100) / 100); return r; };
 const SLEEPS = range(6, 11, 0.25), COMMUTES = range(0, 180, 5);
 const BED_FLOOR = 1290; // 21:30: a bedtime is never suggested earlier than this
-/* Bedtime cap: any time 20:00–23:59 or 00:00–01:30 (a gentle 23:30 default; later only if the user chooses it) */
-const bedCapOk = v => { if (!HHMM.test(v || '')) return false; const m = (+v.slice(0, 2)) * 60 + (+v.slice(3)); return m >= 1200 || m <= 90; };
+/* Bedtime cap: 21:30–23:59 or 00:00–01:30. It never goes below the 21:30 floor, so cap and floor cannot conflict. */
+const toMin0 = v => (+v.slice(0, 2)) * 60 + (+v.slice(3));
+const bedCapOk = v => { if (!HHMM.test(v || '')) return false; const m = (+v.slice(0, 2)) * 60 + (+v.slice(3)); return m >= 1290 || m <= 90; };
 
 /* ===================== TEXT (EN / FR) ===================== */
 const T = {
@@ -540,7 +549,7 @@ en: {
   breakfast:'Breakfast', breakfast_why:'Eat something before the day starts.',
   lunch:'Lunch', lunch_why:'A 45-minute gap between classes.', lunch_tight:'Quick lunch', lunch_tight_why:'No long gap. Pack something simple and eat after {c}.',
   dinner:'Dinner', dinner_why:'About 3 h before bed, so you fall asleep more easily.', dinner_late:'Late dinner', dinner_late_why:'Late finish. Keep it light.',
-  sport:'Sport, {m} min', sport_why:'Free slot, away from meals and bedtime.', sport_none:'No room for sport today. A 10-minute walk still counts.',
+  sport:'Sport, {m} min', sport_why:'Free slot, away from meals and bedtime.', sport_none:'No room for sport today: it needs {m} free, not right after a meal, before {t}. A 10-minute walk still counts.',
   winddown:'Screens off', winddown_why:'45 minutes to slow down before sleep.',
   lightsout:'Lights out', lightsout_why:'Based on your first class tomorrow.', lightsout_reg:'Same bedtime every night keeps your body clock steady, even when tomorrow starts late.',
   water:'Water', water_goal:'Goal: {n} glasses', water_goal_day:'Goal: {n} glasses a day',
@@ -575,7 +584,7 @@ en: {
   tk_add:'Add a routine', tk_hint:'Something that comes back every week without a fixed hour (study, project). Rythmo finds a free slot on the days you pick. For a one-off thing, use To-do on Today.', tk_name:'Routine name', tk_name_ph:'e.g. Group project', tk_dur:'How long', tk_btn:'Add routine', tk_added:'Routine added.', tk_list:'Your routines', tk_why:'Placed in a free slot ({m} min).', tk_none:'No room today for: {n}. Try another day or a shorter task.', tk_default:'Task',
   rm_before_short:'{n} min before', set_sleep_short:'Sleep need', set_bedcap_short:'Bed at the latest', set_free_short:'Wake-up, free days', set_auto_hint_short:'21:00 to 6:00, your choice is kept.',
   rm_s_bed:'bedtime', rm_s_checkin:'check-in', rm_s_water:'water', rm_s_screens:'screens off', rm_s_none:'none', rm_s_live:'notifications on', rm_chosen_short:'Chosen', rm_chosen_note:'Chosen reminders work once added to your calendar or with notifications (below).',
-  sum_bed:'bed by {t}', sum_trv:'commute {n} min', sum_water:'{n} glasses a day', sum_water_one:'1 glass a day', sum_auto:'auto night', sum_data:'export, tutorial, erase', set_data_help:'Data and help', set_export_short:'Export data', set_commute_short:'Commute (one way)',
+  sum_bed:'bed by {t}', sum_trv:'commute {n}', sum_water:'{n} glasses a day', sum_water_one:'1 glass a day', sum_auto:'auto night', sum_data:'export, tutorial, erase', set_data_help:'Data and help', set_export_short:'Export data', set_commute_short:'Commute (one way)',
   ci_remind:'Remind me every evening',
   in_ios_short:'Safari > Share > "Add to Home Screen", then open Rythmo from its icon.',
   st_now:'Now', st_next:'Next', st_until:'until {t}', st_free:'Free time', st_sleep_time:'Sleep time', st_first:'First class', wake_tmr:'wake-up {t}',
@@ -587,12 +596,13 @@ en: {
   past:'past', chal_week_one:'1 of the last 7 days', rm_chosen:'Chosen: active once exported to your calendar or notifications are allowed', imp_sec:'Import my calendar (Google, Apple, Outlook, school)',
   sport_fb_morning:'No free morning slot that day: here is the first free one.', sport_fb_evening:'No free evening slot that day: here is the first free one.',
   imp_ok:'{n} classes imported over {w}.', imp_ok_one:'1 class imported over {w}.', weeks:'{n} weeks', weeks_one:'1 week', imp_past:'This calendar only has past events: {n} classes copied as a weekly timetable.',
-  other:'Other', rm_before_label:'Minutes before lights out', floor_note:'About {h} of sleep possible tonight.', st_bed_soon:'Bedtime soon', bedcap_range:'Choose a time between 20:00 and 01:30.',
+  other:'Other', rm_before_label:'Minutes before lights out', floor_note:'About {h} of sleep possible tonight.', st_bed_soon:'Bedtime soon', bedcap_range:'Choose a time between 21:30 and 01:30.',
   todo_dur:'How long (optional)', todo_dur_on:'Rythmo puts it in your first free slot today. It won\'t move by itself.', todo_dur_off:'No duration: a simple checklist item.', todo_placed:'Placed today at {t}.', todo_noslot:'No free slot today for {m}.', todo_tomorrow:'Tomorrow', todo_notime:'No time', todo_placed_tm:'Planned for tomorrow at {t}.', todo_full_tm:'Tomorrow is full too: kept with no time.', todo_kept:'Kept with no time.', todo_place:'Place', todo_place_aria:'Place today: {n}', todo_today_at:'today {t}', todo_tm_at:'tomorrow {t}', todo_why:'Your to-do ({m}), placed when you added it. It never moves by itself.', todo_clash:'Something now overlaps: {n}. Open To-do to place it again.', todo_done:'Done', todo_done_msg:'Done: {n}.', todo_unpin:'Remove from the day', todo_max:'The list is full (30). Remove something first.',
-  cp_btn:'Copy this day to…', cp_title:'Copy to…', cp_hint:'Copies this day\'s changes (work day, classes added or removed, sport, times). Not your to-dos. Replaces what is already changed on those days.', cp_this:'This week', cp_next:'Next week', cp_apply:'Copy', cp_none_sel:'Pick at least one day.', cp_done:'Copied to {n} days.', cp_done_one:'Copied to 1 day.', cp_nothing:'Nothing to copy: this day follows your usual timetable.',
+  todo_fold:'{n} to-dos placed today', cp_btn:'Copy this day to…', cp_row_aria:'Copy {d} to…', cp_title:'Copy to…', cp_hint:'Copies this day\'s changes (work day, classes added or removed, sport, times). Not your to-dos. Replaces what is already changed on those days.', cp_this:'This week', cp_next:'Next week', cp_apply:'Copy', cp_none_sel:'Pick at least one day.', cp_done:'Copied to {n} days.', cp_done_one:'Copied to 1 day.', cp_nothing:'Nothing to copy: this day follows your usual timetable.',
   free_row:'Free', free_aria:'Free time {s}–{e}: ideas', free_title:'What if…', free_hint:'Just ideas, nothing required. This time is yours.', fk_B:'Move', fk_D:'Unwind', fk_S:'See people', ideas_meal:'Meal ideas', ideas_plate:'A plate that works: some vegetables, a starchy food (pasta, rice, bread, potatoes…) and a protein source (egg, legumes, fish, poultry, tofu…). No strict rule: what\'s doable today counts.', ideas_sport:'Before sport, something light; after, a proper meal.', ideas_ru:'No time? The uni canteen counts too.', ideas_adapt:'Adapt to your tastes, allergies and eating habits.', eq_M:'microwave', eq_P:'stove',
-  qe_title:'Quick entry for the week', qe_hint:'One class at a time: times and days stay filled in for the next one.', qe_added:'{n} added. Type the next one, or tap Done.', qe_added_list:'Added:', qe_add_next:'Add and continue', qe_finish:'Done',
-  rules_title:'Regular days', badge_rep:'repeats', rule_every:'Every {d}', rule_is:'Regular day: every {d}', rule_today_normal:'Today only: a usual day', rule_today_only:'Today only: changed.', rule_remove:'Remove this regular day', rule_removed:'Regular day removed ({d}).', rule_add:'Internship or work every week', rule_add_btn:'Add this regular day', rule_hint:'Replaces that day\'s classes and imported events, every week from today.', rule_day:'Day', rule_saved:'Regular day saved.', undo:'Undo', edit:'Edit',
+  qe_title:'Quick entry for the week', qe_hint:'One row per class. A new row copies the times and days of the previous one.', qe_added:'{n} added. Add the next one, or tap Done.', qe_added_list:'Added:', qe_add_next:'Add and continue', qe_row:'Class {n}', qe_rm_row:'Remove class {n}', qe_add_row:'Another class', qe_add_n:'Add these {n} classes', qe_added_n:'{n} classes added.', qe_force:'Add anyway', qe_dup:'{a} already exists ({d} {t}).', qe_overlap:'{a} overlaps {b} ({d} {t}).', qe_finish:'Done',
+  rm_ci_range:'Choose a time between 18:00 and 23:45.', time_empty:'Choose a time.', todo_empty:'Type something to do first.', sc_need_name:'Give it a name (e.g. Catch-up class).', act_day_short:'Edit day',
+  rules_title:'Regular days', badge_rep:'repeats', rule_every:'Every {d}', rule_is:'Regular day: every {d}', rule_today_normal:'Today only: a usual day', rule_today_only:'Today only: changed.', rule_remove:'Remove this regular day', rule_removed:'Regular day removed ({d}).', rule_add:'Internship or work every week', rule_add_btn:'Add this regular day', rule_hint:'Replaces that day\'s classes and imported events, every week from today.', rule_day:'Day', rule_saved:'Regular day saved.', rule_replaced:'{d} already had a regular day: it was replaced.', undo:'Undo', edit:'Edit',
   imp_rep:'Including {n} monthly or yearly repeats (shown for the next 6 months).', imp_rep_one:'Including 1 monthly or yearly repeat (shown for the next 6 months).', imp_bad:'{n} repeats could not be read: only their first date was kept.', imp_bad_one:'One repeat could not be read: only its first date was kept.',
   imp_card:'Imported calendar', imp_until:'Until {d}.', imp_exact:'Each date shows its real classes: cancelled sessions, one-off events and alternate weeks stay exact. Import again to refresh.', imp_remove:'Remove the imported calendar', imp_removed:'Imported calendar removed.',
   imp_legacy:'Did these classes come from an older import? Import your calendar again so each week follows the real dates (cancelled sessions, alternate weeks).', imp_hint_ok:'Got it',
@@ -621,18 +631,18 @@ en: {
   n_bed:'Easing into the evening. Bed around {t}?', n_bed_b:'Rythmo', n_checkin:'A quick look back at your day? 30 seconds.', n_water:'A glass of water, if you feel like it.', n_screens:'Maybe put the screens down? Your bed\'s waiting.', n_ignore:'Ignore',
   ics_rem_name:'Rythmo - reminders', ics_plan_name:'Rythmo - plan',
   w_glasses:'glasses', w_hint:'Tap a glass when you drink one.', w_edit:'Change goal', w_glass:'Glass {i} of {n}, {s}', w_full:'full', w_empty:'empty', w_less:'One less', w_more:'One more', w_extra:'+{n} over your goal', w_goal_label:'Water goal (glasses a day)',
-  ob_step:'Step {a} of {b}', ob_skip:'Skip for now', ob_back:'Back', ob_next:'Continue', ob_done:'Finish', ob_replay:'Replay the tutorial', set_help:'Help',
+  ob_step:'Step {a} of {b}', ob_skip:'Skip for now', ob_skip_short:'Skip', ob_back:'Back', ob_next:'Continue', ob_done:'Finish', ob_replay:'Replay the tutorial', set_help:'Help',
   ob1_t:'A calm plan that follows your real day.', ob1_p:'Rythmo reads your classes and suggests when to sleep, eat and take a break. Suggestions, never orders.',
   ob1_a:'Your evening bedtime, based on tomorrow.', ob1_b:'Meals and breaks around your classes.', ob1_c:'Edit any day: internship, day off, late night.',
   ob2_t:'When do you wake up, and when would you like to sleep?', ob2_p:'On class days, Rythmo adapts the wake-up to your first class.',
   ob3_t:'Your commute', ob3_p:'Rythmo adds it before your first class and after your last one.',
   ob4_t:'What about sport?',
-  ob5_t:'Classes first, everything else fits around them.', ob5_p:'Import your calendar, or describe a usual day in 30 seconds.', ob5_link:'Import my calendar (link)', ob5_file:'Import a calendar file (.ics)', ob5_hand:'Describe a usual day by hand', ob5_later:'You can also add your classes later in Week › My classes.',
-  set_bedcap:'Latest bedtime', set_bedcap_hint:'Between 20:00 and 01:30. Default 23:30.',
+  ob5_t:'Classes first, everything else fits around them.', ob5_p:'Import your calendar, or describe a usual day in 30 seconds.', ob5_link:'Import my calendar (link)', ob5_file:'Import a calendar file (.ics)', ob5_hand:'Add my classes by hand', ob5_later:'You can also add your classes later in Week › My classes.',
+  set_bedcap:'Latest bedtime', set_bedcap_hint:'Between 21:30 and 01:30. Default 23:30.',
   nav_week:'Week', now:'Now', prev_day:'Previous day', next_day:'Next day', pick_day:'Pick a day', close:'Close',
   edit_block:'Edit: {b}, {t}', tap_hint:'Tap a block to move it or remove it for this day.', today_empty:'Nothing planned. Enjoy it, or add one small thing.',
   edited_day:'Your day, your way.', badge_work:'Internship / work', badge_off:'Day off', badge_edited:'Edited', work_default:'Internship',
-  de_title:'Edit this day', de_hint:'Changes only this date. Your usual timetable stays the same.', de_kind:'This day is', de_normal:'A usual day', de_work:'Internship / work', de_off:'Day off',
+  de_title:'Edit this day', de_hint:'Changes only this date. Your usual timetable stays the same.', de_hint_work:'Changes only this date, unless you tick "Every {d}".', de_kind:'This day is', de_normal:'A usual day', de_work:'Internship / work', de_off:'Day off',
   de_work_label:'Name (optional)', de_save:'Save this day', de_sport:'Sport this day', de_add:'Add an event on this day only', de_only_day:'this day only', de_removed:'Removed this day', de_restore:'Put back',
   de_reset:'Reset this day', de_reset_done:'This day follows your usual timetable again.',
   sh_only_day:'Changes apply to this day only.', sh_save_day:'Save for this day', sh_rm_class:'Remove this class on this day', sh_not_work:'Not an internship day any more', sh_class_hint:'To change it every week, go to the Classes tab.',
@@ -659,7 +669,7 @@ fr: {
   breakfast:'Petit-déjeuner', breakfast_why:'Mange quelque chose avant que la journée commence.',
   lunch:'Déjeuner', lunch_why:'Un créneau de 45 minutes entre deux cours.', lunch_tight:'Déjeuner rapide', lunch_tight_why:'Pas de grand créneau. Prévois un repas simple et mange après {c}.',
   dinner:'Dîner', dinner_why:"Environ 3 h avant le coucher, pour t'endormir plus facilement.", dinner_late:'Dîner tardif', dinner_late_why:'Fin tardive. Reste sur du léger.',
-  sport:'Sport, {m} min', sport_why:'Créneau libre, loin des repas et du coucher.', sport_none:"Pas de place pour le sport aujourd'hui. Une marche de 10 minutes, ça compte aussi.",
+  sport:'Sport, {m} min', sport_why:'Créneau libre, loin des repas et du coucher.', sport_none:"Pas de place pour le sport aujourd'hui : il faut {m} libres, pas juste après un repas, avant {t}. Une marche de 10 minutes, ça compte aussi.",
   winddown:'Écrans éteints', winddown_why:'45 minutes pour ralentir avant de dormir.',
   lightsout:'Extinction des feux', lightsout_why:'Calculé sur ton premier cours de demain.', lightsout_reg:'Se coucher à la même heure chaque soir règle ton horloge interne, même quand demain commence tard.',
   water:'Eau', water_goal:'Objectif : {n} verres', water_goal_day:'Objectif : {n} verres par jour',
@@ -694,7 +704,7 @@ fr: {
   tk_add:'Ajouter une routine', tk_hint:"Quelque chose qui revient chaque semaine sans heure fixe (révisions, projet). Rythmo trouve un créneau libre les jours choisis. Pour une chose à faire une seule fois, utilise « À faire » dans Aujourd'hui.", tk_name:'Nom de la routine', tk_name_ph:'ex. Projet de groupe', tk_dur:'Durée', tk_btn:'Ajouter la routine', tk_added:'Routine ajoutée.', tk_list:'Tes routines', tk_why:'Placée dans un créneau libre ({m} min).', tk_none:"Pas de place aujourd'hui pour : {n}. Essaie un autre jour ou une tâche plus courte.", tk_default:'Tâche',
   rm_before_short:'{n} min avant', set_sleep_short:'Sommeil', set_bedcap_short:'Coucher au plus tard', set_free_short:'Réveil sans cours', set_auto_hint_short:'De 21 h à 6 h, ton choix est gardé.',
   rm_s_bed:'coucher', rm_s_checkin:'bilan', rm_s_water:'eau', rm_s_screens:'écrans', rm_s_none:'aucun', rm_s_live:'notifications', rm_chosen_short:'Choisi', rm_chosen_note:'Les rappels choisis marchent une fois ajoutés à ton agenda ou avec les notifications (ci-dessous).',
-  sum_bed:'coucher ≤ {t}', sum_trv:'trajet {n} min', sum_water:'{n} verres par jour', sum_water_one:'1 verre par jour', sum_auto:'nuit auto', sum_data:'export, tutoriel, effacer', set_data_help:'Données et aide', set_export_short:'Exporter', set_commute_short:'Trajet (aller)',
+  sum_bed:'coucher ≤ {t}', sum_trv:'trajet {n}', sum_water:'{n} verres par jour', sum_water_one:'1 verre par jour', sum_auto:'nuit auto', sum_data:'export, tutoriel, effacer', set_data_help:'Données et aide', set_export_short:'Exporter', set_commute_short:'Trajet (aller)',
   ci_remind:'Me le rappeler chaque soir',
   in_ios_short:'Safari > Partager > « Sur l\'écran d\'accueil », puis ouvre Rythmo depuis l\'icône.',
   st_now:'Maintenant', st_next:'Ensuite', st_until:'jusqu\'à {t}', st_free:'Temps libre', st_sleep_time:'Heure de dormir', st_first:'Premier cours', wake_tmr:'réveil {t}',
@@ -706,12 +716,13 @@ fr: {
   past:'passé', chal_week_one:'1 jour sur les 7 derniers', rm_chosen:'Choisi : actif après l\'export vers l\'agenda ou avec les notifications', imp_sec:'Importer mon agenda (Google, Apple, Outlook, école)',
   sport_fb_morning:'Pas de créneau libre le matin ce jour-là : voici le premier créneau libre.', sport_fb_evening:'Pas de créneau libre le soir ce jour-là : voici le premier créneau libre.',
   imp_ok:'{n} cours importés sur {w}.', imp_ok_one:'1 cours importé sur {w}.', weeks:'{n} semaines', weeks_one:'1 semaine', imp_past:'Cet agenda ne contient que des événements passés : {n} cours copiés comme emploi du temps hebdomadaire.',
-  other:'Autre', rm_before_label:'Minutes avant l\'extinction', floor_note:'Environ {h} de sommeil possibles cette nuit.', st_bed_soon:'Bientôt au lit', bedcap_range:'Choisis une heure entre 20:00 et 01:30.',
+  other:'Autre', rm_before_label:'Minutes avant l\'extinction', floor_note:'Environ {h} de sommeil possibles cette nuit.', st_bed_soon:'Bientôt au lit', bedcap_range:'Choisis une heure entre 21:30 et 01:30.',
   todo_dur:'Durée (facultatif)', todo_dur_on:'Rythmo la place dans ton premier créneau libre aujourd\'hui. Elle ne bouge plus toute seule.', todo_dur_off:'Sans durée : une simple case à cocher.', todo_placed:'Placé aujourd\'hui à {t}.', todo_noslot:'Pas de créneau libre aujourd\'hui pour {m}.', todo_tomorrow:'Demain', todo_notime:'Sans heure', todo_placed_tm:'Prévu demain à {t}.', todo_full_tm:'Demain est plein aussi : gardé sans heure.', todo_kept:'Gardé sans heure.', todo_place:'Placer', todo_place_aria:'Placer aujourd\'hui : {n}', todo_today_at:'aujourd\'hui {t}', todo_tm_at:'demain {t}', todo_why:'Ta chose à faire ({m}), placée quand tu l\'as ajoutée. Elle ne bouge jamais toute seule.', todo_clash:'Quelque chose chevauche maintenant : {n}. Ouvre « À faire » pour la replacer.', todo_done:'C\'est fait', todo_done_msg:'Fait : {n}.', todo_unpin:'Retirer de la journée', todo_max:'La liste est pleine (30). Retire quelque chose d\'abord.',
-  cp_btn:'Copier ce jour vers…', cp_title:'Copier vers…', cp_hint:'Copie les changements de ce jour (stage, cours ajoutés ou retirés, sport, horaires). Pas tes choses à faire. Remplace ce qui est déjà modifié ces jours-là.', cp_this:'Cette semaine', cp_next:'Semaine prochaine', cp_apply:'Copier', cp_none_sel:'Choisis au moins un jour.', cp_done:'Copié vers {n} jours.', cp_done_one:'Copié vers 1 jour.', cp_nothing:'Rien à copier : ce jour suit ton emploi du temps habituel.',
+  todo_fold:'{n} choses à faire placées', cp_btn:'Copier ce jour vers…', cp_row_aria:'Copier {d} vers…', cp_title:'Copier vers…', cp_hint:'Copie les changements de ce jour (stage, cours ajoutés ou retirés, sport, horaires). Pas tes choses à faire. Remplace ce qui est déjà modifié ces jours-là.', cp_this:'Cette semaine', cp_next:'Semaine prochaine', cp_apply:'Copier', cp_none_sel:'Choisis au moins un jour.', cp_done:'Copié vers {n} jours.', cp_done_one:'Copié vers 1 jour.', cp_nothing:'Rien à copier : ce jour suit ton emploi du temps habituel.',
   free_row:'Libre', free_aria:'Temps libre {s}–{e} : idées', free_title:'Et si…', free_hint:'Juste des idées, rien d\'obligatoire. Ce temps est à toi.', fk_B:'Bouger', fk_D:'Se détendre', fk_S:'Voir du monde', ideas_meal:'Idées de repas', ideas_plate:'Une assiette qui tient : des légumes, un féculent (pâtes, riz, pain, pommes de terre…) et une source de protéines (œuf, légumineuses, poisson, volaille, tofu…). Pas de règle stricte : ce qui est faisable aujourd\'hui compte.', ideas_sport:'Avant le sport, plutôt quelque chose de léger ; après, un vrai repas.', ideas_ru:'Pas le temps ? Resto U, ça compte aussi.', ideas_adapt:'Adapte selon tes goûts, allergies et habitudes alimentaires.', eq_M:'micro-ondes', eq_P:'plaque',
-  qe_title:'Saisie rapide de la semaine', qe_hint:'Un cours à la fois : les horaires et les jours restent remplis pour le suivant.', qe_added:'{n} ajouté. Tape le suivant, ou touche Terminé.', qe_added_list:'Ajoutés :', qe_add_next:'Ajouter et continuer', qe_finish:'Terminé',
-  rules_title:'Jours réguliers', badge_rep:'se répète', rule_every:'Chaque {d}', rule_is:'Jour régulier : chaque {d}', rule_today_normal:'Aujourd\'hui seulement : journée habituelle', rule_today_only:'Aujourd\'hui seulement : modifié.', rule_remove:'Retirer ce jour régulier', rule_removed:'Jour régulier retiré ({d}).', rule_add:'Stage ou travail chaque semaine', rule_add_btn:'Ajouter ce jour régulier', rule_hint:'Remplace les cours et événements importés de ce jour, chaque semaine à partir d\'aujourd\'hui.', rule_day:'Jour', rule_saved:'Jour régulier enregistré.', undo:'Annuler', edit:'Modifier',
+  qe_title:'Saisie rapide de la semaine', qe_hint:'Une ligne par cours. Une nouvelle ligne reprend les horaires et les jours de la précédente.', qe_added:'{n} ajouté. Ajoute le suivant, ou touche Terminé.', qe_added_list:'Ajoutés :', qe_add_next:'Ajouter et continuer', qe_row:'Cours {n}', qe_rm_row:'Retirer le cours {n}', qe_add_row:'Un autre cours', qe_add_n:'Ajouter ces {n} cours', qe_added_n:'{n} cours ajoutés.', qe_force:'Ajouter quand même', qe_dup:'{a} existe déjà ({d} {t}).', qe_overlap:'{a} chevauche {b} ({d} {t}).', qe_finish:'Terminé',
+  rm_ci_range:'Choisis une heure entre 18:00 et 23:45.', time_empty:'Choisis une heure.', todo_empty:'Écris d\'abord ce qu\'il y a à faire.', sc_need_name:'Donne-lui un nom (ex. Rattrapage).', act_day_short:'Modifier',
+  rules_title:'Jours réguliers', badge_rep:'se répète', rule_every:'Chaque {d}', rule_is:'Jour régulier : chaque {d}', rule_today_normal:'Aujourd\'hui seulement : journée habituelle', rule_today_only:'Aujourd\'hui seulement : modifié.', rule_remove:'Retirer ce jour régulier', rule_removed:'Jour régulier retiré ({d}).', rule_add:'Stage ou travail chaque semaine', rule_add_btn:'Ajouter ce jour régulier', rule_hint:'Remplace les cours et événements importés de ce jour, chaque semaine à partir d\'aujourd\'hui.', rule_day:'Jour', rule_saved:'Jour régulier enregistré.', rule_replaced:'Le {d} avait déjà un jour régulier : il a été remplacé.', undo:'Annuler', edit:'Modifier',
   imp_rep:'Dont {n} répétitions mensuelles ou annuelles (affichées sur les 6 prochains mois).', imp_rep_one:'Dont 1 répétition mensuelle ou annuelle (affichée sur les 6 prochains mois).', imp_bad:'{n} répétitions n\'ont pas pu être lues : seule la première date est gardée.', imp_bad_one:'Une répétition n\'a pas pu être lue : seule la première date est gardée.',
   imp_card:'Agenda importé', imp_until:'Jusqu\'au {d}.', imp_exact:'Chaque date affiche ses vrais cours : séances annulées, événements ponctuels et semaines alternées restent exacts. Réimporte pour mettre à jour.', imp_remove:'Retirer l\'agenda importé', imp_removed:'Agenda importé retiré.',
   imp_legacy:'Ces cours viennent d\'un ancien import ? Réimporte ton agenda pour que chaque semaine suive les vraies dates (séances annulées, semaines alternées).', imp_hint_ok:'Compris',
@@ -740,18 +751,18 @@ fr: {
   n_bed:'Doucement vers le soir. Dodo vers {t} ?', n_bed_b:'Rythmo', n_checkin:'Un petit bilan de ta journée ? Ça prend 30 secondes.', n_water:'Un verre d\'eau, si ça te dit.', n_screens:'Et si on posait les écrans ? Ton lit t\'attend.', n_ignore:'Ignorer',
   ics_rem_name:'Rythmo - rappels', ics_plan_name:'Rythmo - planning',
   w_glasses:'verres', w_hint:'Touche un verre quand tu en bois un.', w_edit:'Modifier l\'objectif', w_glass:'Verre {i} sur {n}, {s}', w_full:'rempli', w_empty:'vide', w_less:'Un de moins', w_more:'Un de plus', w_extra:'+{n} au-delà de ton objectif', w_goal_label:'Objectif d\'eau (verres par jour)',
-  ob_step:'Étape {a} sur {b}', ob_skip:'Passer pour l\'instant', ob_back:'Retour', ob_next:'Continuer', ob_done:'Terminer', ob_replay:'Revoir le tutoriel', set_help:'Aide',
+  ob_step:'Étape {a} sur {b}', ob_skip:'Passer pour l\'instant', ob_skip_short:'Passer', ob_back:'Retour', ob_next:'Continuer', ob_done:'Terminer', ob_replay:'Revoir le tutoriel', set_help:'Aide',
   ob1_t:'Un planning calme, qui suit ta vraie journée.', ob1_p:'Rythmo lit tes cours et te suggère quand dormir, manger et souffler. Des suggestions, jamais des ordres.',
   ob1_a:'Ton heure de coucher, calculée sur demain.', ob1_b:'Repas et pauses autour de tes cours.', ob1_c:'Chaque jour se modifie : stage, jour off, soirée tardive.',
   ob2_t:'À quelle heure te lèves-tu, et quand aimerais-tu dormir ?', ob2_p:'Les jours de cours, Rythmo adapte le réveil à ton premier cours.',
   ob3_t:'Tes trajets', ob3_p:'Rythmo les ajoute avant ton premier cours et après le dernier.',
   ob4_t:'Et le sport ?',
-  ob5_t:'Tes cours d\'abord, le reste s\'organise autour.', ob5_p:'Importe ton agenda, ou décris une journée type en 30 secondes.', ob5_link:'Importer mon agenda (lien)', ob5_file:'Importer un fichier agenda (.ics)', ob5_hand:'Décrire une journée type à la main', ob5_later:'Tu peux aussi ajouter tes cours plus tard dans Semaine › Mes cours.',
-  set_bedcap:'Coucher au plus tard', set_bedcap_hint:'Entre 20:00 et 01:30. Par défaut 23:30.',
+  ob5_t:'Tes cours d\'abord, le reste s\'organise autour.', ob5_p:'Importe ton agenda, ou décris une journée type en 30 secondes.', ob5_link:'Importer mon agenda (lien)', ob5_file:'Importer un fichier agenda (.ics)', ob5_hand:'Ajouter mes cours à la main', ob5_later:'Tu peux aussi ajouter tes cours plus tard dans Semaine › Mes cours.',
+  set_bedcap:'Coucher au plus tard', set_bedcap_hint:'Entre 21:30 et 01:30. Par défaut 23:30.',
   nav_week:'Semaine', now:'Maintenant', prev_day:'Jour précédent', next_day:'Jour suivant', pick_day:'Choisir un jour', close:'Fermer',
   edit_block:'Modifier : {b}, {t}', tap_hint:'Touche un bloc pour le déplacer ou le retirer ce jour-là.', today_empty:'Rien de prévu. Profites-en, ou ajoute une petite chose.',
   edited_day:'Ta journée est à ton image.', badge_work:'Stage / travail', badge_off:'Jour off', badge_edited:'Modifié', work_default:'Stage',
-  de_title:'Modifier ce jour', de_hint:'Ne change que cette date. Ton emploi du temps habituel ne bouge pas.', de_kind:'Ce jour est', de_normal:'Un jour habituel', de_work:'Stage / travail', de_off:'Jour off',
+  de_title:'Modifier ce jour', de_hint:'Ne change que cette date. Ton emploi du temps habituel ne bouge pas.', de_hint_work:'Ne change que cette date, sauf si tu coches « Chaque {d} ».', de_kind:'Ce jour est', de_normal:'Un jour habituel', de_work:'Stage / travail', de_off:'Jour off',
   de_work_label:'Nom (facultatif)', de_save:'Enregistrer ce jour', de_sport:'Sport ce jour-là', de_add:'Ajouter un événement ce jour-là seulement', de_only_day:'ce jour seulement', de_removed:'Retiré ce jour-là', de_restore:'Remettre',
   de_reset:'Réinitialiser ce jour', de_reset_done:'Ce jour suit de nouveau ton emploi du temps habituel.',
   sh_only_day:'Les changements ne valent que pour ce jour.', sh_save_day:'Enregistrer pour ce jour', sh_rm_class:'Retirer ce cours ce jour-là', sh_not_work:'Ce n\'est plus un jour de stage', sh_class_hint:'Pour le changer chaque semaine, va dans l\'onglet Cours.',
@@ -855,7 +866,7 @@ function sanitize(s) {
   if (out.settings.autoNight === true) { out.settings.theme = 'auto'; out.settings.autoNight = false; } // old "Nuit le soir" switch -> Auto tile
   if (!THEME_CHOICES.includes(out.settings.theme)) out.settings.theme = DEFAULT_THEME;
   if (!HHMM.test(out.settings.freeWake)) out.settings.freeWake = '08:00';
-  if (!bedCapOk(out.settings.bedCap)) out.settings.bedCap = '23:30';
+  if (!bedCapOk(out.settings.bedCap)) out.settings.bedCap = HHMM.test(out.settings.bedCap || '') && toMin0(out.settings.bedCap) >= 1080 ? '21:30' : '23:30'; // 18:00–21:29 (old range) -> the floor
   out.onboarded = !!out.onboarded;
   out.settings.waterGoal = Math.max(4, Math.min(12, Math.round(+out.settings.waterGoal) || 8));
   out.settings.sportOn = !!out.settings.sportOn; out.settings.sportMin = inRange5(out.settings.sportMin, 15, 180, 30);
@@ -1147,7 +1158,7 @@ const KIND = { appt: 'class', wake: 'sleep', bed: 'sleep', wind: 'sleep', meal: 
 const ICK = { free: 'free', appt: 'task', wake: 'wake', bed: 'sleep', wind: 'wind', meal: 'meal', class: 'class', travel: 'travel', sport: 'sport', task: 'task', morning: 'free' };
 const SUGGEST = { meal: 1, sport: 1, morning: 1, task: 1 };
 
-let msgAt = null, openSec = {}, ruleEditId = null, qeKeep = null, qeAdded = [];
+let msgAt = null, openSec = {}, ruleEditId = null, qeRows = null, qeAdded = [], qeConfirm = null;
 let tab = 'plan', curDate = today(), draft = null, msg = '', msgErr = false, resetArm = false, busy = false, scrollTask = false;
 const TABS = ['plan', 'week', 'checkin', 'settings'];
 let weekSub = 'week'; // Semaine | Mes cours (the former Cours tab)
@@ -1171,9 +1182,9 @@ function opts(arr, cur, label) {
   return arr.map(v => '<option value="' + esc(v) + '"' + (String(v) === String(cur) ? ' selected' : '') + '>' + esc(label(v)) + '</option>').join(''); }
 function msgP(at) { return '<p class="msg' + (msgErr ? ' err' : '') + '" role="status">' + ((msgAt || null) === (at || null) ? esc(msg) : '') + '</p>'; }
 
-function linkForm() {
+function linkForm(inSheet) {
   if (!RELAY) return '';
-  return '<form id="urlf" class="stack" style="margin:0"><label class="f" for="icsurl">' + esc(t('lk_title')) + '<span class="hint">' + esc(t('lk_note')) + '</span><textarea id="icsurl" rows="2" autocomplete="off" spellcheck="false" placeholder="' + esc(t('sc_url_ph')) + '"></textarea></label>' +
+  return '<form id="urlf" class="stack" style="margin:0"><label class="f" for="icsurl">' + (inSheet ? '<span class="sr">' + esc(t('lk_title')) + '</span>' : esc(t('lk_title'))) + '<span class="hint">' + esc(t('lk_note')) + '</span><textarea id="icsurl" rows="2" autocomplete="off" spellcheck="false" placeholder="' + esc(t('sc_url_ph')) + '"></textarea></label>' +
     '<button class="btn pri full" type="submit"' + (busy ? ' disabled' : '') + '>' + esc(busy ? t('lk_busy') : t('lk_btn')) + '</button></form>' + icsHelp();
 }
 function icsHelp() {
@@ -1227,7 +1238,7 @@ function dayEditCard(P, dk) {
   const o = P.ov, kind = o.kind || 'normal', S = state.settings;
   const removed = state.classes.filter(c => o.remove && o.remove[c.id]);
   const rule = ruleOf(parseKey(dk)), wdName = dayName(parseKey(dk), 'long');
-  let h = '<div class="stack" id="dayedit"><p class="hint" style="margin:0">' + esc(t('de_hint')) + '</p>';
+  let h = '<div class="stack" id="dayedit"><p class="hint" style="margin:0">' + esc(kind === 'work' ? t('de_hint_work', { d: wdName }) : t('de_hint')) + '</p>';
   if (rule) h += '<div class="rule-line"><p style="margin:0"><b>' + esc(t('rule_is', { d: wdName })) + '</b><br><span class="hint">' + esc((rule.work.label || t('work_default')) + ' · ' + rule.work.start + '–' + rule.work.end) + '</span></p>' +
     (o.rule ? '' : '<p class="hint" style="margin:0">' + esc(t('rule_today_only')) + '</p>') +
     '<button class="btn warnb" data-act="ruledel" data-v="' + esc(rule.id) + '">' + esc(t('rule_remove')) + '</button></div>';
@@ -1287,13 +1298,20 @@ function rowHtml(it, dk, past) {
   const inner = '<span class="tm time">' + time + (past ? '<span class="sr"> (' + esc(t('past')) + ')</span>' : '') + '</span><span class="ic">' + SVG(BI[ICK[it.type]] || BI.free) + '</span><span class="tt"><span class="ttl">' + esc(it.title) + '</span>' + extra + '</span>';
   const cls = 'row block ' + kind + ' t-' + it.type + (sug ? ' suggestion' : '') + (it.moved ? ' moved' : '') + (it.type === 'class' || it.type === 'appt' ? ' tall' : '');
   if (it.type === 'travel') return '<div class="' + cls + '">' + inner + '</div>';
+  if (it.type === 'todomore') return '<button class="row block task t-task fold" id="todo-more" data-act="panel" data-v="todos" aria-haspopup="dialog" aria-label="' + esc(it.title + ' : ' + it.names) + '"><span class="tm time">' + fmt(it.t) + '</span><span class="ic">' + SVG(BI.task) + '</span><span class="tt"><span class="ttl">' + esc(it.title) + '</span><small>' + esc(it.names) + '</small></span><span class="chev" aria-hidden="true">›</span></button>';
   if (it.type === 'free') return '<button class="' + cls + '" id="free-' + esc(dk) + '" data-act="freeidea" data-v="' + it.t + '-' + it.end + '" aria-haspopup="dialog" aria-label="' + esc(t('free_aria', { s: fmt(it.t), e: fmt(it.end) })) + '">' + inner + '<span class="chev" aria-hidden="true">›</span></button>';
   return '<button class="' + cls + '" id="' + esc(bid(dk, it.k)) + '" data-act="edit" data-d="' + esc(dk) + '" data-k="' + esc(it.k) + '" aria-haspopup="dialog" aria-label="' + esc(t('edit_block', { b: it.title, t: fmt(it.t) })) + '">' + inner + '<span class="chev" aria-hidden="true">›</span></button>';
 }
 function timeline(P, dk, isToday) {
-  const nm = nowMin(), gp = gaps(P, isToday ? nm : 0);
-  const L = gp ? P.items.concat([{ k: 'free', t: gp[0], end: gp[1], type: 'free', title: t('free_row') }]).sort((a, b) => a.t - b.t) : P.items;
-  const isPast = it => isToday && it.type !== 'bed' && it.t + durOf(it) <= nm;
+  const nm = nowMin(), isPast = it => isToday && it.type !== 'bed' && it.t + durOf(it) <= nm;
+  // Placed to-dos stay compact (Aujourd'hui budget): one upcoming to-do = its own row; 2 or more = ONE row
+  // "n à faire · from HH:MM" that opens À faire (each one keeps its pinned time there). No "Libre" row then.
+  const upTodos = P.items.filter(it => it.todo && !isPast(it)), fold = upTodos.length >= 2 ? upTodos : [];
+  const gp = fold.length ? null : gaps(P, isToday ? nm : 0);
+  let L = P.items.filter(it => fold.indexOf(it) < 0);
+  if (gp) L = L.concat([{ k: 'free', t: gp[0], end: gp[1], type: 'free', title: t('free_row') }]);
+  if (fold.length) L = L.concat([{ k: 'todomore', t: fold[0].t, type: 'todomore', title: t('todo_fold', { n: fold.length }), names: fold.map(x => fmt(x.t) + ' ' + x.title).join(', ') }]);
+  L = L.slice().sort((a, b) => a.t - b.t);
   const past = L.filter(isPast), rest = L.filter(it => !isPast(it));
   let h = '<ul class="tl2" aria-label="' + esc(t('tl_label')) + '">';
   if (past.length) {
@@ -1319,10 +1337,10 @@ function waterLine(k) {
 }
 function actionRow(P) {
   const open = state.todos.filter(x => !x.done).length;
-  const b = (v, ic, lab) => '<button class="act" id="act-' + v + '" data-act="panel" data-v="' + v + '" aria-haspopup="dialog">' + SVG(ic) + '<span>' + esc(lab) + '</span></button>';
+  const b = (v, ic, lab, aria) => '<button class="act" id="act-' + v + '" data-act="panel" data-v="' + v + '" aria-haspopup="dialog"' + (aria ? ' aria-label="' + esc(aria) + '"' : '') + '>' + SVG(ic) + '<span>' + esc(lab) + '</span></button>';
   return '<div class="acts">' + b('notes', '<path d="M5 4h10l4 4v12H5zM15 4v4h4M8 13h8M8 17h5"/>', t('act_notes')) +
     b('todos', '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12l3 3 5-6"/>', open ? t('act_todos_n', { n: open }) : t('act_todos')) +
-    b('day', '<path d="M4 20h4L19 9l-4-4L4 16zM14 6l4 4"/>', t('act_day')) + '</div>';
+    b('day', '<path d="M4 20h4L19 9l-4-4L4 16zM14 6l4 4"/>', t('act_day_short'), t('act_day')) + '</div>';
 }
 function screenPlan() {
   if (!state.classes.length && !state.cal && !state.rules.length && !Object.keys(state.overrides).length) return emptyPlan();
@@ -1340,7 +1358,7 @@ function screenPlan() {
   else if (P.floored) h += '<p class="hint">' + esc(t('floor_note', { h: fmtHM(P.hours) })) + '</p>';
   if (!P.cl.length && P.items.length <= 5) h += '<p class="hint">' + esc(t('today_empty')) + '</p>';
   h += timeline(P, k, isToday);
-  if (P.noSport) h += '<p class="hint">' + esc(t('sport_none')) + '</p>';
+  if (P.noSport) h += '<p class="hint">' + esc(t('sport_none', { m: fmtMin(state.settings.sportMin), t: fmt(Math.min(1260, P.bed - 120)) })) + '</p>';
   h += '<p class="tipline"><b>' + esc(t('tip_label')) + '</b> ' + esc(challengeFor(date, P).text) + '</p>';
   return h;
 }
@@ -1376,7 +1394,7 @@ const FREE_IDEAS = [
   { m: 10, k: 'D', fr: "Prendre l'air à la fenêtre ou au balcon", en: 'Fresh air at the window' },
   { m: 10, k: 'D', fr: 'Noter trois choses du jour', en: 'Jot three things from today' },
   { m: 20, k: 'B', fr: "Marche au parc ou au bord de l'eau", en: 'Walk in a park or by the water' },
-  { m: 20, k: 'B', fr: 'Petite séance au poids du corps, à ton rythme', en: 'Short bodyweight session, at your pace' },
+  { m: 20, k: 'B', fr: 'Petite séance sans matériel, à ton rythme', en: 'Short no-equipment session, at your pace' },
   { m: 20, k: 'D', fr: 'Dessiner ou gribouiller', en: 'Doodle or sketch' },
   { m: 20, k: 'S', fr: 'Appeler un proche', en: 'Call someone close' },
   { m: 20, k: 'D', fr: 'Lire quelques pages', en: 'Read a few pages' },
@@ -1422,6 +1440,49 @@ function mealPanel(it, date) {
     '<ul class="ideas">' + L.map(x => '<li><b>' + esc(L10(x)) + '</b><span>' + esc(state.lang === 'fr' ? x.ifr : x.ien) + '</span><small>' + esc(fmtMin(x.m) + ' · ' + t('eq_' + x.q)) + '</small></li>').join('') + '</ul>' +
     '<p class="hint" style="margin:0">' + esc(t('ideas_plate')) + '</p>' + (sport ? '<p class="hint" style="margin:0">' + esc(t('ideas_sport')) + '</p>' : '') +
     (slot === 'de' ? '<p class="hint" style="margin:0">' + esc(t('ideas_ru')) + '</p>' : '') + '<p class="hint" style="margin:0">' + esc(t('ideas_adapt')) + '</p></div></details>';
+}
+/* F9 "Saisie rapide de la semaine": several rows (title, start, end, days); a new row copies the previous
+   row's times and days. Empty title / bad times / no day -> inline error. Duplicates and overlaps -> a warning
+   and "Ajouter quand même" (never silent). Used in Mes cours and in onboarding ("Ajouter mes cours à la main"). */
+const qeDefault = () => [{ title: '', start: '08:30', end: '10:30', days: [wdOf(curDate)] }];
+function qeSync() {
+  if (!document.getElementById('addf')) return;
+  qeRows = (qeRows || qeDefault()).map((r, i) => {
+    const g = id => document.getElementById(id);
+    return g('qe-n-' + i) ? { title: g('qe-n-' + i).value, start: g('qe-s-' + i).value, end: g('qe-e-' + i).value, days: [...document.querySelectorAll('input[name=qe-d-' + i + ']:checked')].map(x => +x.value) } : r;
+  });
+}
+function qeForm() {
+  const R = qeRows || (qeRows = qeDefault());
+  let h = '<form id="addf" class="stack" style="margin:0"><p class="hint" style="margin:0">' + esc(t('qe_hint')) + '</p>' +
+    (qeAdded.length ? '<p class="qe-done" role="status"><b>' + esc(t('qe_added_list')) + '</b> ' + esc(qeAdded.join(', ')) + '</p>' : '');
+  R.forEach((r, i) => {
+    h += '<fieldset class="qe-row"><legend>' + esc(t('qe_row', { n: i + 1 })) + '</legend>' +
+      '<label class="f" for="qe-n-' + i + '">' + esc(t('sc_name')) + '<input id="qe-n-' + i + '" type="text" maxlength="40" placeholder="' + esc(t('sc_name_ph')) + '" autocomplete="off" value="' + esc(r.title) + '"></label>' +
+      '<div class="grid2"><label class="f" for="qe-s-' + i + '">' + esc(t('sc_start')) + '<input id="qe-s-' + i + '" type="time" value="' + esc(r.start) + '" required></label><label class="f" for="qe-e-' + i + '">' + esc(t('sc_end')) + '<input id="qe-e-' + i + '" type="time" value="' + esc(r.end) + '" required></label></div>' +
+      '<fieldset style="border:0;padding:0;margin:0"><legend class="hint" style="margin-bottom:6px">' + esc(t('sc_days')) + '</legend><div class="chips cb">' + WEEK.map((d, j) => '<label><input type="checkbox" name="qe-d-' + i + '" id="qe-d-' + i + '-' + j + '" value="' + j + '"' + (r.days.includes(j) ? ' checked' : '') + '><span>' + esc(dayName(d, 'short')) + '</span></label>').join('') + '</div></fieldset>' +
+      (R.length > 1 ? '<button type="button" class="tbtn" data-act="qerm" data-v="' + i + '">' + esc(t('qe_rm_row', { n: i + 1 })) + '</button>' : '') + '</fieldset>';
+  });
+  h += '<button type="button" class="btn full" data-act="qeadd" id="qe-add">+ ' + esc(t('qe_add_row')) + '</button>' + msgP('addf');
+  if (qeConfirm) h += '<div class="warn" role="alert">' + qeConfirm.map(x => '<p style="margin:0">' + esc(x) + '</p>').join('') + '</div><button class="btn pri full" type="submit" id="qe-force">' + esc(t('qe_force')) + '</button>';
+  else h += '<button class="btn pri full" type="submit">' + esc(R.length > 1 ? t('qe_add_n', { n: R.length }) : t('sc_add_btn')) + '</button>';
+  if (qeAdded.length && !obOn) h += '<button type="button" class="btn full" data-act="qedone">' + esc(t('qe_finish')) + '</button>';
+  return h + '</form>';
+}
+/* Duplicates / overlaps of the new rows with saved weekly classes and with each other */
+function qeConflicts(R) {
+  const out = [], seen = [];
+  const all = state.classes.filter(c => c.origin !== 'sample').map(c => ({ title: c.title, start: c.start, end: c.end, days: c.days }));
+  R.forEach(r => {
+    [...all, ...seen].forEach(c => {
+      const ds = r.days.filter(d => c.days.includes(d)); if (!ds.length) return;
+      if (!overlaps(toMin(r.start), toMin(r.end), toMin(c.start), toMin(c.end))) return;
+      const same = c.title.trim().toLowerCase() === r.title.trim().toLowerCase() && c.start === r.start && c.end === r.end;
+      out.push(t(same ? 'qe_dup' : 'qe_overlap', { a: r.title, b: c.title, d: dayName(WEEK[ds[0]], 'short'), t: c.start + '–' + c.end }));
+    });
+    seen.push(r);
+  });
+  return out.slice(0, 3);
 }
 function copyPanel(src) {
   const tk = key(today()), w0 = weekStartOf(parseKey(src));
@@ -1481,8 +1542,8 @@ function sheetWrap(eyebrow, title, body) {
 function sheetHtml() {
   if (sheet && sheet.panel) {
     const P = computeDay(curDate);
-    if (sheet.panel === 'oblink') return sheetWrap('', t('lk_title'), msgP('link') + linkForm());
-    if (sheet.panel === 'obquick') return sheetWrap('', t('qs_title'), quickForm().replace('class="card stack"', 'class="stack"'));
+    if (sheet.panel === 'oblink') return sheetWrap('', t('lk_title'), msgP('link') + linkForm(true));
+    if (sheet.panel === 'obquick') return sheetWrap('', t('qe_title'), qeForm());
     if (sheet.panel === 'notes') return sheetWrap('', t('act_notes'), notesPanel());
     if (sheet.panel === 'free') return sheetWrap(fmt(sheet.s) + '–' + fmt(sheet.e) + ' · ' + t('free_row'), t('free_title'), freePanel(sheet.e - sheet.s));
     if (sheet.panel === 'copy') return sheetWrap(longDate(parseKey(sheet.src)), t('cp_title'), copyPanel(sheet.src));
@@ -1554,13 +1615,14 @@ function screenWeek() {
       if (P.wake !== uW) bits.push(t('wr_wake', { t: fmt(P.wake) }));
       if (P.bed !== uB) bits.push(t('wr_bed', { t: fmt(P.bed) }));
       const types = [...new Set(P.items.map(it => KIND[it.type]))].filter(x => x !== 'sleep' && x !== 'travel').slice(0, 5);
-      let r = '<li class="wr' + (isT ? ' is-today' : '') + '" id="col-' + esc(dk) + '"><button class="wr-b" data-act="openday" data-v="' + esc(dk) + '" aria-label="' + esc(t('wk_open', { d: longDate(d) })) + '">' +
+      const canCp = dk >= tk && !ovEmpty(state.overrides[dk] || {});
+      let r = '<li class="wr' + (isT ? ' is-today' : '') + '" id="col-' + esc(dk) + '"><div class="wr-top"><button class="wr-b" data-act="openday" data-v="' + esc(dk) + '" aria-label="' + esc(t('wk_open', { d: longDate(d) })) + '">' +
         '<span class="wr-d"><b>' + esc(dayName(d, 'short')) + '</b> ' + d.getDate() + '</span><span class="wr-s">' + esc(bits.join(' · ')) + (b ? ' <span class="badge">' + esc(b) + '</span>' : '') + '</span>' +
-        '<span class="dots" aria-hidden="true">' + types.map(k => '<i style="background:var(--b-' + k + ')"></i>').join('') + '</span></button>';
+        '<span class="dots" aria-hidden="true">' + types.map(k => '<i style="background:var(--b-' + k + ')"></i>').join('') + '</span></button>' +
+        (canCp ? '<button class="rb wr-cp" data-act="copyday" data-v="' + esc(dk) + '" id="cp-' + esc(dk) + '" aria-label="' + esc(t('cp_row_aria', { d: longDate(d) })) + '" title="' + esc(t('cp_btn')) + '">' + SVG('<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>') + '</button>' : '') + '</div>';
       if (isT) {
         const rows = P.items.filter(it => ['class', 'appt', 'sport', 'task'].includes(it.type));
         if (rows.length) r += '<ul class="wr-x">' + rows.map(it => '<li class="' + esc(it.type) + '"><span class="time">' + fmt(it.t) + '</span> ' + esc(it.title) + '</li>').join('') + '</ul>';
-        if (!ovEmpty(state.overrides[dk] || {})) r += '<button class="tbtn wr-cp" data-act="copyday" data-v="' + esc(dk) + '" id="cp-' + esc(dk) + '">' + esc(t('cp_btn')) + '</button>';
       }
       return r + '</li>';
     }).join('') + '</ul>';
@@ -1652,14 +1714,7 @@ function screenCourses() {
   }
   if (state.tasks.length) h += '<h2>' + esc(t('tk_list')) + '</h2><ul class="cl" style="margin-bottom:14px">' + state.tasks.map(k => '<li><div class="m"><b>' + esc(k.title) + '</b><small>' + esc(t('min', { n: k.dur })) + ' · ' + k.days.slice().sort().map(d => esc(dayName(WEEK[d], 'short'))).join(', ') + '</small></div><button class="x" data-act="deltask" data-v="' + esc(k.id) + '">' + esc(t('sc_remove')) + '</button></li>').join('') + '</ul>';
   h += sec('s-link', t('imp_sec'), linkForm() + fileImport(), noCl && !state.cal && !!RELAY);
-  // F9 "Saisie rapide": one class per pass; times and days stay filled for the next one
-  const qk = qeKeep || { start: '08:30', end: '10:30', days: [wdOf(curDate)] };
-  h += sec('s-class', '+ ' + t('qe_title'), '<form id="addf" class="stack" style="margin:0"><p class="hint" style="margin:0">' + esc(t('qe_hint')) + '</p>' +
-    (qeAdded.length ? '<p class="qe-done" role="status"><b>' + esc(t('qe_added_list')) + '</b> ' + esc(qeAdded.join(', ')) + '</p>' : '') +
-    '<label class="f" for="cn">' + esc(t('sc_name')) + '<input id="cn" type="text" maxlength="40" placeholder="' + esc(t('sc_name_ph')) + '" autocomplete="off"></label>' +
-    '<div class="grid2"><label class="f" for="cs">' + esc(t('sc_start')) + '<input id="cs" type="time" value="' + esc(qk.start) + '" required></label><label class="f" for="ce">' + esc(t('sc_end')) + '<input id="ce" type="time" value="' + esc(qk.end) + '" required></label></div>' +
-    dayChips('cd', i => qk.days.includes(i)) + msgP('addf') + '<button class="btn pri full" type="submit">' + esc(qeAdded.length ? t('qe_add_next') : t('sc_add_btn')) + '</button>' +
-    (qeAdded.length ? '<button type="button" class="btn full" data-act="qedone">' + esc(t('qe_finish')) + '</button>' : '') + '</form>', !!(msgAt === 'addf' || qeAdded.length));
+  h += sec('s-class', '+ ' + t('qe_title'), qeForm(), !!(msgAt === 'addf' || qeAdded.length || qeConfirm));
   const er = state.rules.find(r => r.id === ruleEditId);
   h += sec('s-rule', '+ ' + t('rule_add'), '<form id="rulef" class="stack" style="margin:0"><p class="hint" style="margin:0">' + esc(t('rule_hint')) + '</p>' +
     '<label class="f" for="ru-d">' + esc(t('rule_day')) + '<select id="ru-d">' + WEEK.map((d, i) => '<option value="' + i + '"' + ((er ? er.wd : wdOf(curDate)) === i ? ' selected' : '') + '>' + esc(dayName(d, 'long')) + '</option>').join('') + '</select></label>' +
@@ -1731,7 +1786,7 @@ function screenOnboarding() {
     '<section class="ob-card" aria-live="polite">' + steps[ob]() + '</section>' +
     '<div class="ob-nav">' + (ob > 0 ? '<button class="btn ob-back" data-act="obback">' + esc(t('ob_back')) + '</button>' : '<span class="ob-back"></span>') +
     '<button class="btn pri" data-act="' + (last ? 'obdone' : 'obnext') + '" id="ob-next">' + esc(last ? t('ob_done') : t('ob_next')) + '</button>' +
-    (last ? '' : '<button class="tbtn ob-skip" data-act="obskip">' + esc(t('ob_skip')) + '</button>') + '</div></div>';
+    (last ? '' : '<button class="tbtn ob-skip" data-act="obskip" aria-label="' + esc(t('ob_skip')) + '"><span class="ob-sk-l">' + esc(t('ob_skip')) + '</span><span class="ob-sk-s" aria-hidden="true">' + esc(t('ob_skip_short')) + '</span></button>') + '</div></div>';
 }
 function finishOb() { obOn = false; ob = 0; state.onboarded = true; save(); tab = 'plan'; }
 function acc(id, title, summary, body) {
@@ -1743,7 +1798,7 @@ function screenSettings() {
   const remOn = ['bed', 'checkin', 'water', 'screens'].filter(k => R[k].on).map(k => t('rm_s_' + k));
   let h = '<h1>' + esc(t('set_title')) + '</h1>';
   h += acc('set-rem', t('rm_title'), (remOn.length ? remOn.join(', ') : t('rm_s_none')) + (R.enabled && notifPerm() === 'granted' ? ' · ' + t('rm_s_live') : ''), remindersBody());
-  h += acc('set-plan', t('set_planning'), fmtHM(S.sleep) + ' · ' + t('sum_bed', { t: S.bedCap }) + ' · ' + t('sum_trv', { n: S.commute }),
+  h += acc('set-plan', t('set_planning'), fmtHM(S.sleep) + ' · ' + t('sum_bed', { t: S.bedCap }) + ' · ' + t('sum_trv', { n: fmtMin(S.commute) }),
     '<div class="grid2"><label class="f" for="s-sleep">' + esc(t('set_sleep_short')) + '<select id="s-sleep" data-set="sleep">' + opts(SLEEPS, S.sleep, v => fmtHM(v)) + '</select></label>' +
     '<label class="f" for="s-bc">' + esc(t('set_bedcap_short')) + '<input id="s-bc" type="time" data-set="bedCap" value="' + esc(S.bedCap) + '"></label>' +
     '<label class="f" for="s-fw">' + esc(t('set_free_short')) + '<input id="s-fw" type="time" data-set="freeWake" value="' + esc(S.freeWake) + '"></label>' +
@@ -2151,16 +2206,25 @@ const firstClassDate = () => { for (let i = 0; i < 7; i++) { const d = addDays(t
 /* ===================== ACTIONS ===================== */
 const $toast = (() => { const d = document.createElement('div'); d.id = 'toast'; d.className = 'toast'; d.setAttribute('role', 'status'); d.setAttribute('aria-live', 'polite'); document.body.appendChild(d); return d; })();
 let toastTimer = null, toastUndo = null;
-function hideToast() { clearTimeout(toastTimer); $toast.classList.remove('on'); $toast.innerHTML = ''; toastUndo = null; }
+let toastBack = null;
+function hideToast() {
+  const had = $toast.contains(document.activeElement), back = toastBack;
+  clearTimeout(toastTimer); $toast.classList.remove('on'); $toast.innerHTML = ''; toastUndo = null; toastBack = null;
+  if (had) setTimeout(() => { const el = (back && document.getElementById(back)) || document.getElementById('act-day') || document.querySelector('#app h1'); if (el) { if (!el.matches('button, a, input, select, textarea')) el.setAttribute('tabindex', '-1'); el.focus(); } }, 0);
+}
 function armToast() { clearTimeout(toastTimer); toastTimer = setTimeout(hideToast, 6500); }
-function toast(text, undo) {
-  toastUndo = undo || null;
+/* Undo toast: focus goes to "Annuler" (keyboard users reach it at once); it stays while focused or hovered,
+   otherwise 6.5 s; Esc closes it. back = id of the element that gets focus after it closes. */
+function toast(text, undo, back) {
+  toastUndo = undo || null; toastBack = back || null;
   $toast.innerHTML = '<span>' + esc(text) + '</span>' + (undo ? '<button class="tbtn" id="toast-undo">' + esc(t('undo')) + '</button>' : '');
   $toast.classList.add('on'); armToast();
+  if (undo) $toast.querySelector('#toast-undo').focus();
 }
-$toast.addEventListener('click', e => { if (e.target.id === 'toast-undo' && toastUndo) { const u = toastUndo; hideToast(); u(); } });
+$toast.addEventListener('keydown', e => { if (e.key === 'Escape') { e.stopPropagation(); hideToast(); } });
+$toast.addEventListener('click', e => { if (e.target.id === 'toast-undo' && toastUndo) { const u = toastUndo; u(); hideToast(); } });
 ['mouseenter', 'focusin'].forEach(ev => $toast.addEventListener(ev, () => clearTimeout(toastTimer)));
-['mouseleave', 'focusout'].forEach(ev => $toast.addEventListener(ev, () => { if ($toast.classList.contains('on')) armToast(); }));
+['mouseleave', 'focusout'].forEach(ev => $toast.addEventListener(ev, () => { if ($toast.classList.contains('on') && !$toast.contains(document.activeElement) && !$toast.matches(':hover')) armToast(); }));
 function say(m, err, at) { msg = m; msgErr = !!err; msgAt = at || null; }
 /* Validation error shown inside the form itself, without re-rendering: the accordion stays open,
    typed values stay, and the message is read out (role=alert) next to the field. */
@@ -2184,7 +2248,9 @@ const ACT = {
   openday: v => { curDate = parseKey(v); tab = 'plan'; msg = ''; sheet = null; showPast = false; window.scrollTo(0, 0); },
   edit: (v, b) => { sheet = { d: b.dataset.d, k: b.dataset.k }; msg = ''; },
   freeidea: (v, b) => { const p = String(v).split('-'); sheet = { panel: 'free', s: +p[0], e: +p[1], ret: b.id || '' }; msg = ''; },
-  qedone: () => { qeAdded = []; qeKeep = null; openSec['s-class'] = false; jumpTo = 's-class'; },
+  qedone: () => { qeAdded = []; qeRows = null; qeConfirm = null; openSec['s-class'] = false; jumpTo = 's-class'; },
+  qeadd: () => { qeSync(); const L = qeRows[qeRows.length - 1]; qeRows.push({ title: '', start: L.start, end: L.end, days: L.days.slice() }); qeConfirm = null; const n = qeRows.length - 1; setTimeout(() => { const el = document.getElementById('qe-n-' + n); if (el) el.focus(); }, 0); },
+  qerm: v => { qeSync(); qeRows.splice(+v, 1); if (!qeRows.length) qeRows = qeDefault(); qeConfirm = null; setTimeout(() => { const el = document.getElementById('qe-add'); if (el) el.focus(); }, 0); },
   copyday: (v, b) => { sheet = { panel: 'copy', src: v, ret: b.id || '' }; msg = ''; },
   panel: (v, b) => { sheet = { panel: v, ret: b.id || '' }; msg = ''; },
   showpast: () => { showPast = !showPast; },
@@ -2203,7 +2269,7 @@ const ACT = {
   dayunrm: (v, b) => { setOv(b.dataset.d, o => { if (o.remove) delete o.remove[v]; }); },
   ruleedit: v => { ruleEditId = v; openSec['s-rule'] = true; jumpTo = 's-rule'; },
   ruledel: v => { const r = state.rules.find(x => x.id === v); if (!r) return; const snap = JSON.parse(JSON.stringify(state.rules));
-    state.rules = state.rules.filter(x => x.id !== v); save(); toast(t('rule_removed', { d: dayName(WEEK[r.wd], 'long') }), () => { state.rules = snap; save(); render(); }); },
+    state.rules = state.rules.filter(x => x.id !== v); save(); toast(t('rule_removed', { d: dayName(WEEK[r.wd], 'long') }), () => { state.rules = snap; save(); render(); }, 're-' + r.id); },
   dayreset: (v, b) => { delete state.overrides[b.dataset.d]; save(); say(t('de_reset_done')); },
   wkmove: v => { curDate = +v === 0 ? today() : addDays(weekStartOf(curDate), +v); weekJump = key(+v === 0 ? today() : weekStartOf(curDate)); },
   wkmode: v => { state.ui.weekMode = v === 'list' ? 'list' : 'grid'; save(); },
@@ -2320,7 +2386,8 @@ $app.addEventListener('submit', e => {
   }
   if (id === 'todof') {
     const el = document.getElementById('todo-in'), v = el.value.trim().slice(0, 80);
-    if (v && state.todos.length >= 30) { formError(form, t('todo_max'), 'todo-in'); return; }
+    if (!v) { formError(form, t('todo_empty'), 'todo-in'); return; }
+    if (state.todos.length >= 30) { formError(form, t('todo_max'), 'todo-in'); return; }
     if (v) {
       const x = { id: uid(), text: v, done: false, dur: todoDur, date: null, at: null, doneOn: null };
       state.todos = state.todos.concat([x]); todoDraft = ''; todoAsk = null;
@@ -2336,15 +2403,15 @@ $app.addEventListener('submit', e => {
     const snap = {}; to.forEach(dk => { snap[dk] = state.overrides[dk] ? JSON.parse(JSON.stringify(state.overrides[dk])) : null; });
     to.forEach(dk => { const c = JSON.parse(JSON.stringify(state.overrides[src])); if (c.add) c.add = c.add.map(a => Object.assign(a, { id: uid() })); if (c.at) Object.keys(c.at).forEach(k => { if (k.indexOf('todo:') === 0) delete c.at[k]; }); state.overrides[dk] = c; });
     save(); const back = sheet.ret; sheet = null; render();
-    toast(tp('cp_done', to.length, { n: to.length }), () => { Object.keys(snap).forEach(dk => { if (snap[dk]) state.overrides[dk] = snap[dk]; else delete state.overrides[dk]; }); save(); render(); });
-    const el = document.getElementById(back); if (el) el.focus(); return;
+    toast(tp('cp_done', to.length, { n: to.length }), () => { Object.keys(snap).forEach(dk => { if (snap[dk]) state.overrides[dk] = snap[dk]; else delete state.overrides[dk]; }); save(); render(); }, document.getElementById(back) ? back : 'act-day');
+    return;
   }
   if (id === 'rulef') {
     const wd = +document.getElementById('ru-d').value, lb = document.getElementById('ru-l').value.trim().slice(0, 40), s0 = document.getElementById('ru-s').value, e0 = document.getElementById('ru-e').value;
     if (!HHMM.test(s0) || !HHMM.test(e0) || toMin(e0) <= toMin(s0)) { formError(form, t('sc_bad_time'), 'ru-e'); return; }
-    const old = state.rules.find(r => r.wd === wd) || state.rules.find(r => r.id === ruleEditId);
+    const old = state.rules.find(r => r.wd === wd) || state.rules.find(r => r.id === ruleEditId), sameWd = state.rules.find(r => r.wd === wd), replaced = !!sameWd && sameWd.id !== ruleEditId;
     state.rules = state.rules.filter(r => r.wd !== wd && r.id !== ruleEditId).concat([{ id: old ? old.id : uid(), wd, kind: 'work', work: { label: lb, start: s0, end: e0 }, from: old ? old.from : key(today()) }]);
-    ruleEditId = null; save(); say(t('rule_saved'), false, 'rulef'); render(); return;
+    ruleEditId = null; save(); say(replaced ? t('rule_replaced', { d: dayName(WEEK[wd], 'long') }) : t('rule_saved'), false, 'rulef'); render(); return;
   }
   if (id === 'workf') {
     const s0 = document.getElementById('wk-s').value, e0 = document.getElementById('wk-e').value, lb = document.getElementById('wk-l').value.trim().slice(0, 40);
@@ -2362,23 +2429,31 @@ $app.addEventListener('submit', e => {
     save(); say(t('edited_day')); render(); return;
   }
   if (id === 'dayaddf') {
-    const title = document.getElementById('da-n').value.trim().slice(0, 40) || t('sc_default');
+    const title = document.getElementById('da-n').value.trim().slice(0, 40);
+    if (!title) { formError(form, t('sc_need_name'), 'da-n'); return; }
     const s0 = document.getElementById('da-s').value, e0 = document.getElementById('da-e').value;
     if (!HHMM.test(s0) || !HHMM.test(e0) || toMin(e0) <= toMin(s0)) { formError(form, t('sc_bad_time'), 'da-e'); return; }
     const school = !!(document.getElementById('da-school') || {}).checked;
     setOv(key(curDate), o => { o.add = (o.add || []).concat([{ id: uid(), title, start: s0, end: e0, school }]); }); say(t('edited_day')); render(); return;
   }
   if (id === 'addf') {
-    const title = document.getElementById('cn').value.trim().slice(0, 40) || t('sc_default');
-    const start = document.getElementById('cs').value, end = document.getElementById('ce').value;
-    const days = Array.from(document.querySelectorAll('input[name=cd]:checked')).map(x => +x.value);
-    if (!start || !end || toMin(end) <= toMin(start)) { formError(form, t('sc_bad_time'), 'ce'); return; }
-    if (!days.length) { formError(form, t('sc_need_day'), (form.querySelector('input[name=cd]') || {}).id || null); return; }
+    qeSync(); const R = qeRows.map(r => Object.assign({}, r, { title: r.title.trim().slice(0, 40) }));
+    for (let i = 0; i < R.length; i++) {
+      const r = R[i], pre = R.length > 1 ? t('qe_row', { n: i + 1 }) + ' : ' : '';
+      if (!r.title) { formError(form, pre + t('sc_need_name'), 'qe-n-' + i); return; }
+      if (!HHMM.test(r.start) || !HHMM.test(r.end) || toMin(r.end) <= toMin(r.start)) { formError(form, pre + t('sc_bad_time'), 'qe-e-' + i); return; }
+      if (!r.days.length) { formError(form, pre + t('sc_need_day'), 'qe-d-' + i + '-0'); return; }
+    }
+    const forced = e.submitter && e.submitter.id === 'qe-force', warn = forced ? [] : qeConflicts(R);
+    if (warn.length) { qeConfirm = warn; render(); const f = document.getElementById('qe-force'); if (f) f.focus(); return; }
     if (state.sample) { state.classes = state.classes.filter(c => c.origin !== 'sample'); state.sample = false; }
-    state.classes.push({ id: uid(), title, start, end, days, origin: 'manual' }); save();
-    qeKeep = { start, end, days }; qeAdded = qeAdded.concat([title]); openSec['s-class'] = true;
-    say(t('qe_added', { n: title }), false, 'addf'); render();
-    const n = document.getElementById('cn'); if (n) n.focus();
+    R.forEach(r => state.classes.push({ id: uid(), title: r.title, start: r.start, end: r.end, days: r.days, origin: 'manual' }));
+    const L = R[R.length - 1]; qeAdded = qeAdded.concat(R.map(r => r.title)); qeConfirm = null;
+    qeRows = [{ title: '', start: L.start, end: L.end, days: L.days.slice() }];
+    if (obOn) { finishOb(); qeAdded = []; qeRows = null; sheet = null; msg = ''; tab = 'plan'; curDate = firstClassDate(); save(); render(); return; }
+    openSec['s-class'] = true; save();
+    say(R.length > 1 ? t('qe_added_n', { n: R.length }) : t('qe_added', { n: R[0].title }), false, 'addf'); render();
+    const n = document.getElementById('qe-n-0'); if (n) n.focus();
   }
 });
 $app.addEventListener('change', e => {
@@ -2396,14 +2471,15 @@ $app.addEventListener('change', e => {
   if (el.dataset && el.dataset.durfor && DUR_SETTERS[el.dataset.durfor]) { DUR_SETTERS[el.dataset.durfor](el.value); save(); render(); return; }
   if (el.dataset && el.dataset.rm) {
     const R = state.reminders[el.dataset.rm];
-    if (el.dataset.rm === 'checkin') { if (HHMM.test(el.value) && toMin(el.value) >= 1080) R.time = el.value; }
+    if (el.dataset.rm === 'checkin') { if (HHMM.test(el.value) && toMin(el.value) >= 1080 && toMin(el.value) <= 1425) R.time = el.value; else { formError(el.closest('.rm-row') || el.parentNode, t('rm_ci_range'), el.id); return; } }
     else R.before = inRange5(el.value, 0, 120, R.before);
     save(); render(); return;
   }
   if (el.name === 'theme' && THEME_CHOICES.includes(el.value)) { state.settings.theme = el.value; state.settings.autoNight = false; state.settings.themePicked = true; autoTheme = resolveAuto(); save(); render(); return; }
   const k = el.dataset && el.dataset.set; if (!k) return;
   if (k === 'bedCap') { if (bedCapOk(el.value)) state.settings.bedCap = el.value; else { formError(el.closest('label') || el.parentNode, t('bedcap_range'), el.id); return; } }
-  else state.settings[k] = k === 'freeWake' ? (HHMM.test(el.value) ? el.value : '08:00') : +el.value;
+  else if (k === 'freeWake') { if (HHMM.test(el.value)) state.settings.freeWake = el.value; else { formError(el.closest('label') || el.parentNode, t('time_empty'), el.id); return; } }
+  else state.settings[k] = +el.value;
   save(); render();
 });
 
@@ -2423,7 +2499,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
 if (!readHash() && state.classes.length) curDate = firstClassDate();
 try { history.replaceState(null, '', '#' + routeHash()); } catch (e) {}
 /* Test/debug handle (read-only helpers, no data leaves the page). */
-window.Rythmo = { computeDay, classesOn, effOv, importICS, calFromICS, applyImport, eventsFromICS, parseICS, key, parseKey, computeReminders, remindersICS, planICS, get state() { return state; } };
+window.Rythmo = { T, MEALS, FREE_IDEAS, computeDay, classesOn, effOv, importICS, calFromICS, applyImport, eventsFromICS, parseICS, key, parseKey, computeReminders, remindersICS, planICS, get state() { return state; } };
 render();
 })();
 </script>
