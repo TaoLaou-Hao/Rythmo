@@ -490,6 +490,7 @@ details.acc>summary{min-height:60px!important}
 .rule-line{background:var(--sunk);border-radius:var(--r-md);padding:12px;display:grid;gap:8px}
 .toast{position:fixed;left:16px;right:16px;bottom:calc(57px + 12px + env(safe-area-inset-bottom,0px));z-index:30;max-width:528px;margin:0 auto;display:none;align-items:center;justify-content:space-between;gap:12px;padding:8px 8px 8px 16px;border-radius:var(--r-md);background:var(--ink);color:var(--bg);box-shadow:var(--shadow-2);font-weight:600}
 .toast.on{display:flex}
+.wr-cp{margin:2px 0 4px 12px}
 .toast .tbtn{color:var(--bg);min-height:44px;padding:0 12px}
 .toast .tbtn:focus-visible{outline-color:var(--bg)}
 @media (prefers-reduced-motion: no-preference) {
@@ -582,6 +583,7 @@ en: {
   imp_ok:'{n} classes imported over {w}.', imp_ok_one:'1 class imported over {w}.', weeks:'{n} weeks', weeks_one:'1 week', imp_past:'This calendar only has past events: {n} classes copied as a weekly timetable.',
   other:'Other', rm_before_label:'Minutes before lights out', floor_note:'About {h} of sleep possible tonight.', st_bed_soon:'Bedtime soon', bedcap_range:'Choose a time between 20:00 and 01:30.',
   todo_dur:'How long (optional)', todo_dur_on:'Rythmo puts it in your first free slot today. It won\'t move by itself.', todo_dur_off:'No duration: a simple checklist item.', todo_placed:'Placed today at {t}.', todo_noslot:'No free slot today for {m}.', todo_tomorrow:'Tomorrow', todo_notime:'No time', todo_placed_tm:'Planned for tomorrow at {t}.', todo_full_tm:'Tomorrow is full too: kept with no time.', todo_kept:'Kept with no time.', todo_place:'Place', todo_place_aria:'Place today: {n}', todo_today_at:'today {t}', todo_tm_at:'tomorrow {t}', todo_why:'Your to-do ({m}), placed when you added it. It never moves by itself.', todo_clash:'Something now overlaps: {n}. Open To-do to place it again.', todo_done:'Done', todo_done_msg:'Done: {n}.', todo_unpin:'Remove from the day', todo_max:'The list is full (30). Remove something first.',
+  cp_btn:'Copy this day to…', cp_title:'Copy to…', cp_hint:'Copies this day\'s changes (work day, classes added or removed, sport, times). Not your to-dos. Replaces what is already changed on those days.', cp_this:'This week', cp_next:'Next week', cp_apply:'Copy', cp_none_sel:'Pick at least one day.', cp_done:'Copied to {n} days.', cp_done_one:'Copied to 1 day.', cp_nothing:'Nothing to copy: this day follows your usual timetable.',
   rules_title:'Regular days', badge_rep:'repeats', rule_every:'Every {d}', rule_is:'Regular day: every {d}', rule_today_normal:'Today only: a usual day', rule_today_only:'Today only: changed.', rule_remove:'Remove this regular day', rule_removed:'Regular day removed ({d}).', rule_add:'Internship or work every week', rule_add_btn:'Add this regular day', rule_hint:'Replaces that day\'s classes and imported events, every week from today.', rule_day:'Day', rule_saved:'Regular day saved.', undo:'Undo', edit:'Edit',
   imp_rep:'Including {n} monthly or yearly repeats (shown for the next 6 months).', imp_rep_one:'Including 1 monthly or yearly repeat (shown for the next 6 months).', imp_bad:'{n} repeats could not be read: only their first date was kept.', imp_bad_one:'One repeat could not be read: only its first date was kept.',
   imp_card:'Imported calendar', imp_until:'Until {d}.', imp_exact:'Each date shows its real classes: cancelled sessions, one-off events and alternate weeks stay exact. Import again to refresh.', imp_remove:'Remove the imported calendar', imp_removed:'Imported calendar removed.',
@@ -698,6 +700,7 @@ fr: {
   imp_ok:'{n} cours importés sur {w}.', imp_ok_one:'1 cours importé sur {w}.', weeks:'{n} semaines', weeks_one:'1 semaine', imp_past:'Cet agenda ne contient que des événements passés : {n} cours copiés comme emploi du temps hebdomadaire.',
   other:'Autre', rm_before_label:'Minutes avant l\'extinction', floor_note:'Environ {h} de sommeil possibles cette nuit.', st_bed_soon:'Bientôt au lit', bedcap_range:'Choisis une heure entre 20:00 et 01:30.',
   todo_dur:'Durée (facultatif)', todo_dur_on:'Rythmo la place dans ton premier créneau libre aujourd\'hui. Elle ne bouge plus toute seule.', todo_dur_off:'Sans durée : une simple case à cocher.', todo_placed:'Placé aujourd\'hui à {t}.', todo_noslot:'Pas de créneau libre aujourd\'hui pour {m}.', todo_tomorrow:'Demain', todo_notime:'Sans heure', todo_placed_tm:'Prévu demain à {t}.', todo_full_tm:'Demain est plein aussi : gardé sans heure.', todo_kept:'Gardé sans heure.', todo_place:'Placer', todo_place_aria:'Placer aujourd\'hui : {n}', todo_today_at:'aujourd\'hui {t}', todo_tm_at:'demain {t}', todo_why:'Ta chose à faire ({m}), placée quand tu l\'as ajoutée. Elle ne bouge jamais toute seule.', todo_clash:'Quelque chose chevauche maintenant : {n}. Ouvre « À faire » pour la replacer.', todo_done:'C\'est fait', todo_done_msg:'Fait : {n}.', todo_unpin:'Retirer de la journée', todo_max:'La liste est pleine (30). Retire quelque chose d\'abord.',
+  cp_btn:'Copier ce jour vers…', cp_title:'Copier vers…', cp_hint:'Copie les changements de ce jour (stage, cours ajoutés ou retirés, sport, horaires). Pas tes choses à faire. Remplace ce qui est déjà modifié ces jours-là.', cp_this:'Cette semaine', cp_next:'Semaine prochaine', cp_apply:'Copier', cp_none_sel:'Choisis au moins un jour.', cp_done:'Copié vers {n} jours.', cp_done_one:'Copié vers 1 jour.', cp_nothing:'Rien à copier : ce jour suit ton emploi du temps habituel.',
   rules_title:'Jours réguliers', badge_rep:'se répète', rule_every:'Chaque {d}', rule_is:'Jour régulier : chaque {d}', rule_today_normal:'Aujourd\'hui seulement : journée habituelle', rule_today_only:'Aujourd\'hui seulement : modifié.', rule_remove:'Retirer ce jour régulier', rule_removed:'Jour régulier retiré ({d}).', rule_add:'Stage ou travail chaque semaine', rule_add_btn:'Ajouter ce jour régulier', rule_hint:'Remplace les cours et événements importés de ce jour, chaque semaine à partir d\'aujourd\'hui.', rule_day:'Jour', rule_saved:'Jour régulier enregistré.', undo:'Annuler', edit:'Modifier',
   imp_rep:'Dont {n} répétitions mensuelles ou annuelles (affichées sur les 6 prochains mois).', imp_rep_one:'Dont 1 répétition mensuelle ou annuelle (affichée sur les 6 prochains mois).', imp_bad:'{n} répétitions n\'ont pas pu être lues : seule la première date est gardée.', imp_bad_one:'Une répétition n\'a pas pu être lue : seule la première date est gardée.',
   imp_card:'Agenda importé', imp_until:'Jusqu\'au {d}.', imp_exact:'Chaque date affiche ses vrais cours : séances annulées, événements ponctuels et semaines alternées restent exacts. Réimporte pour mettre à jour.', imp_remove:'Retirer l\'agenda importé', imp_removed:'Agenda importé retiré.',
@@ -1233,6 +1236,7 @@ function dayEditCard(P, dk) {
     '<div class="grid2"><label class="f" for="da-s">' + esc(t('sc_start')) + '<input id="da-s" type="time" value="14:00" required></label><label class="f" for="da-e">' + esc(t('sc_end')) + '<input id="da-e" type="time" value="16:00" required></label></div>' +
     '<label class="cbx"><input type="checkbox" id="da-school"> ' + esc(t('de_school')) + '</label>' +
     '<button class="btn pri full" type="submit">' + esc(t('de_add_btn')) + '</button></form></details>';
+  if (!ovEmpty(state.overrides[dk] || {})) h += '<button class="btn full" data-act="copyday" data-v="' + esc(dk) + '" id="cp-' + esc(dk) + '">' + esc(t('cp_btn')) + '</button>';
   if (!ovEmpty(state.overrides[dk] || {})) h += '<button class="btn full" data-act="dayreset" data-d="' + esc(dk) + '">' + esc(t('de_reset')) + '</button>';
   return h + '</div>';
 }
@@ -1328,6 +1332,14 @@ function screenPlan() {
   h += '<p class="tipline"><b>' + esc(t('tip_label')) + '</b> ' + esc(challengeFor(date, P).text) + '</p>';
   return h;
 }
+function copyPanel(src) {
+  const tk = key(today()), w0 = weekStartOf(parseKey(src));
+  if (ovEmpty(state.overrides[src] || {})) return '<p>' + esc(t('cp_nothing')) + '</p>';
+  const wk = (off, lab) => { const ds = [0, 1, 2, 3, 4, 5, 6].map(i => addDays(w0, off + i)).filter(d => key(d) >= tk && key(d) !== src); return ds.length ? '<fieldset style="border:0;padding:0;margin:0"><legend class="hint" style="margin-bottom:6px">' + esc(lab) + '</legend><div class="chips cb">' +
+    ds.map(d => '<label><input type="checkbox" name="cp" id="cpi-' + esc(key(d)) + '" value="' + esc(key(d)) + '"><span>' + esc(dayName(d, 'short') + ' ' + d.getDate()) + (state.overrides[key(d)] && !ovEmpty(state.overrides[key(d)]) ? ' · ' + esc(t({ work: 'badge_work', off: 'badge_off' }[state.overrides[key(d)].kind] || 'badge_edited')) : '') + '</span></label>').join('') + '</div></fieldset>' : ''; };
+  return '<form id="copyf" class="stack" style="margin:0"><p class="hint" style="margin:0">' + esc(t('cp_hint')) + '</p>' + wk(0, t('cp_this')) + wk(7, t('cp_next')) + msgP('copyf') +
+    '<button class="btn pri full" type="submit">' + esc(t('cp_apply')) + '</button></form>';
+}
 function todoSlot(date, dur, from) {
   const P = computeDay(date), busy = P.items.filter(it => it.type !== 'bed').map(it => [it.t, it.end || it.t + (it.dur || (it.type === 'wake' ? 15 : 0))]);
   const end = P.items.some(it => it.k === 'wind') ? P.items.find(it => it.k === 'wind').t : P.bed - 45;
@@ -1381,6 +1393,7 @@ function sheetHtml() {
     if (sheet.panel === 'oblink') return sheetWrap('', t('lk_title'), msgP('link') + linkForm());
     if (sheet.panel === 'obquick') return sheetWrap('', t('qs_title'), quickForm().replace('class="card stack"', 'class="stack"'));
     if (sheet.panel === 'notes') return sheetWrap('', t('act_notes'), notesPanel());
+    if (sheet.panel === 'copy') return sheetWrap(longDate(parseKey(sheet.src)), t('cp_title'), copyPanel(sheet.src));
     if (sheet.panel === 'todos') return sheetWrap('', t('act_todos'), todosPanel());
     return sheetWrap(longDate(curDate) + ' · ' + dayTypeLabel(P), t('de_title'), msgP() + dayEditCard(P, key(curDate)));
   }
@@ -1454,6 +1467,7 @@ function screenWeek() {
       if (isT) {
         const rows = P.items.filter(it => ['class', 'appt', 'sport', 'task'].includes(it.type));
         if (rows.length) r += '<ul class="wr-x">' + rows.map(it => '<li class="' + esc(it.type) + '"><span class="time">' + fmt(it.t) + '</span> ' + esc(it.title) + '</li>').join('') + '</ul>';
+        if (!ovEmpty(state.overrides[dk] || {})) r += '<button class="tbtn wr-cp" data-act="copyday" data-v="' + esc(dk) + '" id="cp-' + esc(dk) + '">' + esc(t('cp_btn')) + '</button>';
       }
       return r + '</li>';
     }).join('') + '</ul>';
@@ -2071,6 +2085,7 @@ const ACT = {
   lang: v => { state.lang = v === 'en' ? 'en' : 'fr'; save(); },
   openday: v => { curDate = parseKey(v); tab = 'plan'; msg = ''; sheet = null; showPast = false; window.scrollTo(0, 0); },
   edit: (v, b) => { sheet = { d: b.dataset.d, k: b.dataset.k }; msg = ''; },
+  copyday: (v, b) => { sheet = { panel: 'copy', src: v, ret: b.id || '' }; msg = ''; },
   panel: (v, b) => { sheet = { panel: v, ret: b.id || '' }; msg = ''; },
   showpast: () => { showPast = !showPast; },
   gorem: () => { tab = 'settings'; openSec['set-rem'] = true; jumpTo = 'set-rem'; },
@@ -2213,6 +2228,16 @@ $app.addEventListener('submit', e => {
       todoDur = 0; state.ui.other_tododur = false; save();
     }
     render(); const n = document.getElementById('todo-in'); if (n) n.focus(); return;
+  }
+  if (id === 'copyf') {
+    const src = sheet && sheet.src, to = [...form.querySelectorAll('input[name=cp]:checked')].map(x => x.value).filter(x => DATEK.test(x));
+    if (!src || !state.overrides[src]) { sheet = null; render(); return; }
+    if (!to.length) { formError(form, t('cp_none_sel'), (form.querySelector('input[name=cp]') || {}).id); return; }
+    const snap = {}; to.forEach(dk => { snap[dk] = state.overrides[dk] ? JSON.parse(JSON.stringify(state.overrides[dk])) : null; });
+    to.forEach(dk => { const c = JSON.parse(JSON.stringify(state.overrides[src])); if (c.add) c.add = c.add.map(a => Object.assign(a, { id: uid() })); if (c.at) Object.keys(c.at).forEach(k => { if (k.indexOf('todo:') === 0) delete c.at[k]; }); state.overrides[dk] = c; });
+    save(); const back = sheet.ret; sheet = null; render();
+    toast(tp('cp_done', to.length, { n: to.length }), () => { Object.keys(snap).forEach(dk => { if (snap[dk]) state.overrides[dk] = snap[dk]; else delete state.overrides[dk]; }); save(); render(); });
+    const el = document.getElementById(back); if (el) el.focus(); return;
   }
   if (id === 'rulef') {
     const wd = +document.getElementById('ru-d').value, lb = document.getElementById('ru-l').value.trim().slice(0, 40), s0 = document.getElementById('ru-s').value, e0 = document.getElementById('ru-e').value;
