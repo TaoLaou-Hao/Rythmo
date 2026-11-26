@@ -950,7 +950,20 @@ function effTheme() {
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState !== 'visible') return;
   autoTheme = resolveAuto(); document.documentElement.setAttribute('data-theme', effTheme()); syncThemeColor(); // no re-render
+  refreshNow(true);
 });
+// Keep the "now" marker and the current block up to date on Aujourd'hui.
+// Re-render only when the minute changes, never while a sheet, onboarding or a text field is open.
+let lastNowMinute = -1;
+function refreshNow(force) {
+  const d = new Date(), m = d.getHours() * 60 + d.getMinutes();
+  if (!force && m === lastNowMinute) return;
+  lastNowMinute = m;
+  const a = document.activeElement;
+  const typing = a && (a.tagName === 'INPUT' || a.tagName === 'TEXTAREA' || a.tagName === 'SELECT');
+  if (tab === 'plan' && !obOn && !sheet && !typing && document.visibilityState === 'visible') render();
+}
+setInterval(() => refreshNow(false), 15000);
 function syncThemeColor() {
   const m = document.querySelector('meta[name=theme-color]'); if (!m) return;
   try { const c = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim(); if (c) m.setAttribute('content', c); } catch (e) {}
