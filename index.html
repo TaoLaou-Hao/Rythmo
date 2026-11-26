@@ -327,6 +327,8 @@ button.block:hover{border-color:var(--c)}
 .dots li{width:8px;height:8px;border-radius:var(--r-pill);background:var(--line-strong)}
 .dots li.done{background:var(--accent);opacity:.5}
 .dots li.on{width:24px;background:var(--accent)}
+.dur-sel{width:auto!important;min-width:7.5em;flex:0 0 auto}
+.rm-sub{padding:0 0 6px}
 .ob-card{background:var(--surface);border:var(--card-border);border-radius:var(--r-lg);box-shadow:var(--shadow-1);padding:var(--s-5) var(--s-4);display:grid;gap:var(--s-3)}
 .ob-card .card{box-shadow:none;margin:0}
 .ob-list{margin:0;padding-left:1.2em;display:grid;gap:6px}
@@ -484,7 +486,11 @@ const RELAY = 'https://rythmo.tao-laou-hao.workers.dev';
 const THEMES = ['horizon', 'nuit', 'doux', 'clair'];
 const LEGACY = { a: 'horizon', b: 'horizon', c: 'doux', d: 'clair', e: 'nuit' }; // old variants A-E
 const SCHEMA = 3;
-const BEDCAPS = ['21:30', '22:00', '22:30', '23:00', '23:30', '00:00'];
+const range = (a, b, s) => { const r = []; for (let x = a; x <= b + 1e-9; x += s) r.push(Math.round(x * 100) / 100); return r; };
+const SLEEPS = range(6, 11, 0.25), COMMUTES = range(0, 180, 5);
+const BED_FLOOR = 1290; // 21:30: a bedtime is never suggested earlier than this
+/* Bedtime cap: any time 20:00–23:59 or 00:00–01:30 (a gentle 23:30 default; later only if the user chooses it) */
+const bedCapOk = v => { if (!HHMM.test(v || '')) return false; const m = (+v.slice(0, 2)) * 60 + (+v.slice(3)); return m >= 1200 || m <= 90; };
 
 /* ===================== TEXT (EN / FR) ===================== */
 const T = {
@@ -543,6 +549,7 @@ en: {
   past:'past', chal_week_one:'1 of the last 7 days', rm_chosen:'Chosen: active once exported to your calendar or notifications are allowed', imp_sec:'Import my calendar (Google, Apple, Outlook, school)',
   sport_fb_morning:'No free morning slot that day: here is the first free one.', sport_fb_evening:'No free evening slot that day: here is the first free one.',
   imp_ok:'{n} classes imported over {w}.', imp_ok_one:'1 class imported over {w}.', weeks:'{n} weeks', weeks_one:'1 week', imp_past:'This calendar only has past events: {n} classes copied as a weekly timetable.',
+  other:'Other', rm_before_label:'Minutes before lights out', floor_note:'About {h} of sleep possible tonight.', st_bed_soon:'Bedtime soon', bedcap_range:'Choose a time between 20:00 and 01:30.',
   imp_rep:'Including {n} monthly or yearly repeats (shown for the next 6 months).', imp_rep_one:'Including 1 monthly or yearly repeat (shown for the next 6 months).', imp_bad:'{n} repeats could not be read: only their first date was kept.', imp_bad_one:'One repeat could not be read: only its first date was kept.',
   imp_card:'Imported calendar', imp_until:'Until {d}.', imp_exact:'Each date shows its real classes: cancelled sessions, one-off events and alternate weeks stay exact. Import again to refresh.', imp_remove:'Remove the imported calendar', imp_removed:'Imported calendar removed.',
   imp_legacy:'Did these classes come from an older import? Import your calendar again so each week follows the real dates (cancelled sessions, alternate weeks).', imp_hint_ok:'Got it',
@@ -578,7 +585,7 @@ en: {
   ob3_t:'Your commute', ob3_p:'Rythmo adds it before your first class and after your last one.',
   ob4_t:'What about sport?',
   ob5_t:'Classes first, everything else fits around them.', ob5_p:'Import your calendar, or describe a usual day in 30 seconds.', ob5_later:'You can also add your classes later in the Classes tab.',
-  set_bedcap:'Latest bedtime', set_bedcap_hint:'Rythmo never suggests going to bed later than this, to keep a steady rhythm.',
+  set_bedcap:'Latest bedtime', set_bedcap_hint:'Between 20:00 and 01:30. Default 23:30.',
   nav_week:'Week', now:'Now', prev_day:'Previous day', next_day:'Next day', pick_day:'Pick a day', close:'Close',
   edit_block:'Edit: {b}, {t}', tap_hint:'Tap a block to move it or remove it for this day.', today_empty:'Nothing planned. Enjoy it, or add one small thing.',
   edited_day:'Your day, your way.', badge_work:'Internship / work', badge_off:'Day off', badge_edited:'Edited', work_default:'Internship',
@@ -655,6 +662,7 @@ fr: {
   past:'passé', chal_week_one:'1 jour sur les 7 derniers', rm_chosen:'Choisi : actif après l\'export vers l\'agenda ou avec les notifications', imp_sec:'Importer mon agenda (Google, Apple, Outlook, école)',
   sport_fb_morning:'Pas de créneau libre le matin ce jour-là : voici le premier créneau libre.', sport_fb_evening:'Pas de créneau libre le soir ce jour-là : voici le premier créneau libre.',
   imp_ok:'{n} cours importés sur {w}.', imp_ok_one:'1 cours importé sur {w}.', weeks:'{n} semaines', weeks_one:'1 semaine', imp_past:'Cet agenda ne contient que des événements passés : {n} cours copiés comme emploi du temps hebdomadaire.',
+  other:'Autre', rm_before_label:'Minutes avant l\'extinction', floor_note:'Environ {h} de sommeil possibles cette nuit.', st_bed_soon:'Bientôt au lit', bedcap_range:'Choisis une heure entre 20:00 et 01:30.',
   imp_rep:'Dont {n} répétitions mensuelles ou annuelles (affichées sur les 6 prochains mois).', imp_rep_one:'Dont 1 répétition mensuelle ou annuelle (affichée sur les 6 prochains mois).', imp_bad:'{n} répétitions n\'ont pas pu être lues : seule la première date est gardée.', imp_bad_one:'Une répétition n\'a pas pu être lue : seule la première date est gardée.',
   imp_card:'Agenda importé', imp_until:'Jusqu\'au {d}.', imp_exact:'Chaque date affiche ses vrais cours : séances annulées, événements ponctuels et semaines alternées restent exacts. Réimporte pour mettre à jour.', imp_remove:'Retirer l\'agenda importé', imp_removed:'Agenda importé retiré.',
   imp_legacy:'Ces cours viennent d\'un ancien import ? Réimporte ton agenda pour que chaque semaine suive les vraies dates (séances annulées, semaines alternées).', imp_hint_ok:'Compris',
@@ -690,7 +698,7 @@ fr: {
   ob3_t:'Tes trajets', ob3_p:'Rythmo les ajoute avant ton premier cours et après le dernier.',
   ob4_t:'Et le sport ?',
   ob5_t:'Tes cours d\'abord, le reste s\'organise autour.', ob5_p:'Importe ton agenda, ou décris une journée type en 30 secondes.', ob5_later:'Tu peux aussi ajouter tes cours plus tard dans l\'onglet Cours.',
-  set_bedcap:'Coucher au plus tard', set_bedcap_hint:'Rythmo ne te propose jamais de te coucher plus tard, pour garder un rythme régulier.',
+  set_bedcap:'Coucher au plus tard', set_bedcap_hint:'Entre 20:00 et 01:30. Par défaut 23:30.',
   nav_week:'Semaine', now:'Maintenant', prev_day:'Jour précédent', next_day:'Jour suivant', pick_day:'Choisir un jour', close:'Fermer',
   edit_block:'Modifier : {b}, {t}', tap_hint:'Touche un bloc pour le déplacer ou le retirer ce jour-là.', today_empty:'Rien de prévu. Profites-en, ou ajoute une petite chose.',
   edited_day:'Ta journée est à ton image.', badge_work:'Stage / travail', badge_off:'Jour off', badge_edited:'Modifié', work_default:'Stage',
@@ -718,7 +726,9 @@ const KEY = 'rythmo.v1';
 let storageOk = true;
 function load() { try { const s = localStorage.getItem(KEY); return s ? JSON.parse(s) : null; } catch (e) { storageOk = false; return null; } }
 function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { storageOk = false; } if (typeof queueSchedule === 'function') queueSchedule(); }
-const snapSport = m => { m = +m || 30; return m <= 30 ? 30 : m <= 45 ? 45 : 60; };
+const snapSport = m => { m = +m || 30; return m <= 30 ? 30 : m <= 45 ? 45 : 60; }; // only for the v1 migration
+/* range check: rounded to 5, outside [lo, hi] -> default (never a silent clamp to a different value) */
+const inRange5 = (m, lo, hi, d) => { m = Math.round(+m / 5) * 5; return isFinite(m) && m >= lo && m <= hi ? m : d; };
 const isObj = o => !!o && typeof o === 'object' && !Array.isArray(o);
 const HHMM = /^([01]\d|2[0-3]):[0-5]\d$/;
 function freshState() {
@@ -761,13 +771,16 @@ function sanitize(s) {
   const ci = {}; Object.keys(out.checkins).forEach(k => { const c = out.checkins[k]; if (DATEK.test(k) && isObj(c)) ci[k] = { sleepH: num(c.sleepH, 0, 16, 8), quality: Math.round(num(c.quality, 1, 5, 3)), energy: Math.round(num(c.energy, 1, 5, 3)) }; }); out.checkins = ci;
   const wa = {}; Object.keys(out.water).forEach(k => { if (DATEK.test(k)) wa[k] = Math.round(num(out.water[k], 0, 20, 0)); }); out.water = wa;
   ['sleep', 'commute'].forEach(k => { out.settings[k] = num(out.settings[k], k === 'sleep' ? 5 : 0, k === 'sleep' ? 11 : 180, b.settings[k]); });
+  { const raw = isObj(s.settings) ? s.settings : {}; // range checks on the stored value: outside the range -> default
+    const sl = raw.sleep == null ? 8 : Math.round(+raw.sleep * 4) / 4; out.settings.sleep = sl >= 6 && sl <= 11 ? sl : 8; // 15-min steps, 6–11 h
+    out.settings.commute = raw.commute == null ? 30 : inRange5(raw.commute, 0, 180, 30); }
   out.note = String(typeof out.note === 'string' ? out.note : '').slice(0, 2000);
   out.todos = (Array.isArray(out.todos) ? out.todos : []).filter(x => isObj(x) && x.text).slice(0, 30).map(x => ({ id: String(x.id || uid()).slice(0, 20), text: String(x.text).slice(0, 80), done: !!x.done }));
   const R0 = b.reminders, R = isObj(s.reminders) ? s.reminders : {}, sub = k => Object.assign({}, R0[k], isObj(R[k]) ? R[k] : {});
   out.reminders = { enabled: !!R.enabled, bed: sub('bed'), checkin: sub('checkin'), water: sub('water'), screens: sub('screens') };
   ['bed', 'checkin', 'water', 'screens'].forEach(k => { out.reminders[k].on = !!out.reminders[k].on; });
-  out.reminders.bed.before = [0, 15, 30, 45].includes(+out.reminders.bed.before) ? +out.reminders.bed.before : 15;
-  out.reminders.screens.before = [30, 45, 60].includes(+out.reminders.screens.before) ? +out.reminders.screens.before : 45;
+  out.reminders.bed.before = inRange5(out.reminders.bed.before, 0, 90, 15);
+  out.reminders.screens.before = inRange5(out.reminders.screens.before, 15, 120, 45);
   if (!HHMM.test(out.reminders.checkin.time)) out.reminders.checkin.time = '21:30';
   const okDays = d => Array.isArray(d) ? d.map(Number).filter(n => n >= 0 && n <= 6) : [];
   out.classes = (Array.isArray(out.classes) ? out.classes : []).filter(c => isObj(c) && HHMM.test(c.start) && HHMM.test(c.end))
@@ -777,10 +790,10 @@ function sanitize(s) {
     .map(k => ({ id: String(k.id || uid()), title: String(k.title || '').slice(0, 40), dur: Math.min(600, +k.dur), days: okDays(k.days) }));
   if (!THEMES.includes(out.settings.theme)) out.settings.theme = 'horizon';
   if (!HHMM.test(out.settings.freeWake)) out.settings.freeWake = '08:00';
-  if (!BEDCAPS.includes(out.settings.bedCap)) out.settings.bedCap = '23:30';
+  if (!bedCapOk(out.settings.bedCap)) out.settings.bedCap = '23:30';
   out.onboarded = !!out.onboarded;
   out.settings.waterGoal = Math.max(4, Math.min(12, Math.round(+out.settings.waterGoal) || 8));
-  out.settings.sportOn = !!out.settings.sportOn; out.settings.sportMin = snapSport(out.settings.sportMin);
+  out.settings.sportOn = !!out.settings.sportOn; out.settings.sportMin = inRange5(out.settings.sportMin, 15, 180, 30);
   if (!['morning', 'evening', 'any'].includes(out.settings.sportWhen)) out.settings.sportWhen = 'any';
   ['sleep', 'commute', 'sport'].forEach(k => { out.settings[k] = +out.settings[k]; if (!isFinite(out.settings[k])) out.settings[k] = b.settings[k]; });
   if (out.lang !== 'fr' && out.lang !== 'en') out.lang = b.lang;
@@ -829,6 +842,8 @@ const pad = n => String(n).padStart(2, '0');
 const toMin = s => { const p = String(s).split(':'); return (+p[0]) * 60 + (+p[1] || 0); };
 const fmt = m => { m = ((Math.round(m) % 1440) + 1440) % 1440; return pad(Math.floor(m / 60)) + ':' + pad(m % 60); };
 const fmtL = m => state.lang === 'fr' ? fmt(m).replace(':', 'h') : fmt(m); // 12h30 in French
+const fmtHM = h => { const m = Math.round(h * 60), r = m % 60; return Math.floor(m / 60) + ' h' + (r ? ' ' + pad(r) : ''); }; // 8.25 -> 8 h 15
+const fmtMin = m => m >= 60 ? fmtHM(m / 60) : m + ' min';
 const fmtH = n => { const s = String(Math.round(n * 10) / 10); return state.lang === 'fr' ? s.replace('.', ',') : s; }; // 7,5 in French
 const key = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
 const today = () => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), d.getDate()); };
@@ -897,6 +912,7 @@ function computeDay(date) {
   let bed = 1440 + wn.wake - sleepMin - 15;
   const capped = bed > CAP;
   if (capped) bed = CAP; // regular bedtime: a late start tomorrow is not a reason to sleep late
+  const floored = bed < BED_FLOOR; if (floored) bed = BED_FLOOR; // never suggest going to bed before 21:30
   const bedIdeal = bed;
   if (lastEnd) bed = Math.max(bed, lastEnd + S.commute + 90);
   let bedManual = false;
@@ -997,7 +1013,7 @@ function computeDay(date) {
   if (!skip.wind) items.push({ k: 'wind', t: mv('wind', bed - 45), dur: 45, type: 'wind', moved: !!at.wind, title: t('winddown'), why: t('winddown_why') });
   items.push({ k: 'bed', t: bed, type: 'bed', title: t('lightsout'), why: bedManual ? t('edited_day') : capped && bed === CAP ? t('lightsout_reg') : t('lightsout_why') });
   items.sort((a, b) => a.t - b.t);
-  return { date, items, bed, wake: w.wake, wakeNext: wn.wake, hours, short, noSport: sportWanted && sportT === null, unplaced, ov, cl: all };
+  return { date, items, floored: floored && !bedManual, bed, wake: w.wake, wakeNext: wn.wake, hours, short, noSport: sportWanted && sportT === null, unplaced, ov, cl: all };
 }
 function challengeFor(date, P) {
   const y = addDays(date, -1), ci = state.checkins[key(y)];
@@ -1052,7 +1068,9 @@ function fbCard() {
   return '<section class="fb"><a class="btn full" href="' + esc(FORM_URL) + '" target="_blank" rel="noopener">' + esc(t('fb_title')) + ' <span aria-hidden="true">↗</span></a><p class="hint" style="margin:4px 0 0">' + esc(t('fb_text')) + '</p></section>';
 }
 function footer() { return '<p class="note">' + esc(t('footer')) + (storageOk ? '' : '<br>' + esc(t('nostore'))) + '</p>'; }
-function opts(arr, cur, label) { return arr.map(v => '<option value="' + esc(v) + '"' + (String(v) === String(cur) ? ' selected' : '') + '>' + esc(label(v)) + '</option>').join(''); }
+function opts(arr, cur, label) {
+  if (cur !== undefined && cur !== null && typeof arr[0] === 'number' && !arr.includes(+cur) && isFinite(+cur)) arr = arr.concat([+cur]).sort((a, b) => a - b);
+  return arr.map(v => '<option value="' + esc(v) + '"' + (String(v) === String(cur) ? ' selected' : '') + '>' + esc(label(v)) + '</option>').join(''); }
 function msgP(at) { return '<p class="msg' + (msgErr ? ' err' : '') + '" role="status">' + ((msgAt || null) === (at || null) ? esc(msg) : '') + '</p>'; }
 
 function linkForm() {
@@ -1068,7 +1086,7 @@ function fileImport() {
   return '<div><label class="btn full" for="ics">' + esc(t('sc_import')) + '</label><input id="ics" class="sr" type="file" accept=".ics,text/calendar"><p class="hint" style="margin-top:6px">' + esc(t('sc_import_hint')) + '</p>' + msgP('link') + '</div>';
 }
 function travelSel(id) {
-  return '<label class="f" for="' + esc(id) + '">' + esc(t('trv_label')) + '<select id="' + esc(id) + '">' + opts([0, 10, 15, 20, 30, 45, 60, 75, 90, 120], state.settings.commute, v => t('min', { n: v })) + '</select><span class="hint">' + esc(t('trv_hint')) + '</span></label>';
+  return '<label class="f" for="' + esc(id) + '">' + esc(t('trv_label')) + '<select id="' + esc(id) + '">' + opts(COMMUTES, state.settings.commute, v => fmtMin(v)) + '</select><span class="hint">' + esc(t('trv_hint')) + '</span></label>';
 }
 function dayChips(nm, checked) {
   return '<fieldset style="border:0;padding:0;margin:0"><legend class="hint" style="margin-bottom:6px">' + esc(t('sc_days')) + '</legend><div class="chips cb">' + WEEK.map((d, i) => '<label><input type="checkbox" name="' + esc(nm) + '" value="' + i + '"' + (checked && checked(i) ? ' checked' : '') + '><span>' + esc(dayName(d, 'short')) + '</span></label>').join('') + '</div></fieldset>';
@@ -1143,6 +1161,8 @@ function heroStrip(P, isToday) {
   const nm = nowMin();
   const cur = L.filter(it => it.type !== 'bed' && it.t <= nm && nm < it.t + Math.max(durOf(it), 1)).pop();
   const nxt = L.find(it => it.t > nm);
+  const Y = nm < 360 ? computeDay(addDays(today(), -1)) : null;
+  if (Y && Y.bed > 1440 && nm + 1440 < Y.bed) return cell(t('st_now'), t('st_bed_soon'), t('st_until', { t: fmt(Y.bed) })) + cell(t('st_next'), t('lightsout'), fmt(Y.bed)) + bedCell;
   const nowCell = nm >= P.bed ? cell(t('st_now'), t('st_sleep_time'), '') : cur ? cell(t('st_now'), cur.title, (cur.end || cur.dur) ? t('st_until', { t: fmt(cur.t + durOf(cur)) }) : '') : cell(t('st_now'), t('st_free'), nxt ? t('st_until', { t: fmt(nxt.t) }) : '');
   const nextCell = nxt ? cell(t('st_next'), nxt.title, fmt(nxt.t)) : cell(t('st_next'), '–', '');
   return nowCell + nextCell + bedCell;
@@ -1200,7 +1220,7 @@ function screenPlan() {
   if (!state.classes.length && !state.cal && !Object.keys(state.overrides).length) return emptyPlan();
   const date = curDate, P = computeDay(date), k = key(date), isToday = k === key(today()), nm = nowMin();
   let h = dayHeader(P, date, isToday);
-  if (isToday && nm >= 1200 && nm < P.bed && !state.checkins[k]) h += '<button class="banner" data-act="tab" data-v="checkin">' + SVG(BI.sleep) + '<span>' + esc(t('eve_banner')) + '</span><span aria-hidden="true">›</span></button>';
+  if (isToday && nm >= Math.min(1200, P.bed - 90) && nm < P.bed - 30 && !state.checkins[k]) h += '<button class="banner" data-act="tab" data-v="checkin">' + SVG(BI.sleep) + '<span>' + esc(t('eve_banner')) + '</span><span aria-hidden="true">›</span></button>';
   h += actionRow(P);
   if (isToday) h += waterLine(k);
   h += msgP();
@@ -1208,6 +1228,7 @@ function screenPlan() {
   if (state.sample) h += '<p class="hint">' + esc(t('example_note')) + '</p>';
   if (P.unplaced.length) h += '<div class="warn">' + esc(t('tk_none', { n: P.unplaced.join(', ') })) + '</div>';
   if (P.short) h += '<div class="warn">' + esc(t('short_night', { h: fmtH(P.hours) })) + '</div>';
+  else if (P.floored) h += '<p class="hint">' + esc(t('floor_note', { h: fmtHM(P.hours) })) + '</p>';
   if (!P.cl.length && P.items.length <= 5) h += '<p class="hint">' + esc(t('today_empty')) + '</p>';
   h += timeline(P, k, isToday);
   if (P.noSport) h += '<p class="hint">' + esc(t('sport_none')) + '</p>';
@@ -1345,7 +1366,7 @@ function initDraft() {
   if (c) { draft = { sleepH: c.sleepH, quality: c.quality, energy: c.energy }; return; }
   let last = null; for (let i = 1; i < 8 && last === null; i++) { const p = state.checkins[key(addDays(today(), -i))]; if (p) last = p.sleepH; }
   // nothing saved yet: start from the sleep last night's plan allowed (rounded to 0.5 h)
-  draft = { sleepH: last !== null ? last : Math.max(3, Math.min(12, Math.round(computeDay(addDays(today(), -1)).hours * 2) / 2)), quality: 3, energy: 3 };
+  draft = { sleepH: last !== null ? last : Math.max(3, Math.min(12, Math.round(computeDay(addDays(today(), -1)).hours * 4) / 4)), quality: 3, energy: 3 };
 }
 function seg(name, val, label) {
   return '<div class="seg" role="group" aria-label="' + esc(label) + '">' + [1, 2, 3, 4, 5].map(n => '<button data-act="seg" data-n="' + esc(name) + '" data-v="' + n + '" aria-pressed="' + (val === n) + '">' + n + '</button>').join('') + '</div><div class="ends"><span>' + esc(t('low')) + '</span><span>' + esc(t('high')) + '</span></div>';
@@ -1354,7 +1375,7 @@ function screenCheckin() {
   if (!draft) initDraft();
   const k = key(today()), saved = !!state.checkins[k];
   let h = '<h1>' + esc(t('ci_title')) + '</h1><p class="sub">' + esc(t('ci_sub')) + '</p><section class="card stack">' +
-    '<div><h3 id="ci-sl">' + esc(t('ci_sleep')) + '</h3><div class="stepper" role="group" aria-labelledby="ci-sl"><button class="rb" data-act="sleep" data-v="-0.5" aria-label="−0.5 h">−</button><span class="v" aria-live="polite">' + esc(fmtH(draft.sleepH)) + '</span><button class="rb" data-act="sleep" data-v="0.5" aria-label="+0.5 h">+</button></div></div>' +
+    '<div><h3 id="ci-sl">' + esc(t('ci_sleep')) + '</h3><div class="stepper" role="group" aria-labelledby="ci-sl"><button class="rb" data-act="sleep" data-v="-0.25" aria-label="− 15 min">−</button><span class="v" aria-live="polite">' + esc(fmtHM(draft.sleepH)) + '</span><button class="rb" data-act="sleep" data-v="0.25" aria-label="+ 15 min">+</button></div></div>' +
     '<div><h3>' + esc(t('ci_quality')) + '</h3>' + seg('quality', draft.quality, t('ci_quality')) + '</div>' +
     '<div><h3>' + esc(t('ci_energy')) + '</h3>' + seg('energy', draft.energy, t('ci_energy')) + '</div>' +
     '<button class="btn pri full" data-act="saveci">' + esc(saved ? t('ci_update') : t('ci_save')) + '</button>' + msgP() + '</section>';
@@ -1369,7 +1390,7 @@ function screenCheckin() {
     '<div class="goal" style="bottom:' + (need / scale * 85) + '%"></div>' +
     vals.map(c => '<div class="b">' + (c ? '<em style="bottom:calc(' + (c.sleepH / scale * 85) + '% + 4px)">' + esc(fmtH(c.sleepH)) + '</em><i style="height:' + (c.sleepH / scale * 85) + '%"></i>' : '<i class="none" style="height:3px"></i>') + '</div>').join('') +
     '</div><div class="days">' + days.map(d => '<span>' + esc(dayName(d, 'narrow')) + '</span>').join('') + '</div>' +
-    '<p class="hint" style="margin-top:10px">' + esc(t('ci_goal', { h: fmtH(need) })) + '</p>' +
+    '<p class="hint" style="margin-top:10px">' + esc(t('ci_goal', { h: fmtHM(need) })) + '</p>' +
     '<div class="stats"><div><b>' + (aS === null ? '–' : esc(fmtH(aS))) + '</b><span>' + esc(t('st_sleep')) + '</span></div><div><b>' + (aE === null ? '–' : esc(fmtH(aE))) + '</b><span>' + esc(t('st_energy')) + '</span></div><div><b>' + sl.length + '</b><span>' + esc(t('st_count')) + '</span></div></div>';
   h += '<p class="sub" style="margin:0">' + esc(sl.length < 2 ? t('in_none') : (need - aS >= 0.5 ? t('in_short', { d: fmtH(need - aS) }) : t('in_ok'))) + '</p></section>';
   return h;
@@ -1419,14 +1440,27 @@ function themeTiles() {
 function chipRow(label, act, values, cur, lab, quiet) {
   return '<div class="chiprow' + (quiet ? ' quiet' : '') + '" role="group" aria-label="' + esc(label) + '">' + (quiet ? '' : '<p class="hint">' + esc(label) + '</p>') + '<div class="chips">' + values.map(v => '<button class="chip" data-act="' + esc(act) + '" data-v="' + esc(v) + '" aria-pressed="' + (String(cur) === String(v)) + '">' + esc(lab(v)) + '</button>').join('') + '</div></div>';
 }
+/* Duration chips + "Autre" -> native select (wheel on iPhone) with the precise value */
+function durChips(act, cur, presets, lo, hi, label, quiet) {
+  const other = state.ui['other_' + act] || !presets.includes(+cur), id = 'dur-' + act;
+  return '<div class="chiprow' + (quiet ? ' quiet' : '') + '" role="group" aria-label="' + esc(label) + '">' + (quiet ? '' : '<p class="hint">' + esc(label) + '</p>') + '<div class="chips">' +
+    presets.map(v => '<button class="chip" data-act="durchip" data-k="' + esc(act) + '" data-v="' + v + '" aria-pressed="' + (!other && +cur === v) + '">' + esc(fmtMin(v)) + '</button>').join('') +
+    '<button class="chip" data-act="durchip" data-k="' + esc(act) + '" data-v="other" aria-pressed="' + other + '">' + esc(t('other')) + (other ? ' · ' + esc(fmtMin(+cur)) : '') + '</button>' +
+    (other ? '<label class="sr" for="' + id + '">' + esc(label) + '</label><select id="' + id + '" class="dur-sel" data-durfor="' + esc(act) + '">' + opts(range(lo, hi, 5), +cur, v => fmtMin(v)) + '</select>' : '') + '</div></div>';
+}
+const DUR_SETTERS = {
+  sportmin: v => { state.settings.sportMin = inRange5(v, 15, 180, state.settings.sportMin); },
+  rmbed: v => { state.reminders.bed.before = inRange5(v, 0, 90, state.reminders.bed.before); },
+  rmscr: v => { state.reminders.screens.before = inRange5(v, 15, 120, state.reminders.screens.before); }
+};
 function sportControls() {
   const S = state.settings;
   return (obOn ? '<p class="hint" style="margin:0">' + esc(t('sp_intro')) + '</p>' : '') + toggle('sporton', S.sportOn, t('sp_toggle')) +
-    (S.sportOn ? chipRow(t('sp_dur'), 'sportmin', [30, 45, 60], S.sportMin, v => v === 60 ? t('hrs', { n: 1 }) : t('min', { n: v }), !obOn) +
+    (S.sportOn ? durChips('sportmin', S.sportMin, [30, 45, 60], 15, 180, t('sp_dur'), !obOn) +
       chipRow(t('sp_when'), 'sportwhen', ['morning', 'evening', 'any'], S.sportWhen, v => t('sp_' + v), !obOn) : '');
 }
 function bedCapSel(id) {
-  return '<label class="f" for="' + esc(id) + '">' + esc(t('set_bedcap')) + '<select id="' + esc(id) + '" data-set="bedCap">' + opts(BEDCAPS, state.settings.bedCap, v => v) + '</select><span class="hint">' + esc(t('set_bedcap_hint')) + '</span></label>';
+  return '<label class="f" for="' + esc(id) + '">' + esc(t('set_bedcap')) + '<input id="' + esc(id) + '" type="time" data-set="bedCap" value="' + esc(state.settings.bedCap) + '"><span class="hint">' + esc(t('set_bedcap_hint')) + '</span></label>';
 }
 /* ---------- Onboarding / tutorial (first run, skippable, replayable) ---------- */
 let ob = 0, obOn = false, obFocus = false;
@@ -1437,8 +1471,8 @@ function screenOnboarding() {
     () => '<h1>' + esc(t('ob1_t')) + '</h1><p class="sub">' + esc(t('ob1_p')) + '</p><ul class="ob-list"><li>' + esc(t('ob1_a')) + '</li><li>' + esc(t('ob1_b')) + '</li><li>' + esc(t('ob1_c')) + '</li></ul><div class="stack"><p class="hint" style="margin:0">' + esc(t('set_lang')) + '</p>' + langToggle() + '<p class="hint" style="margin:0">' + esc(t('set_theme')) + '</p>' + themeTiles() + '</div>',
     () => '<h1>' + esc(t('ob2_t')) + '</h1><p class="sub">' + esc(t('ob2_p')) + '</p><div class="stack">' +
       '<label class="f" for="ob-fw">' + esc(t('set_free')) + '<input id="ob-fw" type="time" data-set="freeWake" value="' + esc(S.freeWake) + '"></label>' + bedCapSel('ob-bc') +
-      '<label class="f" for="ob-sl">' + esc(t('set_sleep')) + '<select id="ob-sl" data-set="sleep">' + opts([7, 7.5, 8, 8.5, 9], S.sleep, v => t('hrs', { n: fmtH(v) })) + '</select></label></div>',
-    () => '<h1>' + esc(t('ob3_t')) + '</h1><p class="sub">' + esc(t('ob3_p')) + '</p><label class="f" for="ob-com">' + esc(t('trv_label')) + '<select id="ob-com" data-set="commute">' + opts([0, 10, 15, 20, 30, 45, 60, 75, 90, 120], S.commute, v => t('min', { n: v })) + '</select><span class="hint">' + esc(t('trv_hint')) + '</span></label>',
+      '<label class="f" for="ob-sl">' + esc(t('set_sleep')) + '<select id="ob-sl" data-set="sleep">' + opts(SLEEPS, S.sleep, v => fmtHM(v)) + '</select></label></div>',
+    () => '<h1>' + esc(t('ob3_t')) + '</h1><p class="sub">' + esc(t('ob3_p')) + '</p><label class="f" for="ob-com">' + esc(t('trv_label')) + '<select id="ob-com" data-set="commute">' + opts(COMMUTES, S.commute, v => fmtMin(v)) + '</select><span class="hint">' + esc(t('trv_hint')) + '</span></label>',
     () => '<h1>' + esc(t('ob4_t')) + '</h1><div class="stack">' + sportControls() + '</div>',
     () => '<h1>' + esc(t('ob5_t')) + '</h1><p class="sub">' + esc(t('ob5_p')) + '</p>' + msgP() + '<section class="card stack">' + linkForm() + fileImport() + '</section>' + quickForm() +
       '<div class="stack"><button class="btn full" data-act="example">' + esc(t('example_cta')) + '</button><p class="hint" style="margin:0">' + esc(t('ob5_later')) + '</p></div>'
@@ -1460,13 +1494,13 @@ function screenSettings() {
   const remOn = ['bed', 'checkin', 'water', 'screens'].filter(k => R[k].on).map(k => t('rm_s_' + k));
   let h = '<h1>' + esc(t('set_title')) + '</h1>';
   h += acc('set-rem', t('rm_title'), (remOn.length ? remOn.join(', ') : t('rm_s_none')) + (R.enabled && notifPerm() === 'granted' ? ' · ' + t('rm_s_live') : ''), remindersBody());
-  h += acc('set-plan', t('set_planning'), t('hrs', { n: fmtH(S.sleep) }) + ' · ' + t('sum_bed', { t: S.bedCap }) + ' · ' + t('sum_trv', { n: S.commute }),
-    '<div class="grid2"><label class="f" for="s-sleep">' + esc(t('set_sleep_short')) + '<select id="s-sleep" data-set="sleep">' + opts([7, 7.5, 8, 8.5, 9], S.sleep, v => t('hrs', { n: fmtH(v) })) + '</select></label>' +
-    '<label class="f" for="s-bc">' + esc(t('set_bedcap_short')) + '<select id="s-bc" data-set="bedCap">' + opts(BEDCAPS, S.bedCap, v => v) + '</select></label>' +
+  h += acc('set-plan', t('set_planning'), fmtHM(S.sleep) + ' · ' + t('sum_bed', { t: S.bedCap }) + ' · ' + t('sum_trv', { n: S.commute }),
+    '<div class="grid2"><label class="f" for="s-sleep">' + esc(t('set_sleep_short')) + '<select id="s-sleep" data-set="sleep">' + opts(SLEEPS, S.sleep, v => fmtHM(v)) + '</select></label>' +
+    '<label class="f" for="s-bc">' + esc(t('set_bedcap_short')) + '<input id="s-bc" type="time" data-set="bedCap" value="' + esc(S.bedCap) + '"></label>' +
     '<label class="f" for="s-fw">' + esc(t('set_free_short')) + '<input id="s-fw" type="time" data-set="freeWake" value="' + esc(S.freeWake) + '"></label>' +
-    '<label class="f" for="s-com">' + esc(t('set_commute_short')) + '<select id="s-com" data-set="commute">' + opts([0, 10, 15, 20, 30, 45, 60, 75, 90, 120], S.commute, v => t('min', { n: v })) + '</select></label></div>' +
+    '<label class="f" for="s-com">' + esc(t('set_commute_short')) + '<select id="s-com" data-set="commute">' + opts(COMMUTES, S.commute, v => fmtMin(v)) + '</select></label></div>' +
     (Object.keys(state.hiddenSug).length ? '<button class="tbtn" data-act="showsug">' + esc(t('sug_restore')) + '</button>' : ''));
-  h += acc('set-sport', t('sp_title'), S.sportOn ? (S.sportMin === 60 ? t('hrs', { n: 1 }) : t('min', { n: S.sportMin })) + ' · ' + t('sp_' + S.sportWhen).toLowerCase() : t('off').toLowerCase(), sportControls());
+  h += acc('set-sport', t('sp_title'), S.sportOn ? fmtMin(S.sportMin) + ' · ' + t('sp_' + S.sportWhen).toLowerCase() : t('off').toLowerCase(), sportControls());
   h += acc('set-water', t('water'), tp('sum_water', S.waterGoal, { n: S.waterGoal }),
     '<div class="stepper" role="group" aria-label="' + esc(t('w_goal_label')) + '"><button class="rb" data-act="wgoal" data-v="-1" aria-label="' + esc(t('w_less')) + '"' + (S.waterGoal <= 4 ? ' disabled' : '') + '>−</button><span class="v" aria-live="polite">' + S.waterGoal + '</span><button class="rb" data-act="wgoal" data-v="1" aria-label="' + esc(t('w_more')) + '"' + (S.waterGoal >= 12 ? ' disabled' : '') + '>+</button><span class="hint">' + esc(t('w_goal_label')) + '</span></div><p class="hint" style="margin:0">' + esc(t('w_explain')) + '</p>');
   h += acc('set-theme', t('set_theme'), t('th_' + S.theme) + (S.autoNight ? ' · ' + t('sum_auto') : ''), themeTiles() + toggle('autonight', S.autoNight, t('set_auto') + ' (' + t('set_auto_hint_short') + ')'));
@@ -1536,12 +1570,12 @@ function computeReminders(days) {
   for (let i = 0; i < days; i++) {
     const d = addDays(today(), i), P = computeDay(d), dk = key(d);
     const add = (kind, m, title, body, url) => {
-      if (!(m >= 0 && m < 1440)) return; // never after midnight
+      if (!(m >= 0 && (m < 1440 || (bedCapMin() > 1440 && m <= bedCapMin())))) return; // never after midnight, unless the user chose a later bedtime
       out.push({ kind, date: dk, at: new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, Math.round(m)), title, body, url });
     };
     if (R.bed.on) add('bed', P.bed - R.bed.before, t('n_bed', { t: fmtSpoken(P.bed) }), t('n_bed_b'), './#plan');
     if (R.screens.on) add('screens', P.bed - R.screens.before, t('n_screens'), '', './#plan');
-    if (R.checkin.on) add('checkin', toMin(R.checkin.time), t('n_checkin'), '', './#checkin');
+    if (R.checkin.on) add('checkin', Math.min(toMin(R.checkin.time), P.bed - 30), t('n_checkin'), '', './#checkin'); // always before bedtime
     if (R.water.on) WATER_TIMES.forEach(m => { if (m > P.wake + 30 && m < P.bed - 60) add('water', m, t('n_water'), '', './#plan'); });
   }
   return out.sort((a, b) => a.at - b.at);
@@ -1600,7 +1634,7 @@ function planICS() {
   for (let i = 0; i < 7; i++) {
     const d = addDays(today(), i), P = computeDay(d), dk = key(d);
     P.items.forEach(it => {
-      if (it.t >= 1440) return; // nothing after midnight
+      if (it.t >= 1440 && !(bedCapMin() > 1440 && it.t <= bedCapMin())) return; // nothing after midnight unless chosen
       const dur = Math.max(5, durOf(it)), s = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, it.t);
       evs.push({ uid: 'plan-' + dk + '-' + String(it.k).replace(/[^a-zA-Z0-9_-]/g, '_') + '@rythmo', s, e: new Date(s.getTime() + dur * 60000), title: it.title, desc: it.why || '' });
     });
@@ -1615,10 +1649,10 @@ function remindersBody() {
     '<button class="sw" role="switch" aria-checked="' + !!R[k].on + '" aria-labelledby="rml-' + k + '" data-act="rmtoggle" data-v="' + k + '"><span class="tr" aria-hidden="true"></span></button></div>';
   const sel = (id, k, vals, cur) => '<label class="rm-ctl" for="' + id + '"><span class="sr">' + esc(t('rm_when')) + '</span><select id="' + id + '" data-rm="' + k + '">' + opts(vals, cur, v => t('rm_before_short', { n: v })) + '</select></label>';
   let h = '<p class="hint" style="margin:0">' + esc(t('rm_intro')) + '</p>';
-  h += row('bed', t('rm_bed'), sel('rm-bed', 'bed', [0, 15, 30, 45], R.bed.before));
+  h += row('bed', t('rm_bed'), '') + (R.bed.on ? '<div class="rm-sub">' + durChips('rmbed', R.bed.before, [0, 15, 30], 0, 90, t('rm_before_label'), false) + '</div>' : '');
   h += row('checkin', t('rm_checkin'), '<label class="rm-ctl" for="rm-ci"><span class="sr">' + esc(t('rm_at')) + '</span><input id="rm-ci" type="time" data-rm="checkin" min="18:00" max="23:45" value="' + esc(R.checkin.time) + '"></label>');
   h += row('water', t('rm_water'), '');
-  h += row('screens', t('rm_screens'), sel('rm-sc', 'screens', [30, 45, 60], R.screens.before));
+  h += row('screens', t('rm_screens'), '') + (R.screens.on ? '<div class="rm-sub">' + durChips('rmscr', R.screens.before, [30, 45, 60], 15, 120, t('rm_before_label'), false) + '</div>' : '');
   if (!live) h += '<p class="hint" style="margin:0">' + esc(t('rm_chosen_note')) + '</p>';
   h += msgP();
   // Reliable option first: the phone's calendar app
@@ -1736,7 +1770,7 @@ function eventsFromICS(text, horizon) {
         // this year's dates (before: the step-by-step guard ran out after ~2.2 / ~7.7 years and nothing was imported).
         let ffDays = 0;
         if (!count) {
-          let target = addDays(today(), -60); if (until && until < target) target = addDays(until, -60);
+          let target = addDays(today(), -400); if (until && until < target) target = addDays(until, -60);
           const diff = Math.floor((Date.UTC(target.getFullYear(), target.getMonth(), target.getDate()) - Date.UTC(st.w.y, st.w.mo, st.w.d)) / 86400000);
           const step = (freq === 'DAILY' ? 1 : 7) * interval;
           if (diff > step) ffDays = Math.floor(diff / step) * step;
@@ -1919,7 +1953,7 @@ const ACT = {
   showsug: () => { state.hiddenSug = {}; save(); },
   addtask: () => { tab = 'week'; weekSub = 'courses'; msg = ''; scrollTask = true; },
   sporton: () => { state.settings.sportOn = !state.settings.sportOn; save(); },
-  sportmin: v => { state.settings.sportMin = snapSport(v); save(); },
+  durchip: (v, b) => { const k = b.dataset.k; if (!DUR_SETTERS[k]) return; if (v === 'other') state.ui['other_' + k] = true; else { state.ui['other_' + k] = false; DUR_SETTERS[k](v); } save(); },
   sportwhen: v => { if (['morning', 'evening', 'any'].includes(v)) state.settings.sportWhen = v; save(); },
   obnext: () => { ob = Math.min(OB_N - 1, ob + 1); msg = ''; obFocus = true; window.scrollTo(0, 0); },
   obback: () => { ob = Math.max(0, ob - 1); msg = ''; obFocus = true; window.scrollTo(0, 0); },
@@ -2044,15 +2078,16 @@ $app.addEventListener('change', e => {
     return;
   }
   if (el.id === 'note') { state.note = String(el.value).slice(0, 2000); save(); return; } // saved on change/blur, no re-render (keeps focus)
+  if (el.dataset && el.dataset.durfor && DUR_SETTERS[el.dataset.durfor]) { DUR_SETTERS[el.dataset.durfor](el.value); save(); render(); return; }
   if (el.dataset && el.dataset.rm) {
     const R = state.reminders[el.dataset.rm];
     if (el.dataset.rm === 'checkin') { if (HHMM.test(el.value) && toMin(el.value) >= 1080) R.time = el.value; }
-    else R.before = +el.value;
+    else R.before = inRange5(el.value, 0, 120, R.before);
     save(); render(); return;
   }
   if (el.name === 'theme' && THEMES.includes(el.value)) { state.settings.theme = el.value; state.settings.themePicked = true; save(); render(); return; }
   const k = el.dataset && el.dataset.set; if (!k) return;
-  if (k === 'bedCap') { if (BEDCAPS.includes(el.value)) state.settings.bedCap = el.value; }
+  if (k === 'bedCap') { if (bedCapOk(el.value)) state.settings.bedCap = el.value; else { formError(el.closest('label') || el.parentNode, t('bedcap_range'), el.id); return; } }
   else state.settings[k] = k === 'freeWake' ? (HHMM.test(el.value) ? el.value : '08:00') : +el.value;
   save(); render();
 });
