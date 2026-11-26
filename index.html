@@ -131,6 +131,7 @@ a{color:var(--accent)}
 .time{font-variant-numeric:tabular-nums}
 .top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:4px 0 12px}
 .brand{display:flex;gap:8px;align-items:center;font:var(--h-weight) 1.75rem/1 var(--f-display);color:var(--ink)}
+.langfoot{display:flex;justify-content:center;margin:0}
 .lang{justify-self:start;width:max-content;display:inline-flex;border:1px solid var(--line-strong);border-radius:var(--r-pill);overflow:hidden;background:var(--surface)}
 .lang button{background:none;border:0;min-width:48px;min-height:44px;padding:0 12px;font:600 .875rem var(--f-body);color:var(--muted)}
 .lang button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
@@ -442,7 +443,7 @@ div.row{grid-template-columns:52px 22px minmax(0,1fr)}
 .tl2 li.past .row .tm{text-decoration:line-through;text-decoration-thickness:1px}
 .pastbtn{width:100%;min-height:44px;border:1px dashed var(--line-strong);border-radius:var(--r-sm);background:none;color:var(--ink);font:600 .9375rem var(--f-body);text-align:left;padding:0 12px}
 .tl2 .nowrow{display:grid;grid-template-columns:52px 1fr;align-items:center;gap:8px;min-height:20px}
-.wrow{display:flex;align-items:center;gap:8px;min-height:52px;margin:-4px 0 var(--s-2);padding:2px 2px 2px 4px}
+.wrow{display:flex;align-items:center;gap:8px;min-height:52px;margin:0;padding:2px 2px 2px 4px}
 .wr-txt{margin:0;flex:1 1 auto;min-width:0;line-height:1.25}
 .wr-txt .time{font-weight:600}
 .wr-state{display:block;color:var(--muted);font-size:var(--fs-small)}
@@ -452,7 +453,7 @@ div.row{grid-template-columns:52px 22px minmax(0,1fr)}
 .wrow .drops i.on{background:var(--b-free)}
 .wrow .rb{width:44px;height:44px;flex:0 0 44px}
 .wrow .rb.add{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
-.tipline{margin:var(--s-2) 0 0;color:var(--ink);font-size:.9375rem}
+.tipline{margin:var(--s-1) 0 0;color:var(--ink);font-size:.9375rem}
 .tipline b{color:var(--muted);font-weight:600}
 
 details.acc{border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface);margin-bottom:6px}
@@ -1178,7 +1179,7 @@ const TABS = ['plan', 'week', 'checkin', 'settings'];
 let weekSub = 'week'; // Semaine | Mes cours (the former Cours tab)
 
 function header() {
-  return '<div class="top"><div class="brand"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" fill="var(--accent)"/></svg>Rythmo</div>' + langToggle() + '</div>';
+  return '<div class="top"><div class="brand"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" fill="var(--accent)"/></svg>Rythmo</div></div>';
 }
 function langToggle() {
   return '<div class="lang" role="group" aria-label="' + esc(t('lang_label')) + '"><button data-act="lang" data-v="en" aria-pressed="' + (state.lang === 'en') + '" lang="en">EN</button><button data-act="lang" data-v="fr" aria-pressed="' + (state.lang === 'fr') + '" lang="fr">FR</button></div>';
@@ -1326,6 +1327,9 @@ function timeline(P, dk, isToday) {
   if (gp) L = L.concat([{ k: 'free', t: gp[0], end: gp[1], type: 'free', title: t('free_row') }]);
   if (fold.length) L = L.concat([{ k: 'todomore', t: fold[0].t, type: 'todomore', title: t('todo_fold', { n: fold.length }), names: fold.map(x => fmt(x.t) + ' ' + x.title).join(', ') }]);
   L = L.slice().sort((a, b) => a.t - b.t);
+  // Screens off and Lights out always stay at the bottom, even if an event is added after them.
+  const tail = L.filter(it => it.type === 'bed' || it.k === 'wind');
+  L = L.filter(it => tail.indexOf(it) < 0).concat(tail);
   const past = L.filter(isPast), rest = L.filter(it => !isPast(it));
   let h = '<ul class="tl2" aria-label="' + esc(t('tl_label')) + '">';
   if (past.length) {
@@ -1360,9 +1364,9 @@ function screenPlan() {
   if (!state.classes.length && !state.cal && !state.rules.length && !Object.keys(state.overrides).length) return emptyPlan();
   const date = curDate, P = computeDay(date), k = key(date), isToday = k === key(today()), nm = nowMin();
   let h = dayHeader(P, date, isToday);
+  h += '<p class="tipline"><b>' + esc(t('tip_label')) + '</b> ' + esc(challengeFor(date, P).text) + '</p>';
   if (isToday && nm >= Math.min(1200, P.bed - 90) && nm < P.bed - 30 && !state.checkins[k]) h += '<button class="banner" data-act="tab" data-v="checkin">' + SVG(BI.sleep) + '<span>' + esc(t('eve_banner')) + '</span><span aria-hidden="true">›</span></button>';
   h += actionRow(P);
-  if (isToday) h += waterLine(k);
   h += msgP();
   if (!storageOk) h += '<div class="warn">' + esc(t('nostore')) + '</div>';
   if (state.sample) h += '<p class="hint">' + esc(t('example_note')) + '</p>';
@@ -1373,7 +1377,7 @@ function screenPlan() {
   if (!P.cl.length && P.items.length <= 5) h += '<p class="hint">' + esc(t('today_empty')) + '</p>';
   h += timeline(P, k, isToday);
   if (P.noSport) h += '<p class="hint">' + esc(t('sport_none', { m: fmtMin(state.settings.sportMin), t: fmt(Math.min(1260, P.bed - 120)) })) + '</p>';
-  h += '<p class="tipline"><b>' + esc(t('tip_label')) + '</b> ' + esc(challengeFor(date, P).text) + '</p>';
+  if (isToday) h += waterLine(k);
   return h;
 }
 /* ---------- F4/F5 "Idées": content data (fr/en in one array; never shown as rules, no numbers on food) ---------- */
@@ -1843,7 +1847,7 @@ function render() {
   const scr = tab === 'plan' ? screenPlan() : tab === 'week' ? (weekSub === 'courses' ? screenCourses() : screenWeek()) : tab === 'checkin' ? screenCheckin() : screenSettings();
   const fid = document.activeElement && document.activeElement.id, y = window.scrollY;
   const wk = tab === 'week' && weekSub === 'week' && weekMode() === 'grid';
-  $app.innerHTML = '<div class="shell' + (wk ? ' wide' : '') + '"' + (sheet ? ' inert' : '') + '>' + header() + '<main id="main">' + scr + '</main></div>' + '<div' + (sheet ? ' inert' : '') + '>' + nav() + '</div>' + sheetHtml();
+  $app.innerHTML = '<div class="shell' + (wk ? ' wide' : '') + '"' + (sheet ? ' inert' : '') + '>' + header() + '<main id="main">' + scr + '</main><div class="langfoot">' + langToggle() + '</div></div>' + '<div' + (sheet ? ' inert' : '') + '>' + nav() + '</div>' + sheetHtml();
   document.documentElement.setAttribute('data-theme', effTheme());
   document.documentElement.lang = state.lang;
   document.title = 'Rythmo';
