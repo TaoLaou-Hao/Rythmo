@@ -492,6 +492,7 @@ details.acc>summary{min-height:60px!important}
 .ideas li span{color:var(--ink)}
 .ideas li small{color:var(--muted)}
 .ideas .ik{font-size:.8125rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.qe-done{margin:0;padding:10px 12px;border-radius:var(--r-md);background:var(--sunk)}
 .rule-line{background:var(--sunk);border-radius:var(--r-md);padding:12px;display:grid;gap:8px}
 .toast{position:fixed;left:16px;right:16px;bottom:calc(57px + 12px + env(safe-area-inset-bottom,0px));z-index:30;max-width:528px;margin:0 auto;display:none;align-items:center;justify-content:space-between;gap:12px;padding:8px 8px 8px 16px;border-radius:var(--r-md);background:var(--ink);color:var(--bg);box-shadow:var(--shadow-2);font-weight:600}
 .toast.on{display:flex}
@@ -590,6 +591,7 @@ en: {
   todo_dur:'How long (optional)', todo_dur_on:'Rythmo puts it in your first free slot today. It won\'t move by itself.', todo_dur_off:'No duration: a simple checklist item.', todo_placed:'Placed today at {t}.', todo_noslot:'No free slot today for {m}.', todo_tomorrow:'Tomorrow', todo_notime:'No time', todo_placed_tm:'Planned for tomorrow at {t}.', todo_full_tm:'Tomorrow is full too: kept with no time.', todo_kept:'Kept with no time.', todo_place:'Place', todo_place_aria:'Place today: {n}', todo_today_at:'today {t}', todo_tm_at:'tomorrow {t}', todo_why:'Your to-do ({m}), placed when you added it. It never moves by itself.', todo_clash:'Something now overlaps: {n}. Open To-do to place it again.', todo_done:'Done', todo_done_msg:'Done: {n}.', todo_unpin:'Remove from the day', todo_max:'The list is full (30). Remove something first.',
   cp_btn:'Copy this day to…', cp_title:'Copy to…', cp_hint:'Copies this day\'s changes (work day, classes added or removed, sport, times). Not your to-dos. Replaces what is already changed on those days.', cp_this:'This week', cp_next:'Next week', cp_apply:'Copy', cp_none_sel:'Pick at least one day.', cp_done:'Copied to {n} days.', cp_done_one:'Copied to 1 day.', cp_nothing:'Nothing to copy: this day follows your usual timetable.',
   free_row:'Free', free_aria:'Free time {s}–{e}: ideas', free_title:'What if…', free_hint:'Just ideas, nothing required. This time is yours.', fk_B:'Move', fk_D:'Unwind', fk_S:'See people', ideas_meal:'Meal ideas', ideas_plate:'A plate that works: some vegetables, a starchy food (pasta, rice, bread, potatoes…) and a protein source (egg, legumes, fish, poultry, tofu…). No strict rule: what\'s doable today counts.', ideas_sport:'Before sport, something light; after, a proper meal.', ideas_ru:'No time? The uni canteen counts too.', ideas_adapt:'Adapt to your tastes, allergies and eating habits.', eq_M:'microwave', eq_P:'stove',
+  qe_title:'Quick entry for the week', qe_hint:'One class at a time: times and days stay filled in for the next one.', qe_added:'{n} added. Type the next one, or tap Done.', qe_added_list:'Added:', qe_add_next:'Add and continue', qe_finish:'Done',
   rules_title:'Regular days', badge_rep:'repeats', rule_every:'Every {d}', rule_is:'Regular day: every {d}', rule_today_normal:'Today only: a usual day', rule_today_only:'Today only: changed.', rule_remove:'Remove this regular day', rule_removed:'Regular day removed ({d}).', rule_add:'Internship or work every week', rule_add_btn:'Add this regular day', rule_hint:'Replaces that day\'s classes and imported events, every week from today.', rule_day:'Day', rule_saved:'Regular day saved.', undo:'Undo', edit:'Edit',
   imp_rep:'Including {n} monthly or yearly repeats (shown for the next 6 months).', imp_rep_one:'Including 1 monthly or yearly repeat (shown for the next 6 months).', imp_bad:'{n} repeats could not be read: only their first date was kept.', imp_bad_one:'One repeat could not be read: only its first date was kept.',
   imp_card:'Imported calendar', imp_until:'Until {d}.', imp_exact:'Each date shows its real classes: cancelled sessions, one-off events and alternate weeks stay exact. Import again to refresh.', imp_remove:'Remove the imported calendar', imp_removed:'Imported calendar removed.',
@@ -708,6 +710,7 @@ fr: {
   todo_dur:'Durée (facultatif)', todo_dur_on:'Rythmo la place dans ton premier créneau libre aujourd\'hui. Elle ne bouge plus toute seule.', todo_dur_off:'Sans durée : une simple case à cocher.', todo_placed:'Placé aujourd\'hui à {t}.', todo_noslot:'Pas de créneau libre aujourd\'hui pour {m}.', todo_tomorrow:'Demain', todo_notime:'Sans heure', todo_placed_tm:'Prévu demain à {t}.', todo_full_tm:'Demain est plein aussi : gardé sans heure.', todo_kept:'Gardé sans heure.', todo_place:'Placer', todo_place_aria:'Placer aujourd\'hui : {n}', todo_today_at:'aujourd\'hui {t}', todo_tm_at:'demain {t}', todo_why:'Ta chose à faire ({m}), placée quand tu l\'as ajoutée. Elle ne bouge jamais toute seule.', todo_clash:'Quelque chose chevauche maintenant : {n}. Ouvre « À faire » pour la replacer.', todo_done:'C\'est fait', todo_done_msg:'Fait : {n}.', todo_unpin:'Retirer de la journée', todo_max:'La liste est pleine (30). Retire quelque chose d\'abord.',
   cp_btn:'Copier ce jour vers…', cp_title:'Copier vers…', cp_hint:'Copie les changements de ce jour (stage, cours ajoutés ou retirés, sport, horaires). Pas tes choses à faire. Remplace ce qui est déjà modifié ces jours-là.', cp_this:'Cette semaine', cp_next:'Semaine prochaine', cp_apply:'Copier', cp_none_sel:'Choisis au moins un jour.', cp_done:'Copié vers {n} jours.', cp_done_one:'Copié vers 1 jour.', cp_nothing:'Rien à copier : ce jour suit ton emploi du temps habituel.',
   free_row:'Libre', free_aria:'Temps libre {s}–{e} : idées', free_title:'Et si…', free_hint:'Juste des idées, rien d\'obligatoire. Ce temps est à toi.', fk_B:'Bouger', fk_D:'Se détendre', fk_S:'Voir du monde', ideas_meal:'Idées de repas', ideas_plate:'Une assiette qui tient : des légumes, un féculent (pâtes, riz, pain, pommes de terre…) et une source de protéines (œuf, légumineuses, poisson, volaille, tofu…). Pas de règle stricte : ce qui est faisable aujourd\'hui compte.', ideas_sport:'Avant le sport, plutôt quelque chose de léger ; après, un vrai repas.', ideas_ru:'Pas le temps ? Resto U, ça compte aussi.', ideas_adapt:'Adapte selon tes goûts, allergies et habitudes alimentaires.', eq_M:'micro-ondes', eq_P:'plaque',
+  qe_title:'Saisie rapide de la semaine', qe_hint:'Un cours à la fois : les horaires et les jours restent remplis pour le suivant.', qe_added:'{n} ajouté. Tape le suivant, ou touche Terminé.', qe_added_list:'Ajoutés :', qe_add_next:'Ajouter et continuer', qe_finish:'Terminé',
   rules_title:'Jours réguliers', badge_rep:'se répète', rule_every:'Chaque {d}', rule_is:'Jour régulier : chaque {d}', rule_today_normal:'Aujourd\'hui seulement : journée habituelle', rule_today_only:'Aujourd\'hui seulement : modifié.', rule_remove:'Retirer ce jour régulier', rule_removed:'Jour régulier retiré ({d}).', rule_add:'Stage ou travail chaque semaine', rule_add_btn:'Ajouter ce jour régulier', rule_hint:'Remplace les cours et événements importés de ce jour, chaque semaine à partir d\'aujourd\'hui.', rule_day:'Jour', rule_saved:'Jour régulier enregistré.', undo:'Annuler', edit:'Modifier',
   imp_rep:'Dont {n} répétitions mensuelles ou annuelles (affichées sur les 6 prochains mois).', imp_rep_one:'Dont 1 répétition mensuelle ou annuelle (affichée sur les 6 prochains mois).', imp_bad:'{n} répétitions n\'ont pas pu être lues : seule la première date est gardée.', imp_bad_one:'Une répétition n\'a pas pu être lue : seule la première date est gardée.',
   imp_card:'Agenda importé', imp_until:'Jusqu\'au {d}.', imp_exact:'Chaque date affiche ses vrais cours : séances annulées, événements ponctuels et semaines alternées restent exacts. Réimporte pour mettre à jour.', imp_remove:'Retirer l\'agenda importé', imp_removed:'Agenda importé retiré.',
@@ -1144,7 +1147,7 @@ const KIND = { appt: 'class', wake: 'sleep', bed: 'sleep', wind: 'sleep', meal: 
 const ICK = { free: 'free', appt: 'task', wake: 'wake', bed: 'sleep', wind: 'wind', meal: 'meal', class: 'class', travel: 'travel', sport: 'sport', task: 'task', morning: 'free' };
 const SUGGEST = { meal: 1, sport: 1, morning: 1, task: 1 };
 
-let msgAt = null, openSec = {}, ruleEditId = null;
+let msgAt = null, openSec = {}, ruleEditId = null, qeKeep = null, qeAdded = [];
 let tab = 'plan', curDate = today(), draft = null, msg = '', msgErr = false, resetArm = false, busy = false, scrollTask = false;
 const TABS = ['plan', 'week', 'checkin', 'settings'];
 let weekSub = 'week'; // Semaine | Mes cours (the former Cours tab)
@@ -1649,9 +1652,14 @@ function screenCourses() {
   }
   if (state.tasks.length) h += '<h2>' + esc(t('tk_list')) + '</h2><ul class="cl" style="margin-bottom:14px">' + state.tasks.map(k => '<li><div class="m"><b>' + esc(k.title) + '</b><small>' + esc(t('min', { n: k.dur })) + ' · ' + k.days.slice().sort().map(d => esc(dayName(WEEK[d], 'short'))).join(', ') + '</small></div><button class="x" data-act="deltask" data-v="' + esc(k.id) + '">' + esc(t('sc_remove')) + '</button></li>').join('') + '</ul>';
   h += sec('s-link', t('imp_sec'), linkForm() + fileImport(), noCl && !state.cal && !!RELAY);
-  h += sec('s-class', '+ ' + t('sc_add'), '<form id="addf" class="stack" style="margin:0"><label class="f" for="cn">' + esc(t('sc_name')) + '<input id="cn" type="text" maxlength="40" placeholder="' + esc(t('sc_name_ph')) + '"></label>' +
-    '<div class="grid2"><label class="f" for="cs">' + esc(t('sc_start')) + '<input id="cs" type="time" value="08:30" required></label><label class="f" for="ce">' + esc(t('sc_end')) + '<input id="ce" type="time" value="10:30" required></label></div>' +
-    dayChips('cd', i => i === wdOf(curDate)) + '<button class="btn pri full" type="submit">' + esc(t('sc_add_btn')) + '</button>' + msgP('addf') + '</form>', !!(msgAt === 'addf'));
+  // F9 "Saisie rapide": one class per pass; times and days stay filled for the next one
+  const qk = qeKeep || { start: '08:30', end: '10:30', days: [wdOf(curDate)] };
+  h += sec('s-class', '+ ' + t('qe_title'), '<form id="addf" class="stack" style="margin:0"><p class="hint" style="margin:0">' + esc(t('qe_hint')) + '</p>' +
+    (qeAdded.length ? '<p class="qe-done" role="status"><b>' + esc(t('qe_added_list')) + '</b> ' + esc(qeAdded.join(', ')) + '</p>' : '') +
+    '<label class="f" for="cn">' + esc(t('sc_name')) + '<input id="cn" type="text" maxlength="40" placeholder="' + esc(t('sc_name_ph')) + '" autocomplete="off"></label>' +
+    '<div class="grid2"><label class="f" for="cs">' + esc(t('sc_start')) + '<input id="cs" type="time" value="' + esc(qk.start) + '" required></label><label class="f" for="ce">' + esc(t('sc_end')) + '<input id="ce" type="time" value="' + esc(qk.end) + '" required></label></div>' +
+    dayChips('cd', i => qk.days.includes(i)) + msgP('addf') + '<button class="btn pri full" type="submit">' + esc(qeAdded.length ? t('qe_add_next') : t('sc_add_btn')) + '</button>' +
+    (qeAdded.length ? '<button type="button" class="btn full" data-act="qedone">' + esc(t('qe_finish')) + '</button>' : '') + '</form>', !!(msgAt === 'addf' || qeAdded.length));
   const er = state.rules.find(r => r.id === ruleEditId);
   h += sec('s-rule', '+ ' + t('rule_add'), '<form id="rulef" class="stack" style="margin:0"><p class="hint" style="margin:0">' + esc(t('rule_hint')) + '</p>' +
     '<label class="f" for="ru-d">' + esc(t('rule_day')) + '<select id="ru-d">' + WEEK.map((d, i) => '<option value="' + i + '"' + ((er ? er.wd : wdOf(curDate)) === i ? ' selected' : '') + '>' + esc(dayName(d, 'long')) + '</option>').join('') + '</select></label>' +
@@ -2176,6 +2184,7 @@ const ACT = {
   openday: v => { curDate = parseKey(v); tab = 'plan'; msg = ''; sheet = null; showPast = false; window.scrollTo(0, 0); },
   edit: (v, b) => { sheet = { d: b.dataset.d, k: b.dataset.k }; msg = ''; },
   freeidea: (v, b) => { const p = String(v).split('-'); sheet = { panel: 'free', s: +p[0], e: +p[1], ret: b.id || '' }; msg = ''; },
+  qedone: () => { qeAdded = []; qeKeep = null; openSec['s-class'] = false; jumpTo = 's-class'; },
   copyday: (v, b) => { sheet = { panel: 'copy', src: v, ret: b.id || '' }; msg = ''; },
   panel: (v, b) => { sheet = { panel: v, ret: b.id || '' }; msg = ''; },
   showpast: () => { showPast = !showPast; },
@@ -2364,9 +2373,12 @@ $app.addEventListener('submit', e => {
     const start = document.getElementById('cs').value, end = document.getElementById('ce').value;
     const days = Array.from(document.querySelectorAll('input[name=cd]:checked')).map(x => +x.value);
     if (!start || !end || toMin(end) <= toMin(start)) { formError(form, t('sc_bad_time'), 'ce'); return; }
-    if (!days.length) { formError(form, t('sc_need_day'), null); return; }
+    if (!days.length) { formError(form, t('sc_need_day'), (form.querySelector('input[name=cd]') || {}).id || null); return; }
     if (state.sample) { state.classes = state.classes.filter(c => c.origin !== 'sample'); state.sample = false; }
-    state.classes.push({ id: uid(), title, start, end, days, origin: 'manual' }); save(); say(t('sc_added'), false, 'addf'); render();
+    state.classes.push({ id: uid(), title, start, end, days, origin: 'manual' }); save();
+    qeKeep = { start, end, days }; qeAdded = qeAdded.concat([title]); openSec['s-class'] = true;
+    say(t('qe_added', { n: title }), false, 'addf'); render();
+    const n = document.getElementById('cn'); if (n) n.focus();
   }
 });
 $app.addEventListener('change', e => {
