@@ -283,6 +283,20 @@ button.block:hover{border-color:var(--c)}
 .dh-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .dh-nav{display:flex;gap:8px}
 .dh-nav .rb{width:44px;height:44px}
+/* Wheel picker (same on every browser) */
+.pk-bg{position:fixed;inset:0;background:rgba(10,10,20,.45);z-index:40}
+.pk{position:fixed;left:0;right:0;bottom:0;z-index:41;max-width:560px;margin:0 auto;background:var(--surface);color:var(--ink);border-radius:var(--r-lg) var(--r-lg) 0 0;box-shadow:var(--shadow-2);padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px))}
+.pk h2{font:600 1rem var(--f-body);margin:0 0 8px;text-align:center}
+.pk-cols{position:relative;display:flex;justify-content:center;align-items:stretch;gap:4px;height:220px}
+.pk-band{position:absolute;left:0;right:0;top:88px;height:44px;border-radius:var(--r-sm);background:var(--accent-soft);pointer-events:none}
+.pk-wh{position:relative;flex:1;max-width:140px;height:220px;overflow-y:auto;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;scrollbar-width:none;padding:88px 0;box-sizing:border-box;touch-action:pan-y;outline:none;-webkit-mask-image:linear-gradient(transparent,#000 30%,#000 70%,transparent);mask-image:linear-gradient(transparent,#000 30%,#000 70%,transparent)}
+.pk-wh::-webkit-scrollbar{display:none}
+.pk-wh:focus-visible{box-shadow:0 0 0 2px var(--accent) inset;border-radius:var(--r-sm)}
+.pk-i{height:44px;display:flex;align-items:center;justify-content:center;scroll-snap-align:center;font-size:1.25rem;color:var(--muted);font-variant-numeric:tabular-nums;cursor:pointer;user-select:none;white-space:nowrap}
+.pk-i.on{color:var(--ink);font-weight:700}
+.pk-sep{display:flex;align-items:center;font-size:1.25rem;font-weight:700;position:relative;z-index:1}
+.pk-btns{display:flex;gap:8px;margin-top:12px}
+.pk-btns .btn{flex:1;min-height:44px}
 /* Bottom sheet */
 .sheet-bg{position:fixed;inset:0;background:rgba(10,10,20,.45);z-index:20}
 .sheet{position:fixed;left:0;right:0;bottom:0;z-index:21;max-height:88vh;overflow:auto;background:var(--surface);color:var(--ink);border-radius:var(--r-lg) var(--r-lg) 0 0;box-shadow:var(--shadow-2);padding:var(--s-4) var(--s-4) calc(var(--s-5) + env(safe-area-inset-bottom,0px));max-width:560px;margin:0 auto}
@@ -2538,6 +2552,97 @@ $app.addEventListener('change', e => {
   else state.settings[k] = +el.value;
   save(); render();
 });
+
+/* ===================== WHEEL PICKER ===================== */
+(function wheelPicker() {
+  T.en.pk_ok = 'OK'; T.en.pk_cancel = 'Cancel'; T.en.pk_h = 'Hour'; T.en.pk_m = 'Minutes';
+  T.fr.pk_ok = 'OK'; T.fr.pk_cancel = 'Annuler'; T.fr.pk_h = 'Heures'; T.fr.pk_m = 'Minutes';
+  const IH = 44; let open = null, lastOpen = 0;
+  const pickable = el => el && el.closest ? (el.closest('select, input[type=time]')) : null;
+  const okEl = el => el && !el.disabled && !el.readOnly && !el.closest('.pk') && !el.hasAttribute('data-native');
+  function labelOf(el) {
+    const l = el.id && document.querySelector('label[for="' + el.id + '"]') || el.closest('label');
+    if (!l) return el.getAttribute('aria-label') || '';
+    const c = l.cloneNode(true); c.querySelectorAll('select,input,.hint,small').forEach(n => n.remove());
+    return c.textContent.replace(/\s+/g, ' ').trim();
+  }
+  function wheel(items, idx, label) {
+    const w = document.createElement('div'); w.className = 'pk-wh'; w.tabIndex = 0; w.setAttribute('role', 'listbox'); w.setAttribute('aria-label', label);
+    items.forEach((it, i) => { const d = document.createElement('div'); d.className = 'pk-i'; d.setAttribute('role', 'option'); d.textContent = it.l; d.addEventListener('click', () => go(i, true)); w.appendChild(d); });
+    let cur = idx;
+    function mark() { [...w.children].forEach((d, i) => { d.classList.toggle('on', i === cur); d.setAttribute('aria-selected', i === cur ? 'true' : 'false'); }); w.setAttribute('aria-activedescendant', ''); w.dataset.val = items[cur].v; w.setAttribute('aria-valuetext', items[cur].l); }
+    function go(i, smooth) { cur = Math.max(0, Math.min(items.length - 1, i)); mark(); w.scrollTo({ top: cur * IH, behavior: smooth ? 'smooth' : 'auto' }); }
+    w.addEventListener('scroll', () => { const i = Math.max(0, Math.min(items.length - 1, Math.round(w.scrollTop / IH))); if (i !== cur) { cur = i; mark(); } });
+    w.addEventListener('keydown', e => {
+      const k = e.key, step = k === 'ArrowUp' ? -1 : k === 'ArrowDown' ? 1 : k === 'PageUp' ? -6 : k === 'PageDown' ? 6 : 0;
+      if (step) { e.preventDefault(); go(cur + step, true); } else if (k === 'Home') { e.preventDefault(); go(0, true); } else if (k === 'End') { e.preventDefault(); go(items.length - 1, true); }
+    });
+    let drag = null;   // mouse drag (touch scrolls natively)
+    w.addEventListener('pointerdown', e => { if (e.pointerType === 'mouse') { drag = { y: e.clientY, s: w.scrollTop, m: false }; } });
+    w.addEventListener('pointermove', e => { if (drag) { const dy = e.clientY - drag.y; if (Math.abs(dy) > 4) { drag.m = true; w.style.scrollSnapType = 'none'; w.scrollTop = drag.s - dy; } } });
+    const end = () => { if (drag) { const m = drag.m; drag = null; w.style.scrollSnapType = ''; if (m) { go(Math.round(w.scrollTop / IH), true); w.dataset.dragged = '1'; setTimeout(() => delete w.dataset.dragged, 50); } } };
+    w.addEventListener('pointerup', end); w.addEventListener('pointerleave', end);
+    mark();
+    return { el: w, get: () => items[cur].v, init: () => { w.scrollTop = idx * IH; } };
+  }
+  function build(el) {
+    if (el.tagName === 'SELECT') {
+      const opts = [...el.options].filter(o => !o.disabled);
+      const idx = Math.max(0, opts.findIndex(o => o.value === el.value));
+      const w = wheel(opts.map(o => ({ v: o.value, l: o.textContent.trim() })), idx, labelOf(el));
+      return { cols: [w], value: () => w.get() };
+    }
+    const m = /^(\d{1,2}):(\d{2})/.exec(el.value) || [0, '9', '00'];
+    const hh = Math.min(23, +m[1]), mm = +m[2];
+    const mins = []; for (let x = 0; x < 60; x += 5) mins.push(x); if (!mins.includes(mm)) { mins.push(mm); mins.sort((a, b) => a - b); }
+    const p2 = n => String(n).padStart(2, '0');
+    const H = wheel(Array.from({ length: 24 }, (_, i) => ({ v: i, l: p2(i) })), hh, t('pk_h'));
+    const M = wheel(mins.map(x => ({ v: x, l: p2(x) })), mins.indexOf(mm), t('pk_m'));
+    return { cols: [H, M], sep: true, value: () => { let v = p2(H.get()) + ':' + p2(M.get()); if (el.min && v < el.min) v = el.min; if (el.max && v > el.max) v = el.max; return v; } };
+  }
+  function close(ret) { if (!open) return; const o = open; open = null; o.bg.remove(); o.box.remove(); if (ret !== false && o.el.isConnected) o.el.focus({ preventScroll: true }); }
+  function openFor(el) {
+    if (open || !okEl(el)) return; lastOpen = Date.now();
+    const b = build(el), bg = document.createElement('div'), box = document.createElement('div');
+    bg.className = 'pk-bg'; box.className = 'pk'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true');
+    const title = labelOf(el) || ''; const h = document.createElement('h2'); h.id = 'pk-h'; h.textContent = title; box.setAttribute('aria-labelledby', 'pk-h'); box.appendChild(h);
+    const cols = document.createElement('div'); cols.className = 'pk-cols'; const band = document.createElement('div'); band.className = 'pk-band'; cols.appendChild(band);
+    b.cols.forEach((c, i) => { if (i && b.sep) { const s = document.createElement('span'); s.className = 'pk-sep'; s.textContent = ':'; s.setAttribute('aria-hidden', 'true'); cols.appendChild(s); } cols.appendChild(c.el); });
+    box.appendChild(cols);
+    const bt = document.createElement('div'); bt.className = 'pk-btns';
+    bt.innerHTML = '<button type="button" class="btn" data-pk="no"></button><button type="button" class="btn pri" data-pk="ok"></button>';
+    bt.firstChild.textContent = t('pk_cancel'); bt.lastChild.textContent = t('pk_ok'); box.appendChild(bt);
+    document.body.appendChild(bg); document.body.appendChild(box);
+    b.cols.forEach(c => c.init());
+    open = { el, bg, box, b };
+    b.cols[0].el.focus({ preventScroll: true });
+    bg.addEventListener('click', () => close());
+    bt.addEventListener('click', e => {
+      const k = e.target.closest('[data-pk]'); if (!k) return;
+      if (k.dataset.pk === 'ok') { const v = String(b.value()); if (el.value !== v) { el.value = v; el.dispatchEvent(new Event('input', { bubbles: true })); el.dispatchEvent(new Event('change', { bubbles: true })); } }
+      close();
+    });
+  }
+  document.addEventListener('keydown', e => {
+    if (open) {
+      if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); close(); return; }
+      if (e.key === 'Enter' && !e.target.closest('button')) { e.preventDefault(); open.box.querySelector('[data-pk=ok]').click(); return; }
+      if (e.key === 'Tab') { const f = [...open.box.querySelectorAll('.pk-wh,button')]; const i = f.indexOf(document.activeElement); e.preventDefault(); f[(i + (e.shiftKey ? -1 : 1) + f.length) % f.length].focus(); }
+      return;
+    }
+    const el = pickable(e.target); if (!okEl(el)) return;
+    const sel = el.tagName === 'SELECT';
+    if ((e.key === ' ' && (sel || true)) || (sel && e.key === 'Enter') || (e.altKey && e.key === 'ArrowDown') || e.key === 'F4') { e.preventDefault(); openFor(el); }
+  }, true);
+  document.addEventListener('mousedown', e => { const el = pickable(e.target); if (okEl(el)) e.preventDefault(); }, true);
+  document.addEventListener('click', e => { const el = pickable(e.target); if (!okEl(el)) return; e.preventDefault(); if (Date.now() - lastOpen > 400) openFor(el); }, true);
+  let t0 = null;
+  document.addEventListener('touchstart', e => { const el = pickable(e.target); t0 = okEl(el) && e.touches.length === 1 ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : null; }, { capture: true, passive: true });
+  document.addEventListener('touchend', e => {
+    const el = pickable(e.target); if (!t0 || !okEl(el)) return; const c = e.changedTouches[0];
+    if (Math.abs(c.clientX - t0.x) < 10 && Math.abs(c.clientY - t0.y) < 10) { e.preventDefault(); openFor(el); } t0 = null;
+  }, { capture: true, passive: false });
+})();
 
 /* ===================== BOOT ===================== */
 (function legacyHash() {
