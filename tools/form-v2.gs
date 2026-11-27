@@ -156,7 +156,7 @@ var WORDING = {
 // ---------- Build ----------
 
 function build(language) {
-  var L = WORDING[langue];
+  var L = WORDING[language];
   var form = FormApp.create(L.title);
 
   form.setDescription(L.intro);
