@@ -657,7 +657,7 @@ en: {
   in_title:'Install Rythmo', in_why:'Opens like an app, and can show notifications.', in_btn:'Install the app',
   in_ios1:'In Safari, tap the Share button (square with an arrow).', in_ios2:'Choose "Add to Home Screen", then "Add".', in_ios3:'Open Rythmo from your Home Screen.',
   in_other:'Browser menu > "Install app" or "Add to Home screen".',
-  n_bed:'Easing into the evening. Bed around {t}?', n_bed_b:'Rythmo', n_checkin:'A quick look back at your day? 30 seconds.', n_water:'A glass of water, if you feel like it.', n_screens:'Maybe put the screens down? Your bed\'s waiting.', n_ignore:'Ignore',
+  n_bed:'Easing into the evening. Bed around {t}?', n_bed_b:'Rythmo', n_checkin:'A quick look back at your day? 30 seconds.', n_water:'A glass of water, if you feel like it.', n_screens:'Maybe put the screens down? Your bed\'s waiting.', n_refresh:'Open Rythmo to refresh your reminders', n_ignore:'Ignore',
   ics_rem_name:'Rythmo - reminders', ics_plan_name:'Rythmo - plan',
   w_glasses:'glasses', w_hint:'Tap a glass when you drink one.', w_edit:'Change goal', w_glass:'Glass {i} of {n}, {s}', w_full:'full', w_empty:'empty', w_less:'One less', w_more:'One more', w_extra:'+{n} over your goal', w_goal_label:'Water goal (glasses a day)',
   ob_step:'Step {a} of {b}', ob_skip:'Skip for now', ob_skip_short:'Skip', ob_back:'Back', ob_next:'Continue', ob_done:'Finish', ob_replay:'Replay the tutorial', set_help:'Help',
@@ -777,7 +777,7 @@ fr: {
   in_title:'Installer Rythmo', in_why:'S\'ouvre comme une app et peut afficher des notifications.', in_btn:'Installer l\'app',
   in_ios1:'Dans Safari, touche le bouton Partager (carré avec une flèche).', in_ios2:'Choisis « Sur l\'écran d\'accueil », puis « Ajouter ».', in_ios3:'Ouvre Rythmo depuis ton écran d\'accueil.',
   in_other:'Menu du navigateur > « Installer l\'application » ou « Ajouter à l\'écran d\'accueil ».',
-  n_bed:'Doucement vers le soir. Dodo vers {t} ?', n_bed_b:'Rythmo', n_checkin:'Un petit bilan de ta journée ? Ça prend 30 secondes.', n_water:'Un verre d\'eau, si ça te dit.', n_screens:'Et si on posait les écrans ? Ton lit t\'attend.', n_ignore:'Ignorer',
+  n_bed:'Doucement vers le soir. Dodo vers {t} ?', n_bed_b:'Rythmo', n_checkin:'Un petit bilan de ta journée ? Ça prend 30 secondes.', n_water:'Un verre d\'eau, si ça te dit.', n_screens:'Et si on posait les écrans ? Ton lit t\'attend.', n_refresh:'Ouvre Rythmo pour actualiser tes rappels', n_ignore:'Ignorer',
   ics_rem_name:'Rythmo - rappels', ics_plan_name:'Rythmo - planning',
   w_glasses:'verres', w_hint:'Touche un verre quand tu en bois un.', w_edit:'Modifier l\'objectif', w_glass:'Verre {i} sur {n}, {s}', w_full:'rempli', w_empty:'vide', w_less:'Un de moins', w_more:'Un de plus', w_extra:'+{n} au-delà de ton objectif', w_goal_label:'Objectif d\'eau (verres par jour)',
   ob_step:'Étape {a} sur {b}', ob_skip:'Passer pour l\'instant', ob_skip_short:'Passer', ob_back:'Retour', ob_next:'Continuer', ob_done:'Terminer', ob_replay:'Revoir le tutoriel', set_help:'Aide',
@@ -1955,10 +1955,49 @@ function computeReminders(days) {
   }
   return out.sort((a, b) => a.at - b.at);
 }
+
+/* ---------- Web Push (phase 2): the Worker sends the reminders even when Rythmo is closed ---------- */
+const VAPID_PUB = 'BJvaiaCOaPlDHRHJmKD1p0lBQJ9CoXmYN-oEArwN1GWNBpNSymv2RAtSNAOilNqpXnbocL4IPnWpKvHvVZ17eIo';
+const PUSH_KEY = 'rythmo.push';
+const pushSupported = () => notifSupported() && 'PushManager' in window && !!RELAY;
+const pushGet = () => { try { return JSON.parse(localStorage.getItem(PUSH_KEY)) || {}; } catch (e) { return {}; } };
+const pushSet = o => { try { localStorage.setItem(PUSH_KEY, JSON.stringify(o)); } catch (e) {} };
+const b64uToBytes = str => Uint8Array.from(atob(str.replace(/-/g, '+').replace(/_/g, '/').padEnd(Math.ceil(str.length / 4) * 4, '=')), c => c.charCodeAt(0));
+function pushPlan() { // at most 40 reminders for the Worker; the last one asks to open the app so the plan is refreshed
+  const all = computeReminders(7), now = Date.now(), list = all.filter(r => r.at.getTime() > now);
+  const cut = list.slice(0, 39), full = list.length <= 39;
+  const out = cut.map(r => ({ id: r.kind + '-' + r.date, at: r.at.getTime(), title: r.title, body: r.body, tag: r.kind }));
+  const seen = {}; out.forEach((r, i) => { if (seen[r.id]) r.id += '-' + (r.at); seen[r.id] = 1; });
+  const last = cut.length ? cut[cut.length - 1].at.getTime() : now;
+  const end = full ? new Date(today().getFullYear(), today().getMonth(), today().getDate() + 6, 12, 0).getTime() : last + 60000;
+  if (end > now) out.push({ id: 'refresh', at: end, title: t('n_refresh'), body: '', tag: 'refresh' });
+  return out;
+}
+async function pushSync(force) {
+  try {
+    if (!pushSupported() || !state.reminders.enabled || notifPerm() !== 'granted') return;
+    const st = pushGet(); if (!st.on) return;
+    const reg = await navigator.serviceWorker.ready; if (!reg.pushManager) return;
+    let sub = await reg.pushManager.getSubscription();
+    if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64uToBytes(VAPID_PUB) });
+    const reminders = pushPlan(), sig = JSON.stringify(reminders);
+    if (!force && st.sig === sig && Date.now() - (st.last || 0) < 6 * 3600000) return;
+    const r = await fetch(RELAY + '/push/subscribe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ subscription: sub.toJSON(), reminders }) });
+    if (r.ok) pushSet({ on: true, sig, last: Date.now() });
+  } catch (e) { /* offline or blocked: in-app reminders still work */ }
+}
+async function pushOff() {
+  try {
+    pushSet({});
+    const reg = await navigator.serviceWorker.getRegistration(); const sub = reg && reg.pushManager && await reg.pushManager.getSubscription();
+    if (sub) { const ep = sub.endpoint; await sub.unsubscribe(); await fetch(RELAY + '/push/unsubscribe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ endpoint: ep }) }); }
+  } catch (e) {}
+}
 let timers = [], schedQ = null;
 function queueSchedule() { clearTimeout(schedQ); schedQ = setTimeout(scheduleInApp, 300); }
 async function scheduleInApp() {
   timers.forEach(clearTimeout); timers = [];
+  pushSync(false);
   if (!state.reminders.enabled || notifPerm() !== 'granted') return;
   let reg = null; try { reg = await navigator.serviceWorker.getRegistration(); } catch (e) {}
   const now = Date.now();
@@ -1978,7 +2017,7 @@ async function enableReminders() { // called ONLY from a tap
   if (perm !== 'granted') { say(t('rm_denied'), true); return; }
   try { await navigator.serviceWorker.register('./sw.js', { scope: './' }); await navigator.serviceWorker.ready; } catch (e) {}
   state.reminders.enabled = true; save(); say(t('rm_on_msg'));
-  // Phase 2 would subscribe to Web Push here, inside this same tap handler (iOS requirement).
+  if (pushSupported()) { pushSet({ on: true }); await pushSync(true); } // still inside the tap handler (iOS requirement)
 }
 /* ---------- .ics export (UTC times, so no VTIMEZONE needed and DST is handled) ---------- */
 const icsEsc = s => String(s).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
@@ -2370,7 +2409,7 @@ const ACT = {
   obreplay: () => { obOn = true; ob = 0; msg = ''; window.scrollTo(0, 0); },
   rmtoggle: v => { if (state.reminders[v]) { state.reminders[v].on = !state.reminders[v].on; save(); } },
   rmon: () => { enableReminders().then(render); },
-  rmoff: () => { state.reminders.enabled = false; save(); say(t('rm_off_msg')); },
+  rmoff: () => { state.reminders.enabled = false; pushOff(); save(); say(t('rm_off_msg')); },
   icsrem: () => { const n = computeReminders(7).length; if (!n) { say(t('rm_none'), true); return; } download('rythmo-rappels.ics', remindersICS(), 'text/calendar;charset=utf-8'); say(t('rm_cal_done', { n })); },
   icsplan: () => { download('rythmo-planning.ics', planICS(), 'text/calendar;charset=utf-8'); say(t('rm_plan_done')); },
   install: () => { if (installEvt) { installEvt.prompt(); installEvt.userChoice.finally(() => { installEvt = null; render(); }); } },
@@ -2660,7 +2699,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
 if (!readHash() && state.classes.length) curDate = firstClassDate();
 try { history.replaceState(null, '', '#' + routeHash()); } catch (e) {}
 /* Test/debug handle (read-only helpers, no data leaves the page). */
-window.Rythmo = { T, MEALS, FREE_IDEAS, computeDay, classesOn, effOv, importICS, calFromICS, applyImport, eventsFromICS, parseICS, key, parseKey, computeReminders, remindersICS, planICS, get state() { return state; } };
+window.Rythmo = { pushPlan, T, MEALS, FREE_IDEAS, computeDay, classesOn, effOv, importICS, calFromICS, applyImport, eventsFromICS, parseICS, key, parseKey, computeReminders, remindersICS, planICS, get state() { return state; } };
 render();
 })();
 </script>

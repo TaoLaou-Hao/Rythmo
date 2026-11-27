@@ -3,7 +3,7 @@
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
 
-// TODO phase 2 (see notifications.md, section 5): Web Push via the Cloudflare Worker (VAPID, D1, cron).
+// Web Push: the Cloudflare Worker sends the reminders (VAPID, D1, cron); see the app's pushSync().
 // When that exists, every push MUST show a notification right away (required on iOS).
 self.addEventListener('push', event => {
   let d = {};
