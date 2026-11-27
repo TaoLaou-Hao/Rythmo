@@ -554,7 +554,12 @@ details.acc>summary{min-height:60px!important}
 (function () {
 'use strict';
 /* ===================== CONFIG ===================== */
-const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSc82fZq4bbi5RvtrHeVOebLYmaa5w0WAXumdykyZkfqkQtn4A/viewform';
+// Feedback form per language. The French form is not created yet: French falls back to the English one.
+const FORM_URLS = {
+  en: 'https://docs.google.com/forms/d/1Ci8n0BRQm5DSsaelv0hWqeNUBzUyXChwZLljUhg1cfs/viewform',
+  fr: '',   // paste the French form link here once it exists
+};
+const formUrl = () => FORM_URLS[state.lang] || FORM_URLS.en;
 const RELAY = 'https://rythmo.tao-laou-hao.workers.dev';
 const THEMES = ['horizon', 'nuit', 'doux', 'clair'];
 const DEFAULT_THEME = window.RYTHMO_DEFAULT_THEME || 'auto', DAY_THEME = 'horizon'; // Auto shows DAY_THEME by day
@@ -1220,7 +1225,7 @@ function nav() {
   return '<nav class="tabs" aria-label="' + esc(t('nav_main')) + '"><div style="--n:' + TABS.length + '">' + TABS.map(id => '<button data-act="tab" data-v="' + esc(id) + '"' + (tab === id ? ' aria-current="page"' : '') + '>' + ICON[id] + '<span>' + esc(lab[id]) + '</span></button>').join('') + '</div></nav>';
 }
 function fbCard() {
-  return '<section class="fb"><a class="btn full" href="' + esc(FORM_URL) + '" target="_blank" rel="noopener">' + esc(t('fb_title')) + ' <span aria-hidden="true">↗</span></a><p class="hint" style="margin:4px 0 0">' + esc(t('fb_text')) + '</p></section>';
+  return '<section class="fb"><a class="btn full" href="' + esc(formUrl()) + '" target="_blank" rel="noopener">' + esc(t('fb_title')) + ' <span aria-hidden="true">↗</span></a><p class="hint" style="margin:4px 0 0">' + esc(t('fb_text')) + '</p></section>';
 }
 function footer() { return '<p class="note">' + esc(t('footer')) + (storageOk ? '' : '<br>' + esc(t('nostore'))) + '</p>'; }
 function opts(arr, cur, label) {
