@@ -364,6 +364,8 @@ button.block:hover{border-color:var(--c)}
 .nowcard .ttl{font-size:1.25rem;line-height:1.2}
 .nowcard .sub{color:var(--muted)}
 .nextcard{margin:0 0 var(--s-3);padding:0 4px}
+.exrow{display:flex;align-items:center;gap:8px;margin:0 0 var(--s-2)}
+.badge{font-size:var(--fs-small);font-weight:600;padding:2px 10px;border-radius:var(--r-pill);background:var(--surface);border:1px solid var(--line-strong)}
 h2.rest{font:600 1rem var(--f-body);color:var(--muted);margin:var(--s-3) 0 var(--s-2)}
 .daytoggle{margin:var(--s-2) 0 var(--s-3)}
 .wline{margin-bottom:0}
@@ -570,17 +572,17 @@ en: {
   ch_bed:'Lights out by {t}', ch_water:'Drink {n} glasses of water', ch_walk:'Take a 10-minute walk between two classes or after dinner',
   ch_breakfast:'Eat breakfast before your first class', ch_screens:'Put your phone away 30 minutes before lights out', ch_stretch:'Stretch for 5 minutes before bed',
   empty_title:'Add your classes to get a plan', empty_text:'Classes first, everything else fits around them.',
-  example_cta:'Try an example week', example_note:'Example week. Replace it with your own classes in the Classes tab.',
-  ci_title:'Evening check-in', ci_sub:'Takes 20 seconds. Whenever you like.', ci_sleep:'Hours slept last night', ci_quality:'Sleep quality', ci_energy:'Energy today',
+  example_cta:'Try an example week', example_badge:'Example', example_add:'Add my classes',
+  ci_title:'Evening check-in', ci_sub:'About 20 seconds.', ci_sleep:'Hours slept last night', ci_quality:'Sleep quality', ci_energy:'Energy today',
   low:'Low', high:'High', ci_save:'Save check-in', ci_update:'Update check-in', ci_saved:'Saved. See you tomorrow evening.',
   ci_week:'Your last 7 days', ci_goal:'Dashed line: your sleep need ({h} h)', st_sleep:'Avg sleep (h)', st_energy:'Avg energy', st_count:'Check-ins',
-  in_short:'You sleep about {d} h less than you need. The bedtime in your plan can help.', in_ok:'You are close to the sleep you need.', in_none:'Two check-ins and you will see your trend.',
+  in_short:'You sleep about {d} h less than you need. The bedtime in your plan can help.', in_ok:'You are close to the sleep you need.', 
   fb_title:'Help us improve Rythmo', fb_text:'3 minutes, anonymous. Your answers decide what we build next.', fb_cta:'Open the feedback form',
-  sc_title:'Your classes', sc_sub:'Rythmo builds your day around these classes.',
-  sc_import:'Import a calendar file (.ics)', sc_import_hint:'Export it from your school calendar or calendar app. It replaces the classes below.',
+  sc_title:'Your classes', 
+  sc_import:'Import a calendar file (.ics)', sc_import_hint:'It replaces the classes below.',
   sc_import_ok:'{n} classes imported.', sc_import_none:'No timed events found in that file.', sc_import_err:'Could not read that file.',
   qs_title:'Your usual school day (30 seconds)', qs_start:'First class starts', qs_end:'Last class ends', qs_btn:'Build my plan', qs_or:'or', qs_detail:'Enter my exact timetable instead', qs_am:'Morning classes', qs_pm:'Afternoon classes',
-  lk_title:'Import from a calendar link', lk_btn:'Import my classes', lk_busy:'Reading your calendar…', lk_fail:'Could not read that link. Check it is the iCal (.ics) link of your calendar, or add your classes by hand.', lk_empty:'No classes found in that calendar.', lk_note:'One link per line if you have several calendars. The link is read through the Rythmo relay and is never stored.',
+  lk_title:'Import from a calendar link', lk_btn:'Import my classes', lk_busy:'Reading your calendar…', lk_fail:'Could not read that link. Check it is the iCal (.ics) link of your calendar, or add your classes by hand.', lk_empty:'No classes found in that calendar.', lk_note:'Link used for the import, not stored. One link per line.',
   sc_url_ph:'https://… or webcal://…', sc_url_bad:'That does not look like a calendar link. It should start with https:// or webcal://.',
   sc_add:'Add a class', sc_name:'Class name', sc_name_ph:'e.g. Statistics', sc_start:'Starts', sc_end:'Ends', sc_days:'Days', sc_add_btn:'Add class',
   sc_added:'Class added.', sc_list:'Your classes', sc_none:'No classes yet.', sc_remove:'Remove', sc_clear:'Remove all classes', sc_default:'Class',
@@ -600,7 +602,7 @@ en: {
   sum_bed:'bed by {t}', sum_trv:'commute {n}', sum_water:'{n} glasses a day', sum_water_one:'1 glass a day', sum_auto:'auto night', sum_data:'export, tutorial, erase', set_data_help:'Data and help', set_export_short:'Export data', set_commute_short:'Commute (one way)',
   ci_remind:'Remind me every evening',
   in_ios_short:'Safari > Share > "Add to Home Screen", then open Rythmo from its icon.',
-  st_now:'Now', until_cap:'Until {t}', next_at:'Next activity at {t}', next_lbl:'Next · {t}', rest_title:'The rest of your day', see_all:'See my whole day', reduce_day:'Collapse the day', st_next:'Next', st_until:'until {t}', st_free:'Free time', st_sleep_time:'Sleep time', st_first:'First class', wake_tmr:'wake-up {t}',
+  st_now:'Now', until_cap:'Until {t}', until_low:'until {t}', next_at:'Next activity at {t}', next_lbl:'Next · {t}', rest_title:'The rest of your day', see_all:'See my whole day', reduce_day:'Collapse the day', st_next:'Next', st_until:'until {t}', st_free:'Free time', st_sleep_time:'Sleep time', st_first:'First class', wake_tmr:'wake-up {t}',
   tl_label:'Your day', past_n:'{n} past blocks', past_n_one:'1 past block', sug_short:'suggestion', sug_never:'Stop suggesting this',
   w_count_short:'{w} / {g}', w_done:'Goal for today reached', w_first:'A glass?', w_less_aria:'One glass less ({w} of {g})', w_more_aria:'Add a glass ({w} of {g})', w_explain:'On Today, tap + when you drink a glass.',
   w_count:'{w} / {g} glasses', w_hint_short:'tap a glass when you drink one', act_notes:'Notes', act_todos:'To-do', act_todos_n:'To-do ({n})', act_day:'Edit this day',
@@ -620,21 +622,21 @@ en: {
   imp_card:'Imported calendar', imp_until:'Until {d}.', imp_exact:'Each date shows its real classes: cancelled sessions, one-off events and alternate weeks stay exact. Import again to refresh.', imp_remove:'Remove the imported calendar', imp_removed:'Imported calendar removed.',
   imp_legacy:'Did these classes come from an older import? Import your calendar again so each week follows the real dates (cancelled sessions, alternate weeks).', imp_hint_ok:'Got it',
   sc_list_weekly:'Classes every week (added by hand)', sc_none_weekly:'None. Your imported calendar is used.',
-  de_school:'It is a class at school (adds the commute)', de_add_btn:'Add',
+  de_school:'It is a class at school (adds the commute)', de_add_btn:'Add', qe_type:'Type of slot', qe_type_class:'Class at school', qe_type_appt:'Other activity', qe_type_h:'Another activity (sport, club, work, appointment…) blocks its slot, with no travel to or from school.', appt_notrip:'other activity, no travel',
   nt_title:'Notes & to-do', nt_empty:'Nothing on the list. That\'s fine too.', nt_add_label:'New to-do', nt_add_ph:'e.g. Print the report', nt_add:'Add', nt_clear:'Remove done items', nt_note:'Free note', nt_note_ph:'Anything you want to remember…', nt_note_hint:'Saved on this device when you leave the field.',
   hp_intro:'Where do I find my calendar link? Pick your calendar:',
   hp_g_t:'Google Calendar', hp_g_1:'On a computer, open calendar.google.com (the phone app does not show the link).', hp_g_2:'Settings (gear) > Settings, then click your calendar under "Settings for my calendars".', hp_g_3:'Scroll to "Integrate calendar" and copy "Secret address in iCal format".', hp_g_4:'Paste it above. Keep it private: anyone with it can read the calendar.',
   hp_a_t:'Apple Calendar (iCloud)', hp_a_1:'iPhone: open Calendar, tap Calendars, then the (i) next to your calendar.', hp_a_2:'Turn on "Public Calendar", then tap "Share Link…" > Copy.', hp_a_3:'Mac: right-click the calendar > Share Calendar > Public Calendar, then copy the link.', hp_a_4:'Paste it above (a webcal:// link works). Only iCloud calendars can be shared this way.',
   hp_o_t:'Outlook / Microsoft 365', hp_o_1:'Open outlook.com (or Outlook on the web) on a computer.', hp_o_2:'Settings > Calendar > Shared calendars, then "Publish a calendar".', hp_o_3:'Pick your calendar and "Can view all details", then Publish.', hp_o_4:'Copy the ICS link and paste it above. School accounts may have publishing turned off: then download an .ics file instead.',
   hp_e_t:'School ENT, Hyperplanning, ADE', hp_e_1:'Open your timetable in the school portal (ENT, Hyperplanning, ADE, Aurion…).', hp_e_2:'Look for an icon or link named iCal, ICS, Export, Subscribe or Synchronise (Hyperplanning: calendar icon "export"; ADE: "Export agenda" > generate URL).', hp_e_3:'Copy the link (https:// or webcal://) and paste it above.', hp_e_4:'If you only get a file, use "Import a calendar file" below. Names vary from school to school.',
-  rm_title:'Reminders', rm_intro:'Gentle reminders, never guilt-tripping, never after midnight.',
+  rm_title:'Reminders', 
   rm_bed:'Bedtime', rm_bed_h:'A gentle nudge before lights out.', rm_checkin:'Evening check-in', rm_checkin_h:'30 seconds to look back at your day.',
   rm_water:'Water', rm_water_h:'Three light reminders during the day.', rm_screens:'Screens off before sleep', rm_screens_h:'A hint to put the phone down.',
   rm_when:'When', rm_at:'At', rm_before:'{n} min before lights out', rm_never:'Never after midnight. You can switch everything off here.',
-  rm_cal_t:'Most reliable: your calendar', rm_cal_h:'Next 7 days in your phone calendar, even when Rythmo is closed. Export again if your plan changes.',
+  rm_cal_t:'In your calendar', rm_cal_h:'Next 7 days in your phone calendar, even when Rythmo is closed. Export again if your plan changes.',
   rm_cal_btn:'Add my reminders to my calendar (.ics)', rm_plan_btn:'Export my 7-day plan (.ics)', rm_cal_done:'{n} reminders exported. Open the file to add them to your calendar.', rm_plan_done:'Plan exported. Open the file to add it to your calendar.', rm_none:'No reminder is switched on.',
   rm_app_t:'Notifications (app open)', rm_app_h:'Only while Rythmo is open. Closed app: use the calendar above.',
-  rm_app_btn:'Allow notifications', rm_app_on:'Notifications are on while the app is open.', rm_app_off_btn:'Turn notifications off', rm_on_msg:'Done. You will get notifications while Rythmo is open.', rm_off_msg:'Notifications are off.',
+  rm_app_btn:'Allow notifications', rm_why:'Rythmo can remind you to wind down and do your evening check-in. Nothing pushy, and you can stop whenever you like.', rm_app_on:'Notifications are on while the app is open.', rm_app_off_btn:'Turn notifications off', rm_on_msg:'Done. You will get notifications while Rythmo is open.', rm_off_msg:'Notifications are off.',
   rm_denied:'Blocked for this site: allow them in your browser or phone settings, or use the calendar.',
   rm_unsupported:'This browser cannot show notifications. The calendar option works everywhere.',
   rm_ios_first:'On iPhone, add Rythmo to your Home Screen first (below).',
@@ -690,17 +692,17 @@ fr: {
   ch_bed:'Éteindre les lumières avant {t}', ch_water:"Boire {n} verres d'eau", ch_walk:'Faire 10 minutes de marche entre deux cours ou après le dîner',
   ch_breakfast:'Prendre un petit-déjeuner avant ton premier cours', ch_screens:"Ranger ton téléphone 30 minutes avant l'extinction des feux", ch_stretch:'Faire 5 minutes d’étirements avant de dormir',
   empty_title:'Ajoute tes cours pour avoir un plan', empty_text:"Tes cours d'abord, le reste s'organise autour.",
-  example_cta:'Essayer une semaine exemple', example_note:"Semaine exemple. Remplace-la par tes cours dans l'onglet Cours.",
-  ci_title:'Bilan du soir', ci_sub:'Ça prend 20 secondes. Quand tu veux.', ci_sleep:"Heures dormies cette nuit", ci_quality:'Qualité du sommeil', ci_energy:"Énergie aujourd'hui",
+  example_cta:'Essayer une semaine exemple', example_badge:'Exemple', example_add:'Ajouter mes cours',
+  ci_title:'Bilan du soir', ci_sub:'Environ 20 secondes.', ci_sleep:"Heures dormies cette nuit", ci_quality:'Qualité du sommeil', ci_energy:"Énergie aujourd'hui",
   low:'Faible', high:'Haute', ci_save:'Enregistrer le bilan', ci_update:'Mettre à jour le bilan', ci_saved:'Enregistré. À demain soir.',
   ci_week:'Tes 7 derniers jours', ci_goal:'Ligne pointillée : ton besoin de sommeil ({h} h)', st_sleep:'Sommeil moy. (h)', st_energy:'Énergie moy.', st_count:'Bilans',
-  in_short:"Tu dors environ {d} h de moins que ton besoin. L'heure de coucher de ton plan peut aider.", in_ok:'Tu es proche du sommeil dont tu as besoin.', in_none:'Deux bilans et tu verras ta tendance.',
+  in_short:"Tu dors environ {d} h de moins que ton besoin. L'heure de coucher de ton plan peut aider.", in_ok:'Tu es proche du sommeil dont tu as besoin.', 
   fb_title:'Aide-nous à améliorer Rythmo', fb_text:'3 minutes, anonyme. Tes réponses décident de la suite.', fb_cta:'Ouvrir le formulaire',
-  sc_title:'Tes cours', sc_sub:'Rythmo construit ta journée autour de ces cours.',
-  sc_import:'Importer un fichier calendrier (.ics)', sc_import_hint:"Exporte-le depuis l'agenda de ton école ou ton appli d'agenda. Il remplace les cours ci-dessous.",
+  sc_title:'Tes cours', 
+  sc_import:'Importer un fichier calendrier (.ics)', sc_import_hint:'Il remplace les cours ci-dessous.',
   sc_import_ok:'{n} cours importés.', sc_import_none:'Aucun événement horaire trouvé dans ce fichier.', sc_import_err:'Impossible de lire ce fichier.',
   qs_title:'Ta journée de cours type (30 secondes)', qs_start:'Début du premier cours', qs_end:'Fin du dernier cours', qs_btn:'Créer mon plan', qs_or:'ou', qs_detail:'Entrer mon emploi du temps exact', qs_am:'Cours du matin', qs_pm:'Cours de l\'après-midi',
-  lk_title:'Importer depuis un lien d\'agenda', lk_btn:'Importer mes cours', lk_busy:'Lecture de ton agenda…', lk_fail:'Impossible de lire ce lien. Vérifie que c\'est le lien iCal (.ics) de ton agenda, ou ajoute tes cours à la main.', lk_empty:'Aucun cours trouvé dans cet agenda.', lk_note:'Un lien par ligne si tu as plusieurs agendas. Le lien est lu via le relais de Rythmo et n\'est jamais enregistré.',
+  lk_title:'Importer depuis un lien d\'agenda', lk_btn:'Importer mes cours', lk_busy:'Lecture de ton agenda…', lk_fail:'Impossible de lire ce lien. Vérifie que c\'est le lien iCal (.ics) de ton agenda, ou ajoute tes cours à la main.', lk_empty:'Aucun cours trouvé dans cet agenda.', lk_note:'Lien utilisé pour l\'import, non enregistré. Un lien par ligne.',
   sc_url_ph:'https://… ou webcal://…', sc_url_bad:'Ce lien ne ressemble pas à un lien d\'agenda. Il doit commencer par https:// ou webcal://.',
   sc_add:'Ajouter un cours', sc_name:'Nom du cours', sc_name_ph:'ex. Statistiques', sc_start:'Début', sc_end:'Fin', sc_days:'Jours', sc_add_btn:'Ajouter le cours',
   sc_added:'Cours ajouté.', sc_list:'Tes cours', sc_none:'Aucun cours pour le moment.', sc_remove:'Retirer', sc_clear:'Retirer tous les cours', sc_default:'Cours',
@@ -720,7 +722,7 @@ fr: {
   sum_bed:'coucher ≤ {t}', sum_trv:'trajet {n}', sum_water:'{n} verres par jour', sum_water_one:'1 verre par jour', sum_auto:'nuit auto', sum_data:'export, tutoriel, effacer', set_data_help:'Données et aide', set_export_short:'Exporter', set_commute_short:'Trajet (aller)',
   ci_remind:'Me le rappeler chaque soir',
   in_ios_short:'Safari > Partager > « Sur l\'écran d\'accueil », puis ouvre Rythmo depuis l\'icône.',
-  st_now:'Maintenant', until_cap:'Jusqu\'à {t}', next_at:'Prochaine activité à {t}', next_lbl:'Ensuite · {t}', rest_title:'Le reste de ta journée', see_all:'Voir toute ma journée', reduce_day:'Réduire la journée', st_next:'Ensuite', st_until:'jusqu\'à {t}', st_free:'Temps libre', st_sleep_time:'Heure de dormir', st_first:'Premier cours', wake_tmr:'réveil {t}',
+  st_now:'Maintenant', until_cap:'Jusqu\'à {t}', until_low:'jusqu\'à {t}', next_at:'Prochaine activité à {t}', next_lbl:'Ensuite · {t}', rest_title:'Le reste de ta journée', see_all:'Voir toute ma journée', reduce_day:'Réduire la journée', st_next:'Ensuite', st_until:'jusqu\'à {t}', st_free:'Temps libre', st_sleep_time:'Heure de dormir', st_first:'Premier cours', wake_tmr:'réveil {t}',
   tl_label:'Ta journée', past_n:'{n} blocs passés', past_n_one:'1 bloc passé', sug_short:'suggestion', sug_never:'Ne plus me le proposer',
   w_count_short:'{w} / {g}', w_done:'Objectif du jour atteint', w_first:'Un verre ?', w_less_aria:'Un verre de moins ({w} sur {g})', w_more_aria:'Ajouter un verre ({w} sur {g})', w_explain:'Dans Aujourd\'hui, touche + quand tu bois un verre.',
   w_count:'{w} / {g} verres', w_hint_short:'touche un verre quand tu en bois un', act_notes:'Notes', act_todos:'À faire', act_todos_n:'À faire ({n})', act_day:'Modifier ce jour',
@@ -740,21 +742,21 @@ fr: {
   imp_card:'Agenda importé', imp_until:'Jusqu\'au {d}.', imp_exact:'Chaque date affiche ses vrais cours : séances annulées, événements ponctuels et semaines alternées restent exacts. Réimporte pour mettre à jour.', imp_remove:'Retirer l\'agenda importé', imp_removed:'Agenda importé retiré.',
   imp_legacy:'Ces cours viennent d\'un ancien import ? Réimporte ton agenda pour que chaque semaine suive les vraies dates (séances annulées, semaines alternées).', imp_hint_ok:'Compris',
   sc_list_weekly:'Cours chaque semaine (ajoutés à la main)', sc_none_weekly:'Aucun. Ton agenda importé est utilisé.',
-  de_school:'C\'est un cours à l\'école (ajoute le trajet)', de_add_btn:'Ajouter',
+  de_school:'C\'est un cours à l\'école (ajoute le trajet)', de_add_btn:'Ajouter', qe_type:'Type de créneau', qe_type_class:'Cours à l\'école', qe_type_appt:'Autre activité', qe_type_h:'Une autre activité (sport, club, travail, rendez-vous…) bloque son créneau, sans trajet vers ou depuis l\'école.', appt_notrip:'autre activité, sans trajet',
   nt_title:'Notes et à faire', nt_empty:'Rien sur la liste. C\'est bien aussi.', nt_add_label:'Nouvelle chose à faire', nt_add_ph:'ex. Imprimer le rapport', nt_add:'Ajouter', nt_clear:'Retirer ce qui est fait', nt_note:'Note libre', nt_note_ph:'Ce que tu veux garder en tête…', nt_note_hint:'Enregistrée sur cet appareil quand tu quittes le champ.',
   hp_intro:'Où trouver le lien de ton agenda ? Choisis ton calendrier :',
   hp_g_t:'Google Agenda', hp_g_1:'Sur un ordinateur, ouvre calendar.google.com (l\'appli mobile n\'affiche pas le lien).', hp_g_2:'Paramètres (roue dentée) > Paramètres, puis clique sur ton agenda sous « Paramètres de mes agendas ».', hp_g_3:'Descends à « Intégrer l\'agenda » et copie l\'« Adresse secrète au format iCal ».', hp_g_4:'Colle-la ci-dessus. Garde-la pour toi : elle donne accès à ton agenda.',
   hp_a_t:'Calendrier Apple (iCloud)', hp_a_1:'iPhone : ouvre Calendrier, touche Calendriers, puis le (i) à côté de ton calendrier.', hp_a_2:'Active « Calendrier public », puis touche « Partager le lien… » > Copier.', hp_a_3:'Mac : clic droit sur le calendrier > Partager le calendrier > Calendrier public, puis copie le lien.', hp_a_4:'Colle-le ci-dessus (un lien webcal:// marche). Seuls les calendriers iCloud se partagent ainsi.',
   hp_o_t:'Outlook / Microsoft 365', hp_o_1:'Ouvre outlook.com (ou Outlook sur le web) sur un ordinateur.', hp_o_2:'Paramètres > Calendrier > Calendriers partagés, puis « Publier un calendrier ».', hp_o_3:'Choisis ton calendrier et « Peut afficher tous les détails », puis Publier.', hp_o_4:'Copie le lien ICS et colle-le ci-dessus. Les comptes d\'école ont parfois la publication désactivée : télécharge alors un fichier .ics.',
   hp_e_t:'ENT de l\'école, Hyperplanning, ADE', hp_e_1:'Ouvre ton emploi du temps sur le portail de l\'école (ENT, Hyperplanning, ADE, Aurion…).', hp_e_2:'Cherche une icône ou un lien iCal, ICS, Exporter, S\'abonner ou Synchroniser (Hyperplanning : icône calendrier « export » ; ADE : « Export agenda » > générer l\'URL).', hp_e_3:'Copie le lien (https:// ou webcal://) et colle-le ci-dessus.', hp_e_4:'Si tu n\'obtiens qu\'un fichier, utilise « Importer un fichier calendrier » ci-dessous. Les noms varient selon les écoles.',
-  rm_title:'Rappels', rm_intro:'Des rappels doux, jamais culpabilisants, jamais après minuit.',
+  rm_title:'Rappels', 
   rm_bed:'Coucher', rm_bed_h:'Un petit signal avant l\'extinction des feux.', rm_checkin:'Bilan du soir', rm_checkin_h:'30 secondes pour faire le point sur ta journée.',
   rm_water:'Eau', rm_water_h:'Trois petits rappels dans la journée.', rm_screens:'Écrans éteints avant de dormir', rm_screens_h:'Une idée pour poser le téléphone.',
   rm_when:'Quand', rm_at:'À', rm_before:'{n} min avant l\'extinction', rm_never:'Jamais après minuit. Tu peux tout couper ici.',
-  rm_cal_t:'Le plus fiable : ton agenda', rm_cal_h:'Les 7 prochains jours dans l\'agenda du téléphone, même app fermée. Ré-exporte si ton planning change.',
+  rm_cal_t:'Dans ton agenda', rm_cal_h:'Les 7 prochains jours dans l\'agenda du téléphone, même app fermée. Ré-exporte si ton planning change.',
   rm_cal_btn:'Ajouter mes rappels à mon calendrier (.ics)', rm_plan_btn:'Exporter mon planning, 7 jours (.ics)', rm_cal_done:'{n} rappels exportés. Ouvre le fichier pour les ajouter à ton agenda.', rm_plan_done:'Planning exporté. Ouvre le fichier pour l\'ajouter à ton agenda.', rm_none:'Aucun rappel n\'est activé.',
   rm_app_t:'Notifications (app ouverte)', rm_app_h:'Seulement quand Rythmo est ouvert. App fermée : utilise l\'agenda ci-dessus.',
-  rm_app_btn:'Autoriser les notifications', rm_app_on:'Notifications activées pendant que l\'app est ouverte.', rm_app_off_btn:'Couper les notifications', rm_on_msg:'C\'est fait. Tu recevras des notifications pendant que Rythmo est ouvert.', rm_off_msg:'Notifications coupées.',
+  rm_app_btn:'Autoriser les notifications', rm_why:'Rythmo peut te rappeler de te détendre le soir et de faire ton bilan. Rien d\'insistant, et tu peux arrêter quand tu veux.', rm_app_on:'Notifications activées pendant que l\'app est ouverte.', rm_app_off_btn:'Couper les notifications', rm_on_msg:'C\'est fait. Tu recevras des notifications pendant que Rythmo est ouvert.', rm_off_msg:'Notifications coupées.',
   rm_denied:'Bloquées pour ce site : réautorise-les dans les réglages du navigateur ou du téléphone, ou utilise l\'agenda.',
   rm_unsupported:'Ce navigateur ne peut pas afficher de notifications. L\'option agenda marche partout.',
   rm_ios_first:'Sur iPhone, ajoute d\'abord Rythmo à l\'écran d\'accueil (ci-dessous).',
@@ -871,7 +873,7 @@ function sanitize(s) {
   if (!HHMM.test(out.reminders.checkin.time)) out.reminders.checkin.time = '21:30';
   const okDays = d => Array.isArray(d) ? d.map(Number).filter(n => n >= 0 && n <= 6) : [];
   out.classes = (Array.isArray(out.classes) ? out.classes : []).filter(c => isObj(c) && HHMM.test(c.start) && HHMM.test(c.end))
-    .map(c => ({ id: String(c.id || uid()), title: String(c.title || '').slice(0, 40), start: c.start, end: c.end, days: okDays(c.days), origin: ['manual', 'legacy', 'sample'].includes(c.origin) ? c.origin : 'manual' }));
+    .map(c => Object.assign({ id: String(c.id || uid()), title: String(c.title || '').slice(0, 40), start: c.start, end: c.end, days: okDays(c.days), origin: ['manual', 'legacy', 'sample'].includes(c.origin) ? c.origin : 'manual' }, c.school === false ? { school: false } : {}));
   out.cal = cleanCal(out.cal);
   out.rules = cleanRules(out.rules);
   out.tasks = (Array.isArray(out.tasks) ? out.tasks : []).filter(k => isObj(k) && +k.dur > 0)
@@ -1005,7 +1007,7 @@ function classesOn(date) {
   if (ov.kind === 'work' && ov.work) out.push({ id: 'work', title: ov.work.label || t('work_default'), s: toMin(ov.work.start), e: toMin(ov.work.end), src: 'work' });
   else if (ov.kind !== 'off') {
     const rm = ov.remove || {}, dk = key(date), cal = state.cal;
-    state.classes.forEach(c => { if (c.days.includes(wd) && !rm[c.id]) out.push({ id: c.id, title: c.title, s: toMin(c.start), e: toMin(c.end), src: 'pattern', school: true }); });
+    state.classes.forEach(c => { if (c.days.includes(wd) && !rm[c.id]) out.push({ id: c.id, title: c.title, s: toMin(c.start), e: toMin(c.end), src: 'pattern', school: c.school !== false }); });
     // imported calendar: that date's real events (exceptions, one-off events and alternate weeks stay exact)
     if (cal && cal.days[dk]) cal.days[dk].forEach(c => { if (!rm[c.id]) out.push({ id: c.id, title: c.title, s: toMin(c.start), e: toMin(c.end), src: 'ics', school: true }); });
   }
@@ -1185,6 +1187,7 @@ const KIND = { appt: 'class', wake: 'sleep', bed: 'sleep', wind: 'sleep', meal: 
 const ICK = { free: 'free', appt: 'task', wake: 'wake', bed: 'sleep', wind: 'wind', meal: 'meal', class: 'class', travel: 'travel', sport: 'sport', task: 'task', morning: 'free' };
 const SUGGEST = { meal: 1, sport: 1, morning: 1, task: 1 };
 
+let qeType = 'class';
 let msgAt = null, openSec = {}, ruleEditId = null, qeRows = null, qeAdded = [], qeConfirm = null;
 let tab = 'plan', curDate = today(), draft = null, msg = '', msgErr = false, resetArm = false, busy = false, scrollTask = false;
 const TABS = ['plan', 'week', 'checkin', 'settings'];
@@ -1219,7 +1222,7 @@ function icsHelp() {
   return '<div class="helps"><p class="hint" style="margin:0">' + esc(t('hp_intro')) + '</p>' + p('hp_g', 4) + p('hp_a', 4) + p('hp_o', 4) + p('hp_e', 4) + '</div>';
 }
 function fileImport() {
-  return '<div><label class="btn full" for="ics">' + esc(t('sc_import')) + '</label><input id="ics" class="sr" type="file" accept=".ics,text/calendar"><p class="hint" style="margin-top:6px">' + esc(t('sc_import_hint')) + '</p>' + msgP('link') + '</div>';
+  return '<div><label class="btn full" for="ics">' + esc(t('sc_import')) + '</label><input id="ics" class="sr" type="file" accept=".ics,text/calendar"><p class="hint" style="margin-top:6px"><b>' + esc(t('sc_import_hint')) + '</b></p>' + msgP('link') + '</div>';
 }
 function travelSel(id) {
   return '<label class="f" for="' + esc(id) + '">' + esc(t('trv_label')) + '<select id="' + esc(id) + '">' + opts(COMMUTES, state.settings.commute, v => fmtMin(v)) + '</select><span class="hint">' + esc(t('trv_hint')) + '</span></label>';
@@ -1315,7 +1318,8 @@ function nowNextHtml(P) {
     else { title = t('st_free'); if (c.nxt) sub = t('next_at', { t: fmt(c.nxt.t) }); }
     if (c.nxt) {
       const d = durOf(c.nxt);
-      nx = nextLine(c.cur ? t('next_lbl', { t: fmt(c.nxt.t) }) : t('st_next'), c.nxt.title + (d ? ' · ' + fmtMin(d) : ''));
+      const sameTime = !c.cur || c.nxt.t === c.cur.t + durOf(c.cur);  // the time is already said above
+      nx = nextLine(sameTime ? t('st_next') : t('next_lbl', { t: fmt(c.nxt.t) }), c.nxt.title + (d ? ' · ' + fmtMin(d) : ''));
     }
   }
   return '<section class="nowcard" aria-label="' + esc(t('st_now')) + '"><span class="lbl">' + esc(t('st_now')) + '</span><b class="ttl">' + esc(title) + '</b>' + (sub ? '<span class="sub">' + esc(sub) + '</span>' : '') + '</section>' + nx;
@@ -1329,7 +1333,7 @@ function dayHeader(P, date, isToday) {
 function rowHtml(it, dk, past) {
   const kind = KIND[it.type] || 'free', sug = SUGGEST[it.type];
   const time = (it.soft ? '~' : '') + fmt(it.t);
-  const extra = it.end ? '<small class="time">' + fmt(it.t) + '–' + fmt(it.end) + '</small>' : it.soft ? '<small>' + esc(t('sug_short')) + '</small>' : '';
+  const extra = it.end ? '<small class="time">' + (it.type === 'free' ? esc(t('until_low', { t: fmt(it.end) })) : fmt(it.t) + '–' + fmt(it.end)) + '</small>' : it.soft ? '<small>' + esc(t('sug_short')) + '</small>' : '';
   const inner = '<span class="tm time">' + time + (past ? '<span class="sr"> (' + esc(t('past')) + ')</span>' : '') + '</span><span class="ic">' + SVG(BI[ICK[it.type]] || BI.free) + '</span><span class="tt"><span class="ttl">' + esc(it.title) + '</span>' + extra + '</span>';
   const cls = 'row block ' + kind + ' t-' + it.type + (sug ? ' suggestion' : '') + (it.moved ? ' moved' : '') + (it.type === 'class' || it.type === 'appt' ? ' tall' : '');
   if (it.type === 'travel') return '<div class="' + cls + '">' + inner + '</div>';
@@ -1372,7 +1376,7 @@ function timeline(P, dk, isToday, full) {
 /* F1: one compact water row under the action buttons: count, decorative drops, - / + (44 px, labelled) */
 function waterLine(k) {
   const g = state.settings.waterGoal, w = state.water[k] || 0;
-  let h = '<section class="wline" aria-labelledby="w-t"><p class="wl-top"><b id="w-t">' + esc(t('water')) + '</b> <span aria-live="polite">' + esc(t('w_count', { w, g })) + '</span> <span class="hint">· ' + esc(t('w_hint_short')) + '</span></p><div class="glasses" role="group" aria-labelledby="w-t">';
+  let h = '<section class="wline" aria-labelledby="w-t"><p class="wl-top"><b id="w-t">' + esc(t('water')) + '</b> <span aria-live="polite">' + esc(t('w_count', { w, g })) + '</span> ' + (Object.values(state.water).some(v => v > 0) ? '' : '<span class="hint">· ' + esc(t('w_hint_short')) + '</span>') + '</p><div class="glasses" role="group" aria-labelledby="w-t">';
   for (let i = 1; i <= g; i++) h += '<button class="glass' + (i <= w ? ' on' : '') + '" data-act="glass" data-v="' + i + '" aria-pressed="' + (i <= w) + '" aria-label="' + esc(t('w_glass', { i, n: g, s: i <= w ? t('w_full') : t('w_empty') })) + '">' + GLASS + '</button>';
   return h + '</div></section>';
 }
@@ -1396,7 +1400,7 @@ function screenPlan() {
   h += '<p class="tipline"><b>' + esc(t('tip_label')) + '</b> ' + esc(challengeFor(date, P).text) + '</p>';
   if (isToday && nm >= Math.min(1200, P.bed - 90) && nm < P.bed - 30 && !state.checkins[k]) h += '<button class="banner" data-act="tab" data-v="checkin">' + SVG(BI.sleep) + '<span>' + esc(t('eve_banner')) + '</span><span aria-hidden="true">›</span></button>';
   if (!storageOk) h += '<div class="warn">' + esc(t('nostore')) + '</div>';
-  if (state.sample) h += '<p class="hint">' + esc(t('example_note')) + '</p>';
+  if (state.sample) h += '<p class="hint exrow"><span class="badge">' + esc(t('example_badge')) + '</span> <button class="tbtn" data-act="tab" data-v="courses">' + esc(t('example_add')) + '</button></p>';
   if (P.unplaced.length) h += '<div class="warn">' + esc(t('tk_none', { n: P.unplaced.join(', ') })) + '</div>';
   if (P.clash.length) h += '<div class="warn">' + esc(t('todo_clash', { n: P.clash.map(x => x.text).join(', ') })) + '</div>';
   if (P.short) h += '<div class="warn">' + esc(t('short_night', { h: fmtH(P.hours) })) + '</div>';
@@ -1494,6 +1498,7 @@ function mealPanel(it, date) {
 const qeDefault = () => [{ title: '', start: '08:30', end: '10:30', days: [wdOf(curDate)] }];
 function qeSync() {
   if (!document.getElementById('addf')) return;
+  const ty = document.querySelector('input[name=qe-type]:checked'); if (ty) qeType = ty.value === 'appt' ? 'appt' : 'class';
   qeRows = (qeRows || qeDefault()).map((r, i) => {
     const g = id => document.getElementById(id);
     return g('qe-n-' + i) ? { title: g('qe-n-' + i).value, start: g('qe-s-' + i).value, end: g('qe-e-' + i).value, days: [...document.querySelectorAll('input[name=qe-d-' + i + ']:checked')].map(x => +x.value) } : r;
@@ -1501,8 +1506,9 @@ function qeSync() {
 }
 function qeForm() {
   const R = qeRows || (qeRows = qeDefault());
-  let h = '<form id="addf" class="stack" style="margin:0"><p class="hint" style="margin:0">' + esc(t('qe_hint')) + '</p>' +
+  let h = '<form id="addf" class="stack" style="margin:0">' +
     (qeAdded.length ? '<p class="qe-done" role="status"><b>' + esc(t('qe_added_list')) + '</b> ' + esc(qeAdded.join(', ')) + '</p>' : '');
+  if (!obOn) h += '<fieldset style="border:0;padding:0;margin:0"><legend class="hint" style="margin-bottom:6px">' + esc(t('qe_type')) + '</legend><div class="chips cb"><label><input type="radio" name="qe-type" value="class"' + (qeType === 'appt' ? '' : ' checked') + '><span>' + esc(t('qe_type_class')) + '</span></label><label><input type="radio" name="qe-type" value="appt"' + (qeType === 'appt' ? ' checked' : '') + '><span>' + esc(t('qe_type_appt')) + '</span></label></div><p class="hint" style="margin:6px 0 0">' + esc(t('qe_type_h')) + '</p></fieldset>';
   R.forEach((r, i) => {
     h += '<fieldset class="qe-row"><legend>' + esc(t('qe_row', { n: i + 1 })) + '</legend>' +
       '<label class="f" for="qe-n-' + i + '">' + esc(t('sc_name')) + '<input id="qe-n-' + i + '" type="text" maxlength="40" placeholder="' + esc(t('sc_name_ph')) + '" autocomplete="off" value="' + esc(r.title) + '"></label>' +
@@ -1514,7 +1520,7 @@ function qeForm() {
   if (qeConfirm) h += '<div class="warn" role="alert">' + qeConfirm.map(x => '<p style="margin:0">' + esc(x) + '</p>').join('') + '</div><button class="btn pri full" type="submit" id="qe-force">' + esc(t('qe_force')) + '</button>';
   else h += '<button class="btn pri full" type="submit">' + esc(R.length > 1 ? t('qe_add_n', { n: R.length }) : t('sc_add_btn')) + '</button>';
   if (qeAdded.length && !obOn) h += '<button type="button" class="btn full" data-act="qedone">' + esc(t('qe_finish')) + '</button>';
-  return h + '</form>';
+  return h + '<p class="hint" style="margin:0">' + esc(t('qe_hint')) + '</p></form>';
 }
 /* Duplicates / overlaps of the new rows with saved weekly classes and with each other */
 function qeConflicts(R) {
@@ -1724,21 +1730,22 @@ function screenCheckin() {
   const avg = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : null;
   const aS = avg(sl), aE = avg(en), scale = 12;
   h += '<button class="tbtn" data-act="gorem">' + esc(t('ci_remind')) + '</button>';
-  if (!sl.length) return h + '<p class="hint">' + esc(t('in_none')) + '</p>';
+  if (!sl.length) return h;
   h += '<section class="card"><h2>' + esc(t('ci_week')) + '</h2><div class="chart">' +
     '<div class="goal" style="bottom:' + (need / scale * 85) + '%"></div>' +
     vals.map(c => '<div class="b">' + (c ? '<em style="bottom:calc(' + (c.sleepH / scale * 85) + '% + 4px)">' + esc(fmtH(c.sleepH)) + '</em><i style="height:' + (c.sleepH / scale * 85) + '%"></i>' : '<i class="none" style="height:3px"></i>') + '</div>').join('') +
     '</div><div class="days">' + days.map(d => '<span>' + esc(dayName(d, 'narrow')) + '</span>').join('') + '</div>' +
     '<p class="hint" style="margin-top:10px">' + esc(t('ci_goal', { h: fmtHM(need) })) + '</p>' +
     '<div class="stats"><div><b>' + (aS === null ? '–' : esc(fmtH(aS))) + '</b><span>' + esc(t('st_sleep')) + '</span></div><div><b>' + (aE === null ? '–' : esc(fmtH(aE))) + '</b><span>' + esc(t('st_energy')) + '</span></div><div><b>' + sl.length + '</b><span>' + esc(t('st_count')) + '</span></div></div>';
-  h += '<p class="sub" style="margin:0">' + esc(sl.length < 2 ? t('in_none') : (need - aS >= 0.5 ? t('in_short', { d: fmtH(need - aS) }) : t('in_ok'))) + '</p></section>';
+  if (sl.length >= 2) h += '<p class="sub" style="margin:0">' + esc(need - aS >= 0.5 ? t('in_short', { d: fmtH(need - aS) }) : t('in_ok')) + '</p>';
+  h += '</section>';
   return h;
 }
 
 function screenCourses() {
   const noCl = !state.classes.length;
   const sec = (id, title, body, open) => '<details class="imp" id="' + esc(id) + '"' + ((id in openSec ? openSec[id] : open) ? ' open' : '') + '><summary>' + esc(title) + '</summary><div class="stack">' + body + '</div></details>';
-  let h = weekSeg() + '<p class="sub">' + esc(t('sc_sub')) + '</p>' + msgP();
+  let h = weekSeg() + msgP();
   if (state.cal) {
     const c = state.cal, titles = [...new Set(Object.values(c.days).flat().map(x => x.title))];
     const df = new Intl.DateTimeFormat(state.lang, { day: 'numeric', month: 'short' });
@@ -1756,7 +1763,7 @@ function screenCourses() {
   else if (noCl) h += '<p class="sub">' + esc(t('sc_none')) + '</p>' + quickForm() + '<button class="btn full" data-act="example" style="margin-bottom:14px">' + esc(t('example_cta')) + '</button>';
   else {
     const list = state.classes.slice().sort((a, b) => toMin(a.start) - toMin(b.start));
-    h += '<ul class="cl">' + list.map(c => '<li><div class="m"><b>' + esc(c.title) + '</b><small>' + esc(c.start) + '–' + esc(c.end) + ' · ' + c.days.slice().sort().map(d => esc(dayName(WEEK[d], 'short'))).join(', ') + '</small></div><button class="x" data-act="del" data-v="' + esc(c.id) + '" aria-label="' + esc(t('sc_remove') + ' : ' + c.title) + '">' + esc(t('sc_remove')) + '</button></li>').join('') + '</ul>' +
+    h += '<ul class="cl">' + list.map(c => '<li><div class="m"><b>' + esc(c.title) + '</b><small>' + esc(c.start) + '–' + esc(c.end) + ' · ' + c.days.slice().sort().map(d => esc(dayName(WEEK[d], 'short'))).join(', ') + (c.school === false ? ' · ' + esc(t('appt_notrip')) : '') + '</small></div><button class="x" data-act="del" data-v="' + esc(c.id) + '" aria-label="' + esc(t('sc_remove') + ' : ' + c.title) + '">' + esc(t('sc_remove')) + '</button></li>').join('') + '</ul>' +
       '<div style="margin:10px 0 14px"><button class="btn warnb" data-act="clear">' + esc(t('sc_clear')) + '</button></div>';
   }
   if (state.tasks.length) h += '<h2>' + esc(t('tk_list')) + '</h2><ul class="cl" style="margin-bottom:14px">' + state.tasks.map(k => '<li><div class="m"><b>' + esc(k.title) + '</b><small>' + esc(t('min', { n: k.dur })) + ' · ' + k.days.slice().sort().map(d => esc(dayName(WEEK[d], 'short'))).join(', ') + '</small></div><button class="x" data-act="deltask" data-v="' + esc(k.id) + '">' + esc(t('sc_remove')) + '</button></li>').join('') + '</ul>';
@@ -2002,7 +2009,7 @@ function remindersBody() {
   const row = (k, label, ctl) => '<div class="rm-row"><span class="rm-l" id="rml-' + k + '">' + esc(label) + '<small>' + esc(R[k].on ? (live ? t('on') : t('rm_chosen_short')) : t('off')) + '</small></span>' + (R[k].on && ctl ? ctl : '<span></span>') +
     '<button class="sw" role="switch" aria-checked="' + !!R[k].on + '" aria-labelledby="rml-' + k + '" data-act="rmtoggle" data-v="' + k + '"><span class="tr" aria-hidden="true"></span></button></div>';
   const sel = (id, k, vals, cur) => '<label class="rm-ctl" for="' + id + '"><span class="sr">' + esc(t('rm_when')) + '</span><select id="' + id + '" data-rm="' + k + '">' + opts(vals, cur, v => t('rm_before_short', { n: v })) + '</select></label>';
-  let h = '<p class="hint" style="margin:0">' + esc(t('rm_intro')) + '</p>';
+  let h = '';
   h += row('bed', t('rm_bed'), '') + (R.bed.on ? '<div class="rm-sub">' + durChips('rmbed', R.bed.before, [0, 15, 30], 0, 90, t('rm_before_label'), false) + '</div>' : '');
   h += row('checkin', t('rm_checkin'), '<label class="rm-ctl" for="rm-ci"><span class="sr">' + esc(t('rm_at')) + '</span><input id="rm-ci" type="time" data-rm="checkin" min="18:00" max="23:45" value="' + esc(R.checkin.time) + '"></label>');
   h += row('water', t('rm_water'), '');
@@ -2018,7 +2025,7 @@ function remindersBody() {
   else if (isIOS() && !isStandalone()) h += '<p class="hint">' + esc(t('rm_ios_first')) + '</p>'; // iPhone Safari: install first (Notification is unavailable there)
   else if (perm === 'denied') h += '<p class="hint">' + esc(t('rm_denied')) + '</p>';
   else if (perm === 'unsupported') h += '<p class="hint">' + esc(t('rm_unsupported')) + '</p>';
-  else h += '<button class="btn full" data-act="rmon">' + esc(t('rm_app_btn')) + '</button>';
+  else h += '<p class="hint">' + esc(t('rm_why')) + '</p><button class="btn full" data-act="rmon">' + esc(t('rm_app_btn')) + '</button>';
   // Install help: one line. Desktop browsers without an install prompt get nothing (installing matters on phones).
   const coarse = (() => { try { return matchMedia('(pointer: coarse)').matches; } catch (e) { return false; } })();
   if (!isStandalone()) {
@@ -2296,7 +2303,7 @@ const ACT = {
   openday: v => { curDate = parseKey(v); tab = 'plan'; msg = ''; sheet = null; showPast = false; window.scrollTo(0, 0); },
   edit: (v, b) => { sheet = { d: b.dataset.d, k: b.dataset.k }; msg = ''; },
   freeidea: (v, b) => { const p = String(v).split('-'); sheet = { panel: 'free', s: +p[0], e: +p[1], ret: b.id || '' }; msg = ''; },
-  qedone: () => { qeAdded = []; qeRows = null; qeConfirm = null; openSec['s-class'] = false; jumpTo = 's-class'; },
+  qedone: () => { qeAdded = []; qeRows = null; qeConfirm = null; qeType = 'class'; openSec['s-class'] = false; jumpTo = 's-class'; },
   qeadd: () => { qeSync(); const L = qeRows[qeRows.length - 1]; qeRows.push({ title: '', start: L.start, end: L.end, days: L.days.slice() }); qeConfirm = null; const n = qeRows.length - 1; setTimeout(() => { const el = document.getElementById('qe-n-' + n); if (el) el.focus(); }, 0); },
   qerm: v => { qeSync(); qeRows.splice(+v, 1); if (!qeRows.length) qeRows = qeDefault(); qeConfirm = null; setTimeout(() => { const el = document.getElementById('qe-add'); if (el) el.focus(); }, 0); },
   copyday: (v, b) => { sheet = { panel: 'copy', src: v, ret: b.id || '' }; msg = ''; },
@@ -2496,7 +2503,7 @@ $app.addEventListener('submit', e => {
     const forced = e.submitter && e.submitter.id === 'qe-force', warn = forced ? [] : qeConflicts(R);
     if (warn.length) { qeConfirm = warn; render(); const f = document.getElementById('qe-force'); if (f) f.focus(); return; }
     if (state.sample) { state.classes = state.classes.filter(c => c.origin !== 'sample'); state.sample = false; }
-    R.forEach(r => state.classes.push({ id: uid(), title: r.title, start: r.start, end: r.end, days: r.days, origin: 'manual' }));
+    R.forEach(r => state.classes.push(Object.assign({ id: uid(), title: r.title, start: r.start, end: r.end, days: r.days, origin: 'manual' }, !obOn && qeType === 'appt' ? { school: false } : {})));
     const L = R[R.length - 1]; qeAdded = qeAdded.concat(R.map(r => r.title)); qeConfirm = null;
     qeRows = [{ title: '', start: L.start, end: L.end, days: L.days.slice() }];
     if (obOn) { finishOb(); qeAdded = []; qeRows = null; sheet = null; msg = ''; tab = 'plan'; curDate = firstClassDate(); save(); render(); return; }
