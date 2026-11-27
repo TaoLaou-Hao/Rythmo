@@ -591,6 +591,7 @@ en: {
   low:'Low', high:'High', ci_save:'Save check-in', ci_update:'Update check-in', ci_saved:'Saved. See you tomorrow evening.',
   ci_week:'Your last 7 days', ci_goal:'Dashed line: your sleep need ({h} h)', st_sleep:'Avg sleep (h)', st_energy:'Avg energy', st_count:'Check-ins',
   in_short:'You sleep about {d} h less than you need. The bedtime in your plan can help.', in_ok:'You are close to the sleep you need.', 
+  add_menu:'Add', qe_saved:'Class updated.', cls_edit_title:'Edit this class', qe_save:'Save changes', qe_cancel:'Cancel', about_t:'About and privacy', about_s:'Data, visits, project',
   fb_title:'Help us improve Rythmo', fb_text:'3 minutes, anonymous. Your answers decide what we build next.', fb_cta:'Open the feedback form',
   sc_title:'Your classes', 
   sc_import:'Import a calendar file (.ics)', sc_import_hint:'It replaces the classes below.',
@@ -711,6 +712,7 @@ fr: {
   low:'Faible', high:'Haute', ci_save:'Enregistrer le bilan', ci_update:'Mettre à jour le bilan', ci_saved:'Enregistré. À demain soir.',
   ci_week:'Tes 7 derniers jours', ci_goal:'Ligne pointillée : ton besoin de sommeil ({h} h)', st_sleep:'Sommeil moy. (h)', st_energy:'Énergie moy.', st_count:'Bilans',
   in_short:"Tu dors environ {d} h de moins que ton besoin. L'heure de coucher de ton plan peut aider.", in_ok:'Tu es proche du sommeil dont tu as besoin.', 
+  add_menu:'Ajouter', qe_saved:'Cours modifié.', cls_edit_title:'Modifier ce cours', qe_save:'Enregistrer les modifications', qe_cancel:'Annuler', about_t:'À propos et confidentialité', about_s:'Données, visites, projet',
   fb_title:'Aide-nous à améliorer Rythmo', fb_text:'3 minutes, anonyme. Tes réponses décident de la suite.', fb_cta:'Ouvrir le formulaire',
   sc_title:'Tes cours', 
   sc_import:'Importer un fichier calendrier (.ics)', sc_import_hint:'Il remplace les cours ci-dessous.',
@@ -1201,7 +1203,7 @@ const KIND = { appt: 'class', wake: 'sleep', bed: 'sleep', wind: 'sleep', meal: 
 const ICK = { free: 'free', appt: 'task', wake: 'wake', bed: 'sleep', wind: 'wind', meal: 'meal', class: 'class', travel: 'travel', sport: 'sport', task: 'task', morning: 'free' };
 const SUGGEST = { meal: 1, sport: 1, morning: 1, task: 1 };
 
-let qeType = 'class';
+let qeType = 'class', qeEditId = null;
 let msgAt = null, openSec = {}, ruleEditId = null, qeRows = null, qeAdded = [], qeConfirm = null;
 let tab = 'plan', curDate = today(), draft = null, msg = '', msgErr = false, resetArm = false, busy = false, scrollTask = false;
 const TABS = ['plan', 'week', 'checkin', 'settings'];
@@ -1520,7 +1522,9 @@ function qeSync() {
 }
 function qeForm() {
   const R = qeRows || (qeRows = qeDefault());
-  let h = '<form id="addf" class="stack" style="margin:0">' +
+  const edC = qeEditId && state.classes.find(c => c.id === qeEditId);
+  if (qeEditId && !edC) qeEditId = null;
+  let h = '<form id="addf" class="stack" style="margin:0">' + (edC ? '<p class="hint" style="margin:0"><b>' + esc(t('cls_edit_title')) + '</b></p>' : '') +
     (qeAdded.length ? '<p class="qe-done" role="status"><b>' + esc(t('qe_added_list')) + '</b> ' + esc(qeAdded.join(', ')) + '</p>' : '');
   if (!obOn) h += '<fieldset style="border:0;padding:0;margin:0"><legend class="hint" style="margin-bottom:6px">' + esc(t('qe_type')) + '</legend><div class="chips cb"><label><input type="radio" name="qe-type" value="class"' + (qeType === 'appt' ? '' : ' checked') + '><span>' + esc(t('qe_type_class')) + '</span></label><label><input type="radio" name="qe-type" value="appt"' + (qeType === 'appt' ? ' checked' : '') + '><span>' + esc(t('qe_type_appt')) + '</span></label></div><p class="hint" style="margin:6px 0 0">' + esc(t('qe_type_h')) + '</p></fieldset>';
   R.forEach((r, i) => {
@@ -1530,10 +1534,12 @@ function qeForm() {
       '<fieldset style="border:0;padding:0;margin:0"><legend class="hint" style="margin-bottom:6px">' + esc(t('sc_days')) + '</legend><div class="chips cb">' + WEEK.map((d, j) => '<label><input type="checkbox" name="qe-d-' + i + '" id="qe-d-' + i + '-' + j + '" value="' + j + '"' + (r.days.includes(j) ? ' checked' : '') + '><span>' + esc(dayName(d, 'short')) + '</span></label>').join('') + '</div></fieldset>' +
       (R.length > 1 ? '<button type="button" class="tbtn" data-act="qerm" data-v="' + i + '">' + esc(t('qe_rm_row', { n: i + 1 })) + '</button>' : '') + '</fieldset>';
   });
-  h += '<button type="button" class="btn full" data-act="qeadd" id="qe-add">+ ' + esc(t('qe_add_row')) + '</button>' + msgP('addf');
+  if (!edC) h += '<button type="button" class="btn full" data-act="qeadd" id="qe-add">+ ' + esc(t('qe_add_row')) + '</button>';
+  h += msgP('addf');
   if (qeConfirm) h += '<div class="warn" role="alert">' + qeConfirm.map(x => '<p style="margin:0">' + esc(x) + '</p>').join('') + '</div><button class="btn pri full" type="submit" id="qe-force">' + esc(t('qe_force')) + '</button>';
+  else if (edC) h += '<button class="btn pri full" type="submit" id="qe-save">' + esc(t('qe_save')) + '</button><button type="button" class="btn full" data-act="qeeditcancel" id="qe-cancel">' + esc(t('qe_cancel')) + '</button>';
   else h += '<button class="btn pri full" type="submit">' + esc(R.length > 1 ? t('qe_add_n', { n: R.length }) : t('sc_add_btn')) + '</button>';
-  if (qeAdded.length && !obOn) h += '<button type="button" class="btn full" data-act="qedone">' + esc(t('qe_finish')) + '</button>';
+  if (qeAdded.length && !obOn && !edC) h += '<button type="button" class="btn full" data-act="qedone">' + esc(t('qe_finish')) + '</button>';
   return h + '<p class="hint" style="margin:0">' + esc(t('qe_hint')) + '</p></form>';
 }
 /* Duplicates / overlaps of the new rows with saved weekly classes and with each other */
@@ -1777,21 +1783,24 @@ function screenCourses() {
   else if (noCl) h += '<p class="sub">' + esc(t('sc_none')) + '</p>' + quickForm() + '<button class="btn full" data-act="example" style="margin-bottom:14px">' + esc(t('example_cta')) + '</button>';
   else {
     const list = state.classes.slice().sort((a, b) => toMin(a.start) - toMin(b.start));
-    h += '<ul class="cl">' + list.map(c => '<li><div class="m"><b>' + esc(c.title) + '</b><small>' + esc(c.start) + '–' + esc(c.end) + ' · ' + c.days.slice().sort().map(d => esc(dayName(WEEK[d], 'short'))).join(', ') + (c.school === false ? ' · ' + esc(t('appt_notrip')) : '') + '</small></div><button class="x" data-act="del" data-v="' + esc(c.id) + '" aria-label="' + esc(t('sc_remove') + ' : ' + c.title) + '">' + esc(t('sc_remove')) + '</button></li>').join('') + '</ul>' +
+    h += '<ul class="cl">' + list.map(c => '<li><div class="m"><b>' + esc(c.title) + '</b><small>' + esc(c.start) + '–' + esc(c.end) + ' · ' + c.days.slice().sort().map(d => esc(dayName(WEEK[d], 'short'))).join(', ') + (c.school === false ? ' · ' + esc(t('appt_notrip')) : '') + '</small></div><span><button class="x" data-act="clsedit" data-v="' + esc(c.id) + '" id="ce-' + esc(c.id) + '" aria-label="' + esc(t('edit') + ' : ' + c.title) + '">' + esc(t('edit')) + '</button><button class="x" data-act="del" data-v="' + esc(c.id) + '" aria-label="' + esc(t('sc_remove') + ' : ' + c.title) + '">' + esc(t('sc_remove')) + '</button></span></li>').join('') + '</ul>' +
       '<div style="margin:10px 0 14px"><button class="btn warnb" data-act="clear">' + esc(t('sc_clear')) + '</button></div>';
   }
   if (state.tasks.length) h += '<h2>' + esc(t('tk_list')) + '</h2><ul class="cl" style="margin-bottom:14px">' + state.tasks.map(k => '<li><div class="m"><b>' + esc(k.title) + '</b><small>' + esc(t('min', { n: k.dur })) + ' · ' + k.days.slice().sort().map(d => esc(dayName(WEEK[d], 'short'))).join(', ') + '</small></div><button class="x" data-act="deltask" data-v="' + esc(k.id) + '">' + esc(t('sc_remove')) + '</button></li>').join('') + '</ul>';
-  h += sec('s-link', t('imp_sec'), linkForm() + fileImport(), noCl && !state.cal && !!RELAY);
-  h += sec('s-class', '+ ' + t('qe_title'), qeForm(), !!(msgAt === 'addf' || qeAdded.length || qeConfirm));
+  let a = '';
+  a += sec('s-link', t('imp_sec'), linkForm() + fileImport(), noCl && !state.cal && !!RELAY);
+  a += sec('s-class', '+ ' + t('qe_title'), qeForm(), !!(msgAt === 'addf' || qeAdded.length || qeConfirm));
   const er = state.rules.find(r => r.id === ruleEditId);
-  h += sec('s-rule', '+ ' + t('rule_add'), '<form id="rulef" class="stack" style="margin:0"><p class="hint" style="margin:0">' + esc(t('rule_hint')) + '</p>' +
+  a += sec('s-rule', '+ ' + t('rule_add'), '<form id="rulef" class="stack" style="margin:0"><p class="hint" style="margin:0">' + esc(t('rule_hint')) + '</p>' +
     '<label class="f" for="ru-d">' + esc(t('rule_day')) + '<select id="ru-d">' + WEEK.map((d, i) => '<option value="' + i + '"' + ((er ? er.wd : wdOf(curDate)) === i ? ' selected' : '') + '>' + esc(dayName(d, 'long')) + '</option>').join('') + '</select></label>' +
     '<label class="f" for="ru-l">' + esc(t('de_work_label')) + '<input id="ru-l" type="text" maxlength="40" value="' + esc(er ? er.work.label : '') + '" placeholder="' + esc(t('work_default')) + '"></label>' +
     '<div class="grid2"><label class="f" for="ru-s">' + esc(t('sc_start')) + '<input id="ru-s" type="time" required value="' + esc(er ? er.work.start : '09:00') + '"></label><label class="f" for="ru-e">' + esc(t('sc_end')) + '<input id="ru-e" type="time" required value="' + esc(er ? er.work.end : '17:30') + '"></label></div>' +
     '<button class="btn pri full" type="submit">' + esc(er ? t('de_save') : t('rule_add_btn')) + '</button>' + msgP('rulef') + '</form>', !!er || msgAt === 'rulef');
-  h += sec('s-task', '+ ' + t('tk_add'), '<form id="taskf" class="stack" style="margin:0"><p class="hint" style="margin:0">' + esc(t('tk_hint')) + '</p><label class="f" for="tn">' + esc(t('tk_name')) + '<input id="tn" type="text" maxlength="40" placeholder="' + esc(t('tk_name_ph')) + '"></label>' +
+  a += sec('s-task', '+ ' + t('tk_add'), '<form id="taskf" class="stack" style="margin:0"><p class="hint" style="margin:0">' + esc(t('tk_hint')) + '</p><label class="f" for="tn">' + esc(t('tk_name')) + '<input id="tn" type="text" maxlength="40" placeholder="' + esc(t('tk_name_ph')) + '"></label>' +
     '<label class="f" for="td">' + esc(t('tk_dur')) + '<select id="td">' + opts([15, 30, 45, 60, 90, 120, 180], 60, v => t('min', { n: v })) + '</select></label>' +
     dayChips('td-d', i => i === wdOf(curDate)) + '<button class="btn pri full" type="submit">' + esc(t('tk_btn')) + '</button>' + msgP('taskf') + '</form>', scrollTask || msgAt === 'taskf');
+  const forced = !!(er || qeEditId || scrollTask || qeAdded.length || qeConfirm || ['addf', 'rulef', 'taskf'].includes(msgAt) || ['s-link', 's-class', 's-rule', 's-task'].some(k => openSec[k]));
+  h += '<details class="imp" id="s-add"' + ((forced || openSec['s-add']) ? ' open' : '') + '><summary id="add-btn">+ ' + esc(t('add_menu')) + '</summary><div class="stack">' + a + '</div></details>';
   return h;
 }
 
@@ -1880,7 +1889,7 @@ function screenSettings() {
   h += acc('set-data', t('set_data_help'), t('sum_data'),
     '<div class="grid2"><button class="btn" data-act="export">' + esc(t('set_export_short')) + '</button><button class="btn" data-act="obreplay">' + esc(t('ob_replay')) + '</button></div>' +
     '<button class="btn warnb full" data-act="reset">' + esc(resetArm ? t('set_reset_confirm') : t('set_reset')) + '</button>');
-  return h + fbCard() + footer();
+  return h + fbCard() + acc('set-about', t('about_t'), t('about_s'), footer());
 }
 
 function render() {
@@ -2356,6 +2365,8 @@ const ACT = {
   openday: v => { curDate = parseKey(v); tab = 'plan'; msg = ''; sheet = null; showPast = false; window.scrollTo(0, 0); },
   edit: (v, b) => { sheet = { d: b.dataset.d, k: b.dataset.k }; msg = ''; },
   freeidea: (v, b) => { const p = String(v).split('-'); sheet = { panel: 'free', s: +p[0], e: +p[1], ret: b.id || '' }; msg = ''; },
+  clsedit: v => { const c = state.classes.find(x => x.id === v); if (!c) return; qeEditId = v; qeRows = [{ title: c.title, start: c.start, end: c.end, days: c.days.slice() }]; qeType = c.school === false ? 'appt' : 'class'; qeConfirm = null; qeAdded = []; openSec['s-add'] = true; openSec['s-class'] = true; jumpTo = 's-class'; },
+  qeeditcancel: () => { qeEditId = null; qeRows = null; qeConfirm = null; qeType = 'class'; openSec['s-class'] = false; },
   qedone: () => { qeAdded = []; qeRows = null; qeConfirm = null; qeType = 'class'; openSec['s-class'] = false; jumpTo = 's-class'; },
   qeadd: () => { qeSync(); const L = qeRows[qeRows.length - 1]; qeRows.push({ title: '', start: L.start, end: L.end, days: L.days.slice() }); qeConfirm = null; const n = qeRows.length - 1; setTimeout(() => { const el = document.getElementById('qe-n-' + n); if (el) el.focus(); }, 0); },
   qerm: v => { qeSync(); qeRows.splice(+v, 1); if (!qeRows.length) qeRows = qeDefault(); qeConfirm = null; setTimeout(() => { const el = document.getElementById('qe-add'); if (el) el.focus(); }, 0); },
@@ -2439,7 +2450,7 @@ $app.addEventListener('click', e => {
   f(b.dataset.v, b, e);
   render();
 });
-$app.addEventListener('toggle', e => { const d = e.target; if (d.tagName === 'DETAILS' && d.id) openSec[d.id] = d.open; }, true);
+$app.addEventListener('toggle', e => { const d = e.target; if (d.tagName === 'DETAILS' && d.id) { openSec[d.id] = d.open; if (d.id === 's-add' && !d.open) ['s-link', 's-class', 's-rule', 's-task'].forEach(k => { openSec[k] = false; }); } }, true);
 $app.addEventListener('submit', e => {
   const id = e.target.id, form = e.target; e.preventDefault();
   msg = ''; msgAt = null;
@@ -2552,6 +2563,11 @@ $app.addEventListener('submit', e => {
       if (!r.title) { formError(form, pre + t('sc_need_name'), 'qe-n-' + i); return; }
       if (!HHMM.test(r.start) || !HHMM.test(r.end) || toMin(r.end) <= toMin(r.start)) { formError(form, pre + t('sc_bad_time'), 'qe-e-' + i); return; }
       if (!r.days.length) { formError(form, pre + t('sc_need_day'), 'qe-d-' + i + '-0'); return; }
+    }
+    if (qeEditId) {
+      const c = state.classes.find(x => x.id === qeEditId), r = R[0];
+      if (c) { c.title = r.title; c.start = r.start; c.end = r.end; c.days = r.days.slice(); if (qeType === 'appt') c.school = false; else delete c.school; }
+      qeEditId = null; qeRows = null; qeConfirm = null; qeType = 'class'; openSec['s-class'] = false; save(); say(t('qe_saved'), false); render(); return;
     }
     const forced = e.submitter && e.submitter.id === 'qe-force', warn = forced ? [] : qeConflicts(R);
     if (warn.length) { qeConfirm = warn; render(); const f = document.getElementById('qe-force'); if (f) f.focus(); return; }
