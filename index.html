@@ -1971,6 +1971,13 @@ const PUSH_KEY = 'rythmo.push';
 const pushSupported = () => notifSupported() && 'PushManager' in window && !!RELAY;
 const pushGet = () => { try { return JSON.parse(localStorage.getItem(PUSH_KEY)) || {}; } catch (e) { return {}; } };
 const pushSet = o => { try { localStorage.setItem(PUSH_KEY, JSON.stringify(o)); } catch (e) {} };
+let pushDevMem = '';
+function pushDevice() { // one random id per device, so the Worker keeps a single subscription per device
+  try { const v = localStorage.getItem('rythmo.push.dev'); if (v) return v; } catch (e) {}
+  if (!pushDevMem) pushDevMem = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : 'd' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+  try { localStorage.setItem('rythmo.push.dev', pushDevMem); } catch (e) {}
+  return pushDevMem;
+}
 const b64uToBytes = str => Uint8Array.from(atob(str.replace(/-/g, '+').replace(/_/g, '/').padEnd(Math.ceil(str.length / 4) * 4, '=')), c => c.charCodeAt(0));
 function pushPlan() { // at most 40 reminders for the Worker; the last one asks to open the app so the plan is refreshed
   const all = computeReminders(7), now = Date.now(), list = all.filter(r => r.at.getTime() > now);
@@ -1991,7 +1998,7 @@ async function pushSync(force) {
     if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64uToBytes(VAPID_PUB) });
     const reminders = pushPlan(), sig = JSON.stringify(reminders);
     if (!force && st.sig === sig && Date.now() - (st.last || 0) < 6 * 3600000) return;
-    const r = await fetch(RELAY + '/push/subscribe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ subscription: sub.toJSON(), reminders }) });
+    const r = await fetch(RELAY + '/push/subscribe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ subscription: sub.toJSON(), reminders, device: pushDevice() }) });
     if (r.ok) pushSet({ on: true, sig, last: Date.now() });
   } catch (e) { /* offline or blocked: in-app reminders still work */ }
 }
@@ -2715,7 +2722,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
 if (!readHash() && state.classes.length) curDate = firstClassDate();
 try { history.replaceState(null, '', '#' + routeHash()); } catch (e) {}
 /* Test/debug handle (read-only helpers, no data leaves the page). */
-window.Rythmo = { pushPlan, T, MEALS, FREE_IDEAS, computeDay, classesOn, effOv, importICS, calFromICS, applyImport, eventsFromICS, parseICS, key, parseKey, computeReminders, remindersICS, planICS, get state() { return state; } };
+window.Rythmo = { pushPlan, pushSync, pushDevice, T, MEALS, FREE_IDEAS, computeDay, classesOn, effOv, importICS, calFromICS, applyImport, eventsFromICS, parseICS, key, parseKey, computeReminders, remindersICS, planICS, get state() { return state; } };
 render();
 })();
 </script>
